@@ -1,4 +1,4 @@
-# I'm developing a custom entity model system.
+# ENIM Custom Entity Model Format
 As you may know, entity models were hinted for 1.9, then (most likely) scrapped.
 So, I have taken it upon myself to create a working customizable entity model system as a mod.
 Here's the progress so far:
