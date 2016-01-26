@@ -1,0 +1,8 @@
+[{
+	"modid": "enim",
+	"name": "ENIM",
+	"description": "TODO add description.",
+	"version": "${version}",
+	"mcversion": "1.8",
+	"authorList": ["kwerti"]
+}]

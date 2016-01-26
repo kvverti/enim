@@ -1,0 +1,10 @@
+{
+	"texture": {
+		"size": [64,32],
+		"atlases": ["bunkernine:splootch"]
+	},
+	"model": {
+		"normal": "enim:entityJson",
+		"baby": "enim:entityJson"
+	}
+}

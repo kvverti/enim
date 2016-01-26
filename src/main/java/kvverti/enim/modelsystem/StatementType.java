@@ -1,0 +1,49 @@
+package kvverti.enim.modelsystem;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
+public enum StatementType {
+
+	DEFINITION	("define", TokenType.IDENTIFIER),
+	FREQUENCY	("freq", TokenType.UNSIGNED_INTEGER),
+	SET		("set", TokenType.IDENTIFIER, TokenType.AXIS, TokenType.FLOATING_POINT),
+	ROTATE		("rotate", TokenType.IDENTIFIER, TokenType.AXIS, TokenType.FLOATING_POINT),
+	PAUSE		("pause", TokenType.UNSIGNED_INTEGER),
+	REPEAT		("repeat", TokenType.UNSIGNED_INTEGER, TokenType.IDENTIFIER),
+	END		("end", TokenType.IDENTIFIER);
+
+	private final String name;
+	private final TokenType[] args;
+
+	private StatementType(String s, TokenType... ttypes) {
+
+		name = s;
+		args = ttypes;
+	}
+
+	public String getName() {
+
+		return name;
+	}
+
+	public TokenType[] getTokenTypes() {
+
+		return args;
+	}
+
+	public int tokenCount() {
+
+		return args.length;
+	}
+
+	public static StatementType byName(String name) {
+
+		for(StatementType type : values()) {
+
+			if(type.name.equals(name)) return type;
+		}
+		return null;
+	}
+}
