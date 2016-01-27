@@ -1,0 +1,9 @@
+{
+	"texture": {
+		"size": [128,64],
+		"atlases": ["boat"]
+	},
+	"states": {
+		"normal": { "model": "boat" }
+	}
+}

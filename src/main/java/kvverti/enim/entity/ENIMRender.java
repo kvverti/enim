@@ -79,8 +79,9 @@ public class ENIMRender<T extends Entity> extends Render<T> {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate((float) x, (float) y, (float) z);
 		GlStateManager.rotate(180.0f, 1.0f, 0.0f, 0.0f);
+		GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
 		bindEntityTexture(entity);
-		model.render(entity, 0.0f, 0.0f, 0.0f, yaw, 0.0f, 0.0625f);
+		model.render(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
 		GlStateManager.popMatrix();
 		super.doRender(entity, x, y, z, yaw, partialTicks);
 	}

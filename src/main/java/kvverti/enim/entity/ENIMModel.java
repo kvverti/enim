@@ -54,6 +54,7 @@ public class ENIMModel extends ModelBase {
 			if(boxes.containsKey(parent)) {
 
 				boxes.get(parent).addChild(current);
+				boxes.remove(m.getName());
 			}
 		}
 	}

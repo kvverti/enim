@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.item.EntityBoat;
 
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -47,7 +47,7 @@ public final class Enim implements IResourceManagerReloadListener {
     		manager.registerReloadListener(Enim.instance);
 
 		RenderingRegistry.registerEntityRenderingHandler(
-			EntityMinecart.class, new ENIMRender<EntityMinecart>("enim", "entityFile", new ENIMModel()));
+			EntityBoat.class, new ENIMRender<EntityBoat>("minecraft", "boat", new ENIMModel()));
 	}
 
 	@EventHandler
