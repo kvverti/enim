@@ -3,6 +3,10 @@ package kvverti.enim;
 import java.io.IOException;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 import net.minecraft.entity.item.EntityMinecart;
 
@@ -43,7 +47,7 @@ public final class Enim implements IResourceManagerReloadListener {
     		manager.registerReloadListener(Enim.instance);
 
 		RenderingRegistry.registerEntityRenderingHandler(
-			EntityMinecart.class, new ENIMRender<EntityMinecart>(new ENIMModel()));
+			EntityMinecart.class, new ENIMRender<EntityMinecart>("enim", "entityFile", new ENIMModel()));
 	}
 
 	@EventHandler
@@ -56,22 +60,34 @@ public final class Enim implements IResourceManagerReloadListener {
 
 		Logger.info("Reloading resources...");
 
-		try {
-			EntityJsonParser parser = new EntityJsonParser(
-				manager.getResource(new ResourceLocation(ID, "models/entity/entityJson.json")));
+		List<Texture> tex = new ArrayList<>();
+		Map<String, ResourceLocation> models = new HashMap<>();
+		Set<ModelElement> elems = new HashSet<>();
+		for(ENIMRender<?> r : ENIMRender.renders) {
 
-			Set<ModelElement> elems = new HashSet<>();
-			parser.parseElements(elems);
-			parser.getElementImports(elems);
+			try {
+				ResourceLocation estateLoc = r.getEntityStateFile();
+				EntityJsonParser parser = new EntityJsonParser(manager.getResource(estateLoc));
+				parser.parseTextures(tex);
+				parser.parseModelLocations(models);
 
-			for(ENIMRender r : ENIMRender.renders) {
+				EntityJsonParser mpsr = new EntityJsonParser(
+					manager.getResource(models.get(Keys.STATE_NORMAL)));
+				mpsr.parseElements(elems);
+				mpsr.getElementImports(elems);
+				r.reloadRender(elems, tex);
 
-				r.reloadRender(elems);
+			} catch(ENIMException|IOException e) {
+
+				Logger.error(e);
+				r.setMissingno();
+
+			} finally {
+
+				tex.clear();
+				models.clear();
+				elems.clear();
 			}
-
-		} catch(ENIMException|IOException e) {
-
-			Logger.error(e);
 		}
 
 		Logger.info("Reload complete");

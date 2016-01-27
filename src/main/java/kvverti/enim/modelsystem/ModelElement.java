@@ -2,10 +2,6 @@ package kvverti.enim.modelsystem;
 
 import java.util.Arrays;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-@SideOnly(Side.CLIENT)
 public final class ModelElement {
 
 	private final String name;

@@ -2,10 +2,6 @@ package kvverti.enim.modelsystem;
 
 import java.util.regex.*;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-@SideOnly(Side.CLIENT)
 public enum TokenType {
 
 	AXIS			("[xyz]"),

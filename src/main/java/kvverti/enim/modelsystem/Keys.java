@@ -2,10 +2,6 @@ package kvverti.enim.modelsystem;
 
 import java.util.regex.*;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-@SideOnly(Side.CLIENT)
 public final class Keys {
 
 	public static final String IMPORTS_TAG = "imports";
@@ -30,6 +26,11 @@ public final class Keys {
 	public static final String TEXTURE_TAG = "texture";
 	public static final String TEX_SIZE = "size";
 	public static final String TEX_ATLASES = "atlases";
+
+	public static final String STATES_TAG = "states";
+	public static final String STATE_NORMAL = "normal";
+	public static final String STATE_MODEL_NAME = "model";
+	public static final String STATE_MODEL_WEIGHT = "weight";
 
 	public static final Pattern IDENTIFIER_REGEX = Pattern.compile("[A-Za-z_][A-Za-z_0-9]*");
 	public static final Pattern RESOURCE_LOCATION_REGEX =

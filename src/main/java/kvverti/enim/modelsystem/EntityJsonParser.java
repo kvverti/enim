@@ -1,12 +1,11 @@
 package kvverti.enim.modelsystem;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
@@ -16,8 +15,9 @@ import com.google.gson.*;
 
 import kvverti.enim.Logger;
 
-@SideOnly(Side.CLIENT)
 public final class EntityJsonParser {
+
+	private static final ResourceLocation MISSING_LOCATION = new ResourceLocation("missingno");
 
 	private final IResource file;
 	JsonObject json = null;
@@ -25,6 +25,53 @@ public final class EntityJsonParser {
 	public EntityJsonParser(IResource rsc) {
 
 		file = rsc;
+	}
+
+	public void parseModelLocations(Map<String, ? super ResourceLocation> locs) throws ParserException {
+
+		try {
+			initJson();
+			JsonObject obj = json.getAsJsonObject(Keys.STATES_TAG);
+			for(Map.Entry<String, JsonElement> key : obj.entrySet()) {
+
+				JsonObject mdl = key.getValue().getAsJsonObject();
+				ResourceLocation loc = getResourceLocation(
+					getString(mdl, Keys.STATE_MODEL_NAME), "models/entity/", ".json");
+				locs.put(key.getKey(), loc);
+			}
+
+		} catch(JsonParseException e) {
+
+			throw new ParserException(e);
+		}
+	}
+
+	public void parseTextures(List<? super Texture> list) throws ParserException {
+
+		try {
+			initJson();
+			if(!json.has(Keys.TEXTURE_TAG)) return;
+			JsonObject obj = json.getAsJsonObject(Keys.TEXTURE_TAG);
+			int[] dims = getDims(obj);
+			JsonArray atlases = obj.getAsJsonArray(Keys.TEX_ATLASES);
+			for(JsonElement elem : atlases) {
+
+				ResourceLocation loc = getResourceLocation(elem.getAsString(), "textures/entity/", ".png");
+				list.add(new Texture(loc, dims[0], dims[1]));
+			}
+
+		} catch(JsonParseException|SyntaxException e) {
+
+			throw new ParserException(e);
+		}
+	}
+
+	private int[] getDims(JsonObject object) throws SyntaxException {
+
+		int[] result = { getInt(object, Keys.TEX_SIZE, 0), getInt(object, Keys.TEX_SIZE, 1) };
+		if(result[0] < 0 || result[1] < 0) throw new SyntaxException(
+			"Negative texture size in " + file.getResourceLocation());
+		return result;
 	}
 
 	public ModelElement parseElement(String name) throws ParserException {
@@ -76,19 +123,16 @@ public final class EntityJsonParser {
 			for(Map.Entry<String, JsonElement> entry : imports.entrySet()) {
 
 				EntityJsonParser parser = getParserFor(entry.getKey());
-				if(parser != null) {
+				JsonArray arr = entry.getValue().getAsJsonArray();
+				if(contains(arr, new JsonPrimitive(Keys.WILDCARD))) {
 
-					JsonArray arr = entry.getValue().getAsJsonArray();
-					if(contains(arr, new JsonPrimitive(Keys.WILDCARD))) {
+					parser.parseElements(set);
 
-						parser.parseElements(set);
+				} else for(JsonElement elem : arr) {
 
-					} else for(JsonElement elem : arr) {
-
-						ModelElement mdl = parser.parseElement(elem.getAsString());
-						if(mdl != null) addSafely(set, mdl);
-						else throw new ElementNotFoundException(elem.getAsString());
-					}
+					ModelElement mdl = parser.parseElement(elem.getAsString());
+					if(mdl != null) addSafely(set, mdl);
+					else throw new ElementNotFoundException(elem.getAsString());
 				}
 			}
 
@@ -104,17 +148,24 @@ public final class EntityJsonParser {
 			elem.getName() + " in file " + file.getResourceLocation());
 	}
 
+	private ResourceLocation getResourceLocation(String loc, String relative, String ext) {
+
+		ResourceLocation result;
+		Matcher m = Keys.RESOURCE_LOCATION_REGEX.matcher(loc);
+		if(loc != null && m.matches()) {
+
+			result = new ResourceLocation(
+				m.group("domain"), relative + m.group("filepath") + ext);
+
+		} else result = MISSING_LOCATION;
+		return result;
+	}
+
 	private EntityJsonParser getParserFor(String key) throws IOException {
 
-		Matcher m = Keys.RESOURCE_LOCATION_REGEX.matcher(key);
-		if(m.matches()) {
-
-			ResourceLocation loc = new ResourceLocation(
-				m.group("domain"), "models/entity/" + m.group("filepath") + ".json");
-			IResource nextResource = Minecraft.getMinecraft().getResourceManager().getResource(loc);
-			return new EntityJsonParser(nextResource);
-
-		} else return null;
+		ResourceLocation loc = getResourceLocation(key, "models/entity/", ".json");
+		IResource nextResource = Minecraft.getMinecraft().getResourceManager().getResource(loc);
+		return new EntityJsonParser(nextResource);
 	}
 
 	private ModelElement buildElement(JsonObject obj) throws SyntaxException {

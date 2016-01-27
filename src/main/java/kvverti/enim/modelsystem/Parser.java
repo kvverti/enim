@@ -3,10 +3,6 @@ package kvverti.enim.modelsystem;
 import java.util.List;
 import java.util.ArrayList;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-@SideOnly(Side.CLIENT)
 public final class Parser {
 
 	private final List<Token> tokens;

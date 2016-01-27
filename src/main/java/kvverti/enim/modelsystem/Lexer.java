@@ -4,12 +4,8 @@ import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 import net.minecraft.client.resources.IResource;
 
-@SideOnly(Side.CLIENT)
 public final class Lexer {
 
 	private final IResource file;

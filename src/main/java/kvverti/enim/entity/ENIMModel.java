@@ -31,8 +31,9 @@ public class ENIMModel extends ModelBase {
 
 	}
 
-	public void reloadModel(Set<ModelElement> elements) {
+	public final void reloadModel(Set<ModelElement> elements) {
 
+		boxes.clear();
 		for(ModelElement m : elements) {
 
 			int[] to = m.getTo();
@@ -55,5 +56,13 @@ public class ENIMModel extends ModelBase {
 				boxes.get(parent).addChild(current);
 			}
 		}
+	}
+
+	public final void setMissingno() {
+
+		boxes.clear();
+		ModelRenderer missingno = new ModelRenderer(this, "#missingno");
+		missingno.addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
+		boxes.put("#missingno", missingno);
 	}
 }
