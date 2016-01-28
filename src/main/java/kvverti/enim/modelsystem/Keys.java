@@ -15,6 +15,7 @@ public final class Keys {
 	public static final String ELEM_FROM = "from";
 	public static final String ELEM_TO = "to";
 	public static final String ELEM_ROTPOINT = "rotpoint";
+	public static final String ELEM_DEFROT = "rotation";
 
 	public static final String ANIMS_TAG = "animations";
 	public static final String ANIM_TYPE_IDLE = "idle";

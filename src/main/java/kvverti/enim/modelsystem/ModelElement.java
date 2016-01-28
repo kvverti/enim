@@ -9,6 +9,7 @@ public final class ModelElement {
 	private final int[] from;
 	private final int[] to;
 	private final int[] rotationPoint;
+	private final int[] defaultRotation;
 	private final String parent;
 
 	private ModelElement(String name,
@@ -16,7 +17,8 @@ public final class ModelElement {
 		int[] coords,
 		int[] dims,
 		int[] offs,
-		int[] rots) {
+		int[] rots,
+		int[] defRots) {
 
 		this.name = name;
 		this.parent = parent;
@@ -24,6 +26,7 @@ public final class ModelElement {
 		from = dims;
 		to = offs;
 		rotationPoint = rots;
+		defaultRotation = defRots;
 	}
 
 	public String getName() {
@@ -56,12 +59,18 @@ public final class ModelElement {
 		return rotationPoint;
 	}
 
+	public int[] getDefaultRotation() {
+
+		return defaultRotation;
+	}
+
 	@Override
 	public String toString() {
 
 		return "ModelElement[Name: " + name + ", Parent: " + parent + ", TexCoords: " + Arrays.toString(coords)
 			+ ", From: " + Arrays.toString(from) + ", To: " + Arrays.toString(to)
-			+ ", Rotation Point: " + Arrays.toString(rotationPoint) + "]";
+			+ ", Rotation Point: " + Arrays.toString(rotationPoint)
+			+ ", Default Rotation: " + Arrays.toString(defaultRotation) + "]";
 	}
 
 	@Override
@@ -83,6 +92,7 @@ public final class ModelElement {
 		private int[] from = new int[3];
 		private int[] to = new int[3];
 		private int[] rotationPoint = new int[3];
+		private int[] defrots = new int[3];
 		private String parent = null;
 
 		public Builder setName(String name) {
@@ -127,6 +137,15 @@ public final class ModelElement {
 			return this;
 		}
 
+		public Builder setDefaultRotation(int x, int y, int z) {
+
+			defrots[0] = x;
+			defrots[1] = y;
+			defrots[2] = z;
+
+			return this;
+		}
+
 		public Builder setParent(String parent) {
 
 			this.parent = parent;
@@ -154,7 +173,7 @@ public final class ModelElement {
 			verify(name);
 			verify(coords);
 
-			return new ModelElement(name, parent, coords, from, to, rotationPoint);
+			return new ModelElement(name, parent, coords, from, to, rotationPoint, defrots);
 		}
 	}
 }

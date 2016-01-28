@@ -184,6 +184,9 @@ public final class EntityJsonParser {
 			.setRotationPoint(getInt(obj, Keys.ELEM_ROTPOINT, 0),
 				getInt(obj, Keys.ELEM_ROTPOINT, 1),
 				getInt(obj, Keys.ELEM_ROTPOINT, 2))
+			.setDefaultRotation(getInt(obj, Keys.ELEM_DEFROT, 0),
+				getInt(obj, Keys.ELEM_DEFROT, 1),
+				getInt(obj, Keys.ELEM_DEFROT, 2))
 			.build();
 	}
 
