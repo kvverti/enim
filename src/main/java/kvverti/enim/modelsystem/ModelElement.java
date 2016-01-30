@@ -6,19 +6,21 @@ public final class ModelElement {
 
 	private final String name;
 	private final int[] coords;
-	private final int[] from;
-	private final int[] to;
-	private final int[] rotationPoint;
-	private final int[] defaultRotation;
+	private final float[] from;
+	private final float[] to;
+	private final float[] rotationPoint;
+	private final float[] defaultRotation;
+	private final float scale;
 	private final String parent;
 
 	private ModelElement(String name,
 		String parent,
 		int[] coords,
-		int[] dims,
-		int[] offs,
-		int[] rots,
-		int[] defRots) {
+		float[] dims,
+		float[] offs,
+		float[] rots,
+		float[] defRots,
+		float scales) {
 
 		this.name = name;
 		this.parent = parent;
@@ -27,6 +29,7 @@ public final class ModelElement {
 		to = offs;
 		rotationPoint = rots;
 		defaultRotation = defRots;
+		scale = scales;
 	}
 
 	public String getName() {
@@ -44,24 +47,29 @@ public final class ModelElement {
 		return coords;
 	}
 
-	public int[] getFrom() {
+	public float[] getFrom() {
 
 		return from;
 	}
 
-	public int[] getTo() {
+	public float[] getTo() {
 
 		return to;
 	}
 
-	public int[] getRotationPoint() {
+	public float[] getRotationPoint() {
 
 		return rotationPoint;
 	}
 
-	public int[] getDefaultRotation() {
+	public float[] getDefaultRotation() {
 
 		return defaultRotation;
+	}
+
+	public float getScale() {
+
+		return scale;
 	}
 
 	@Override
@@ -89,10 +97,11 @@ public final class ModelElement {
 
 		private String name = null;
 		private int[] coords = new int[2];
-		private int[] from = new int[3];
-		private int[] to = new int[3];
-		private int[] rotationPoint = new int[3];
-		private int[] defrots = new int[3];
+		private float[] from = new float[3];
+		private float[] to = new float[3];
+		private float[] rotationPoint = new float[3];
+		private float[] defrots = new float[3];
+		private float scale = 1.0f;
 		private String parent = null;
 
 		public Builder setName(String name) {
@@ -110,7 +119,7 @@ public final class ModelElement {
 			return this;
 		}
 
-		public Builder setFrom(int x, int y, int z) {
+		public Builder setFrom(float x, float y, float z) {
 
 			from[0] = x;
 			from[1] = y;
@@ -119,7 +128,7 @@ public final class ModelElement {
 			return this;
 		}
 
-		public Builder setTo(int x, int y, int z) {
+		public Builder setTo(float x, float y, float z) {
 
 			to[0] = x;
 			to[1] = y;
@@ -128,7 +137,7 @@ public final class ModelElement {
 			return this;
 		}
 
-		public Builder setRotationPoint(int x, int y, int z) {
+		public Builder setRotationPoint(float x, float y, float z) {
 
 			rotationPoint[0] = x;
 			rotationPoint[1] = y;
@@ -137,11 +146,18 @@ public final class ModelElement {
 			return this;
 		}
 
-		public Builder setDefaultRotation(int x, int y, int z) {
+		public Builder setDefaultRotation(float x, float y, float z) {
 
 			defrots[0] = x;
 			defrots[1] = y;
 			defrots[2] = z;
+
+			return this;
+		}
+
+		public Builder setScale(float scale) {
+
+			this.scale = scale;
 
 			return this;
 		}
@@ -173,7 +189,7 @@ public final class ModelElement {
 			verify(name);
 			verify(coords);
 
-			return new ModelElement(name, parent, coords, from, to, rotationPoint, defrots);
+			return new ModelElement(name, parent, coords, from, to, rotationPoint, defrots, scale);
 		}
 	}
 }

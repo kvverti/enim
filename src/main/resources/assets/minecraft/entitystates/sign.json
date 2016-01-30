@@ -1,0 +1,24 @@
+{
+	"states": {
+		"wall_north": { "model": "sign", "texture": "sign", "size": [64,32] },
+		"wall_south": { "model": "sign", "rotation": [0,180,0], "texture": "sign", "size": [64,32] },
+		"wall_west" : { "model": "sign", "rotation": [0,-90,0], "texture": "sign", "size": [64,32] },
+		"wall_east" : { "model": "sign", "rotation": [0,90,0], "texture": "sign", "size": [64,32] },
+		"floor_00": { "model": "sign", "rotation": [0,22.5,0], "texture": "sign", "size": [64,32] },
+		"floor_01": { "model": "sign", "rotation": [0,45,0], "texture": "sign", "size": [64,32] },
+		"floor_02": { "model": "sign", "rotation": [0,67.5,0], "texture": "sign", "size": [64,32] },
+		"floor_03": { "model": "sign", "rotation": [0,90,0], "texture": "sign", "size": [64,32] },
+		"floor_04": { "model": "sign", "rotation": [0,112.5,0], "texture": "sign", "size": [64,32] },
+		"floor_05": { "model": "sign", "rotation": [0,135,0], "texture": "sign", "size": [64,32] },
+		"floor_06": { "model": "sign", "rotation": [0,157.5,0], "texture": "sign", "size": [64,32] },
+		"floor_07": { "model": "sign", "rotation": [0,180,0], "texture": "sign", "size": [64,32] },
+		"floor_08": { "model": "sign", "rotation": [0,-157.5,0], "texture": "sign", "size": [64,32] },
+		"floor_09": { "model": "sign", "rotation": [0,-135,0], "texture": "sign", "size": [64,32] },
+		"floor_10": { "model": "sign", "rotation": [0,-112.5,0], "texture": "sign", "size": [64,32] },
+		"floor_11": { "model": "sign", "rotation": [0,-90,0], "texture": "sign", "size": [64,32] },
+		"floor_12": { "model": "sign", "rotation": [0,-67.5,0], "texture": "sign", "size": [64,32] },
+		"floor_13": { "model": "sign", "rotation": [0,-45,0], "texture": "sign", "size": [64,32] },
+		"floor_14": { "model": "sign", "rotation": [0,-22.5,0], "texture": "sign", "size": [64,32] },
+		"floor_15": { "model": "sign", "texture": "sign", "size": [64,32] }
+	}
+}

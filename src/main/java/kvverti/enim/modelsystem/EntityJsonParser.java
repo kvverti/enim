@@ -27,17 +27,19 @@ public final class EntityJsonParser {
 		file = rsc;
 	}
 
-	public void parseModelLocations(Map<String, ? super ResourceLocation> locs) throws ParserException {
+	public void parseModelLocations(Set<String> states, Map<String, ? super EntityState> locs) throws ParserException {
 
 		try {
 			initJson();
 			JsonObject obj = json.getAsJsonObject(Keys.STATES_TAG);
 			for(Map.Entry<String, JsonElement> key : obj.entrySet()) {
 
-				JsonObject mdl = key.getValue().getAsJsonObject();
-				ResourceLocation loc = getResourceLocation(
-					getString(mdl, Keys.STATE_MODEL_NAME), "models/entity/", ".json");
-				locs.put(key.getKey(), loc);
+				if(states.contains(key.getKey())) {
+
+					EntityState state = parseEntityState(
+						key.getKey(), key.getValue().getAsJsonObject());
+					locs.put(key.getKey(), state);
+				}
 			}
 
 		} catch(JsonParseException e) {
@@ -46,19 +48,24 @@ public final class EntityJsonParser {
 		}
 	}
 
-	public void parseTextures(List<? super Texture> list) throws ParserException {
+	public EntityState parseEntityState(String name, JsonObject obj) throws ParserException {
 
 		try {
-			initJson();
-			if(!json.has(Keys.TEXTURE_TAG)) return;
-			JsonObject obj = json.getAsJsonObject(Keys.TEXTURE_TAG);
-			int[] dims = getDims(obj);
-			JsonArray atlases = obj.getAsJsonArray(Keys.TEX_ATLASES);
-			for(JsonElement elem : atlases) {
+			ResourceLocation model;
+			ResourceLocation texture;
+			float[] rotation = new float[3];
+			float scale;
+			int[] texSize;
 
-				ResourceLocation loc = getResourceLocation(elem.getAsString(), "textures/entity/", ".png");
-				list.add(new Texture(loc, dims[0], dims[1]));
-			}
+			model = getResourceLocation(obj.get(Keys.STATE_MODEL_NAME).getAsString(), "models/entity/", ".json");
+			texture = getResourceLocation(obj.get(Keys.STATE_TEXTURE).getAsString(), "textures/entity/", ".png");
+			rotation[0] = getFloat(obj, Keys.STATE_ROTATION, 0);
+			rotation[1] = getFloat(obj, Keys.STATE_ROTATION, 1);
+			rotation[2] = getFloat(obj, Keys.STATE_ROTATION, 2);
+			scale = getScaleOptional(obj, Keys.STATE_SCALE);
+			texSize = getDims(obj);
+
+			return new EntityState(name, model, rotation, scale, texture, texSize[0], texSize[1]);
 
 		} catch(JsonParseException|SyntaxException e) {
 
@@ -68,7 +75,7 @@ public final class EntityJsonParser {
 
 	private int[] getDims(JsonObject object) throws SyntaxException {
 
-		int[] result = { getInt(object, Keys.TEX_SIZE, 0), getInt(object, Keys.TEX_SIZE, 1) };
+		int[] result = { getInt(object, Keys.STATE_TEX_SIZE, 0), getInt(object, Keys.STATE_TEX_SIZE, 1) };
 		if(result[0] < 0 || result[1] < 0) throw new SyntaxException(
 			"Negative texture size in " + file.getResourceLocation());
 		return result;
@@ -175,19 +182,26 @@ public final class EntityJsonParser {
 			.setParent(getString(obj, Keys.ELEM_PARENT))
 			.setTexCoords(getInt(obj, Keys.ELEM_TEXCOORDS, 0),
 				getInt(obj, Keys.ELEM_TEXCOORDS, 1))
-			.setFrom(getInt(obj, Keys.ELEM_FROM, 0),
-				getInt(obj, Keys.ELEM_FROM, 1),
-				getInt(obj, Keys.ELEM_FROM, 2))
-			.setTo(getInt(obj, Keys.ELEM_TO, 0),
-				getInt(obj, Keys.ELEM_TO, 1),
-				getInt(obj, Keys.ELEM_TO, 2))
-			.setRotationPoint(getInt(obj, Keys.ELEM_ROTPOINT, 0),
-				getInt(obj, Keys.ELEM_ROTPOINT, 1),
-				getInt(obj, Keys.ELEM_ROTPOINT, 2))
-			.setDefaultRotation(getInt(obj, Keys.ELEM_DEFROT, 0),
-				getInt(obj, Keys.ELEM_DEFROT, 1),
-				getInt(obj, Keys.ELEM_DEFROT, 2))
+			.setFrom(getFloat(obj, Keys.ELEM_FROM, 0),
+				getFloat(obj, Keys.ELEM_FROM, 1),
+				getFloat(obj, Keys.ELEM_FROM, 2))
+			.setTo(getFloat(obj, Keys.ELEM_TO, 0),
+				getFloat(obj, Keys.ELEM_TO, 1),
+				getFloat(obj, Keys.ELEM_TO, 2))
+			.setRotationPoint(getFloat(obj, Keys.ELEM_ROTPOINT, 0),
+				getFloat(obj, Keys.ELEM_ROTPOINT, 1),
+				getFloat(obj, Keys.ELEM_ROTPOINT, 2))
+			.setDefaultRotation(getFloat(obj, Keys.ELEM_DEFROT, 0),
+				getFloat(obj, Keys.ELEM_DEFROT, 1),
+				getFloat(obj, Keys.ELEM_DEFROT, 2))
+			.setScale(getScaleOptional(obj, Keys.ELEM_SCALE))
 			.build();
+	}
+
+	private float getScaleOptional(JsonObject obj, String key) {
+
+		JsonElement p = obj.get(key);
+		return p == null || p.isJsonNull() ? 1.0f : p.getAsFloat();
 	}
 
 	private boolean contains(JsonArray arr, JsonElement elem) {
@@ -209,6 +223,12 @@ public final class EntityJsonParser {
 
 		JsonArray arr = obj.getAsJsonArray(key);
 		return arr == null || arr.isJsonNull() || index >= arr.size() ? 0 : arr.get(index).getAsInt();
+	}
+
+	private float getFloat(JsonObject obj, String key, int index) {
+
+		JsonArray arr = obj.getAsJsonArray(key);
+		return arr == null || arr.isJsonNull() || index >= arr.size() ? 0.0f : arr.get(index).getAsFloat();
 	}
 
 	private void initJson() throws ParserException {

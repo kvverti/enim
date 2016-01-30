@@ -2,37 +2,41 @@
 	"elements": [
 		{
 			"name": "base",
-			"from": [-4,-3,0],
-			"to": [20,1,16],
-			"texcoords": [0,0]
+			"from": [-4,-8,7],
+			"to": [20,8,11],
+			"uv": [0,8],
+			"origin": [8,-1,8],
+			"rotation": [-90,0,0]
 		},
 		{
 			"name": "west_rail",
-			"parent": "base",
-			"from": [-4,1,-2],
-			"to": [-2,7,18],
-			"texcoords": [0,20]
+			"from": [-2,1,-4],
+			"to": [18,7,-2],
+			"uv": [0,0],
+			"origin": [8,0,8],
+			"rotation": [0,-90,0]
 		},
 		{
 			"name": "east_rail",
-			"parent": "base",
-			"from": [18,1,-2],
-			"to": [20,7,18],
-			"texcoords": [0,20]
-		},
-		{
-			"name": "south_rail",
-			"parent": "base",
-			"from": [-2,1,-2],
-			"to": [18,7,0],
-			"texcoords": [44,20]
+			"from": [-2,1,-4],
+			"to": [18,7,-2],
+			"uv": [0,0],
+			"origin": [8,0,8],
+			"rotation": [0,90,0]
 		},
 		{
 			"name": "north_rail",
-			"parent": "base",
-			"from": [-2,1,16],
-			"to": [18,7,18],
-			"texcoords": [44,20]
+			"from": [-2,1,-2],
+			"to": [18,7,0],
+			"uv": [0,0]
+		},
+		{
+			"name": "south_rail",
+			"from": [-2,1,-2],
+			"to": [18,7,0],
+			"uv": [0,0],
+			"origin": [8,0,8],
+			"rotation": [0,180,0]
 		}
 	]
 }

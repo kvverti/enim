@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import net.minecraft.entity.item.EntityBoat;
-
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.*;
@@ -21,6 +20,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.entity.item.EntityBoat;
+import net.minecraft.entity.EntityLeashKnot;
+import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.ResourceLocation;
 
 import kvverti.enim.entity.*;
@@ -47,7 +49,12 @@ public final class Enim implements IResourceManagerReloadListener {
     		manager.registerReloadListener(Enim.instance);
 
 		RenderingRegistry.registerEntityRenderingHandler(
-			EntityBoat.class, new ENIMRender<EntityBoat>("minecraft", "boat", new ENIMModel()));
+			EntityBoat.class, new ENIMRender<EntityBoat>("minecraft", "boat"));
+		RenderingRegistry.registerEntityRenderingHandler(
+			EntityLeashKnot.class, new ENIMRender<EntityLeashKnot>("minecraft", "lead"));
+
+	//	ClientRegistry.bindTileEntitySpecialRenderer(
+	//		TileEntitySign.class, new ENIMTileEntityRender<>("minecraft", "sign", new ENIMModel()));
 	}
 
 	@EventHandler
@@ -60,22 +67,18 @@ public final class Enim implements IResourceManagerReloadListener {
 
 		Logger.info("Reloading resources...");
 
-		List<Texture> tex = new ArrayList<>();
-		Map<String, ResourceLocation> models = new HashMap<>();
-		Set<ModelElement> elems = new HashSet<>();
-		for(ENIMRender<?> r : ENIMRender.renders) {
+		Map<String, EntityState> models = new HashMap<>();
+		for(ReloadableRender r : ReloadableRender.renders) {
 
 			try {
 				ResourceLocation estateLoc = r.getEntityStateFile();
 				EntityJsonParser parser = new EntityJsonParser(manager.getResource(estateLoc));
-				parser.parseTextures(tex);
-				parser.parseModelLocations(models);
+				parser.parseModelLocations(r.getEntityStateNames(), models);
 
-				EntityJsonParser mpsr = new EntityJsonParser(
-					manager.getResource(models.get(Keys.STATE_NORMAL)));
-				mpsr.parseElements(elems);
-				mpsr.getElementImports(elems);
-				r.reloadRender(elems, tex);
+				for(EntityState state : models.values()) {
+
+					r.reloadRender(state);
+				}
 
 			} catch(ENIMException|IOException e) {
 
@@ -84,9 +87,7 @@ public final class Enim implements IResourceManagerReloadListener {
 
 			} finally {
 
-				tex.clear();
 				models.clear();
-				elems.clear();
 			}
 		}
 

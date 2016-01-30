@@ -19,13 +19,14 @@ public class ENIMModel extends ModelBase {
 
 	private final Map<String, ModelRenderer> boxes = new HashMap<>();
 	private final List<ModelRenderer> parents = new ArrayList<>();
-	private final Map<ModelRenderer, int[]> defaultRotations = new HashMap<>();
+	private final Map<ModelRenderer, float[]> defaultRotations = new HashMap<>();
+	private final Map<ModelRenderer, Float> scales = new HashMap<>();
 
 	@Override
 	public void render(Entity entity, float time, float distance, float roll, float yaw, float pitch, float scale) {
 
 		setRotationAngles(time, distance, roll, yaw, pitch, scale, entity);
-		int[] defRots;
+		float[] defRots;
 		for(ModelRenderer m : boxes.values()) {
 
 			if(m.boxName.equals("y")) m.rotateAngleY += 3.0f / 180.0f;
@@ -36,7 +37,7 @@ public class ENIMModel extends ModelBase {
 			GlStateManager.rotate(+defRots[2], 0.0f, 0.0f, 1.0f);
 			GlStateManager.rotate(-defRots[1], 0.0f, 1.0f, 0.0f);
 			GlStateManager.rotate(-defRots[0], 1.0f, 0.0f, 0.0f);
-			if(parents.contains(m)) m.render(scale);
+			if(parents.contains(m)) m.render(scale * scales.get(m));
 			GlStateManager.popMatrix();
 		}
 	}
@@ -51,25 +52,28 @@ public class ENIMModel extends ModelBase {
 		boxes.clear();
 		parents.clear();
 		defaultRotations.clear();
+		scales.clear();
 		for(ModelElement m : elements) {
 
-			int[] to = m.getTo();
-			int[] from = m.getFrom();
+			float[] to = m.getTo();
+			float[] from = m.getFrom();
 			int[] texcrds = m.getTexCoords();
-			int[] rotpnt = m.getRotationPoint();
-			int[] defrot = m.getDefaultRotation();
+			float[] rotpnt = m.getRotationPoint();
+			float[] defrot = m.getDefaultRotation();
+			float scale = m.getScale();
 
 			ModelRenderer box = new ModelRenderer(this, m.getName()).setTextureOffset(texcrds[0], texcrds[1]);
-			box.setRotationPoint(rotpnt[0] - 8, -rotpnt[1], 8 - rotpnt[2]);
+			box.setRotationPoint(rotpnt[0] - 8.0f, -rotpnt[1], 8.0f - rotpnt[2]);
 			box.addBox(from[0] - rotpnt[0],
 				rotpnt[1] - to[1],
 				rotpnt[2] - to[2],
-				to[0] - from[0],
-				to[1] - from[1],
-				to[2] - from[2]);
+			(int)	(to[0] - from[0]),
+			(int)	(to[1] - from[1]),
+			(int)	(to[2] - from[2]));
 
 			boxes.put(m.getName(), box);
 			defaultRotations.put(box, defrot);
+			scales.put(box, scale);
 		}
 		for(ModelElement m : elements) {
 
@@ -88,9 +92,10 @@ public class ENIMModel extends ModelBase {
 		boxes.clear();
 		parents.clear();
 		defaultRotations.clear();
+		scales.clear();
 		ModelRenderer missingno = new ModelRenderer(this, "#missingno");
 		missingno.addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
 		boxes.put("#missingno", missingno);
-		defaultRotations.put(missingno, new int[] { 0, 0, 0 });
+		defaultRotations.put(missingno, new float[] { 0.0f, 0.0f, 0.0f });
 	}
 }
