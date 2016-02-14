@@ -8,6 +8,7 @@ public enum StatementType {
 	ROTATE		("rotate", TokenType.IDENTIFIER, TokenType.AXIS, TokenType.FLOATING_POINT),
 	PAUSE		("pause", TokenType.UNSIGNED_INTEGER),
 	REPEAT		("repeat", TokenType.UNSIGNED_INTEGER, TokenType.IDENTIFIER),
+	OVER		("over", TokenType.UNSIGNED_INTEGER, TokenType.IDENTIFIER),
 	END		("end", TokenType.IDENTIFIER);
 
 	private final String name;

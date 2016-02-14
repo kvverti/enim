@@ -28,10 +28,12 @@ import net.minecraft.util.ResourceLocation;
 import kvverti.enim.entity.*;
 import kvverti.enim.modelsystem.*;
 
-import static kvverti.enim.Meta.*;
-
-@Mod(modid = ID, name = NAME, version = VERSION, clientSideOnly = true)
+@Mod(modid = Enim.ID, name = Enim.NAME, version = Enim.VERSION, clientSideOnly = true)
 public final class Enim implements IResourceManagerReloadListener {
+
+	public static final String ID = "enim";
+	public static final String NAME = "ENIM";
+	public static final String VERSION = "dev-2016.01.25";
 
 	@Instance(ID)
 	public static Enim instance;
@@ -53,8 +55,8 @@ public final class Enim implements IResourceManagerReloadListener {
 		RenderingRegistry.registerEntityRenderingHandler(
 			EntityLeashKnot.class, new ENIMRender<EntityLeashKnot>("minecraft", "lead"));
 
-	//	ClientRegistry.bindTileEntitySpecialRenderer(
-	//		TileEntitySign.class, new ENIMTileEntityRender<>("minecraft", "sign", new ENIMModel()));
+		ClientRegistry.bindTileEntitySpecialRenderer(
+			TileEntitySign.class, new SignRender("minecraft", "sign"));
 	}
 
 	@EventHandler

@@ -88,7 +88,7 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 		bindEntityTexture(entity);
 		float[] rots = state.getRotation();
 		GlStateManager.rotate(+rots[2], 0.0f, 0.0f, 1.0f);
-		GlStateManager.rotate(-rots[1], 0.0f, 1.0f, 0.0f);
+		GlStateManager.rotate(+rots[1], 0.0f, 1.0f, 0.0f);
 		GlStateManager.rotate(-rots[0], 1.0f, 0.0f, 0.0f);
 		model.render(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.getScale());
 		GlStateManager.popMatrix();

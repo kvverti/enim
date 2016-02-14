@@ -58,7 +58,7 @@ public final class EntityJsonParser {
 			int[] texSize;
 
 			model = getResourceLocation(obj.get(Keys.STATE_MODEL_NAME).getAsString(), "models/entity/", ".json");
-			texture = getResourceLocation(obj.get(Keys.STATE_TEXTURE).getAsString(), "textures/entity/", ".png");
+			texture = getResourceLocation(obj.get(Keys.STATE_TEXTURE).getAsString(), "textures/", ".png");
 			rotation[0] = getFloat(obj, Keys.STATE_ROTATION, 0);
 			rotation[1] = getFloat(obj, Keys.STATE_ROTATION, 1);
 			rotation[2] = getFloat(obj, Keys.STATE_ROTATION, 2);

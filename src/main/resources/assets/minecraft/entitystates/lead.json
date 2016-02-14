@@ -1,5 +1,5 @@
 {
 	"states": {
-		"normal": { "model": "lead", "texture": "lead_knot", "size": [32,32] }
+		"normal": { "model": "lead", "texture": "entity/lead_knot", "size": [32,32] }
 	}
 }

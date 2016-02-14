@@ -21,6 +21,7 @@ public class ENIMModel extends ModelBase {
 	private final List<ModelRenderer> parents = new ArrayList<>();
 	private final Map<ModelRenderer, float[]> defaultRotations = new HashMap<>();
 	private final Map<ModelRenderer, Float> scales = new HashMap<>();
+	private final Map<String, ModelElement> elems = new HashMap<>();
 
 	@Override
 	public void render(Entity entity, float time, float distance, float roll, float yaw, float pitch, float scale) {
@@ -35,7 +36,7 @@ public class ENIMModel extends ModelBase {
 			defRots = defaultRotations.get(m);
 			GlStateManager.pushMatrix();
 			GlStateManager.rotate(+defRots[2], 0.0f, 0.0f, 1.0f);
-			GlStateManager.rotate(-defRots[1], 0.0f, 1.0f, 0.0f);
+			GlStateManager.rotate(+defRots[1], 0.0f, 1.0f, 0.0f);
 			GlStateManager.rotate(-defRots[0], 1.0f, 0.0f, 0.0f);
 			if(parents.contains(m)) m.render(scale * scales.get(m));
 			GlStateManager.popMatrix();
@@ -49,10 +50,7 @@ public class ENIMModel extends ModelBase {
 
 	public final void reloadModel(Set<ModelElement> elements) {
 
-		boxes.clear();
-		parents.clear();
-		defaultRotations.clear();
-		scales.clear();
+		clearMaps();
 		for(ModelElement m : elements) {
 
 			float[] to = m.getTo();
@@ -74,6 +72,7 @@ public class ENIMModel extends ModelBase {
 			boxes.put(m.getName(), box);
 			defaultRotations.put(box, defrot);
 			scales.put(box, scale);
+			elems.put(m.getName(), m);
 		}
 		for(ModelElement m : elements) {
 
@@ -89,13 +88,28 @@ public class ENIMModel extends ModelBase {
 
 	public final void setMissingno() {
 
-		boxes.clear();
-		parents.clear();
-		defaultRotations.clear();
-		scales.clear();
+		clearMaps();
 		ModelRenderer missingno = new ModelRenderer(this, "#missingno");
 		missingno.addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
 		boxes.put("#missingno", missingno);
 		defaultRotations.put(missingno, new float[] { 0.0f, 0.0f, 0.0f });
+	}
+
+	public final ModelRenderer getBox(String name) {
+
+		return boxes.get(name);
+	}
+
+	public final ModelElement getElement(String name) {
+
+		return elems.get(name);
+	}
+
+	private void clearMaps() {
+
+		boxes.clear();
+		parents.clear();
+		defaultRotations.clear();
+		elems.clear();
 	}
 }

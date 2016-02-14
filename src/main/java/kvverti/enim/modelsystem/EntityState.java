@@ -23,6 +23,7 @@ public final class EntityState {
 	public EntityState(String name) {
 
 		this.name = name;
+		model.setMissingno();
 	}
 
 	public EntityState(String name, ResourceLocation modelLoc, float[] rots, float scale, ResourceLocation tex, int x, int y) {
