@@ -57,8 +57,8 @@ public final class EntityJsonParser {
 			float scale;
 			int[] texSize;
 
-			model = getResourceLocation(obj.get(Keys.STATE_MODEL_NAME).getAsString(), "models/entity/", ".json");
-			texture = getResourceLocation(obj.get(Keys.STATE_TEXTURE).getAsString(), "textures/", ".png");
+			model = getResourceLocation(obj.get(Keys.STATE_MODEL_NAME).getAsString(), Keys.MODELS_DIR, Keys.JSON);
+			texture = getResourceLocation(obj.get(Keys.STATE_TEXTURE).getAsString(), Keys.TEXTURES_DIR, Keys.PNG);
 			rotation[0] = getFloat(obj, Keys.STATE_ROTATION, 0);
 			rotation[1] = getFloat(obj, Keys.STATE_ROTATION, 1);
 			rotation[2] = getFloat(obj, Keys.STATE_ROTATION, 2);
@@ -170,7 +170,7 @@ public final class EntityJsonParser {
 
 	private EntityJsonParser getParserFor(String key) throws IOException {
 
-		ResourceLocation loc = getResourceLocation(key, "models/entity/", ".json");
+		ResourceLocation loc = getResourceLocation(key, Keys.MODELS_DIR, Keys.JSON);
 		IResource nextResource = Minecraft.getMinecraft().getResourceManager().getResource(loc);
 		return new EntityJsonParser(nextResource);
 	}

@@ -93,7 +93,7 @@ public final class ModelElement {
 		return name.hashCode();
 	}
 
-	public static final class Builder {
+	static final class Builder {
 
 		private String name = null;
 		private int[] coords = new int[2];

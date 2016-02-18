@@ -73,6 +73,7 @@ public class SignRender extends ENIMTileEntityRender<TileEntitySign> {
 					(line * 10) - (tile.signText.length * 25), 0);
 			}
 		}
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		GlStateManager.depthMask(true);
 	}
 

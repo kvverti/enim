@@ -33,7 +33,7 @@ public final class Enim implements IResourceManagerReloadListener {
 
 	public static final String ID = "enim";
 	public static final String NAME = "ENIM";
-	public static final String VERSION = "dev-2016.01.25";
+	public static final String VERSION = "dev-2016.02.16";
 
 	@Instance(ID)
 	public static Enim instance;

@@ -39,7 +39,8 @@ public abstract class Statement {
 			case PAUSE: return new StatePause(args);
 			case REPEAT: return new StateRepeat(args);
 			case OVER: return new StateOver(args);
-			case END: return new StateEnd(args);
+			case START_FRAME: return new StateStart(args);
+			case END_FRAME: return new StateEnd(args);
 
 			default: throw new IllegalArgumentException("Unknown StatementType: " + type);
 		}

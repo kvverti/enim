@@ -36,7 +36,7 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 	public ENIMRender(String modDomain, String entityStateName) {
 
 		super(Minecraft.getMinecraft().getRenderManager());
-		entityStateFile = new ResourceLocation(modDomain, "entitystates/" + entityStateName + ".json");
+		entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateName + Keys.JSON);
 		states = new HashMap<>();
 		for(String s : getEntityStateNames()) {
 

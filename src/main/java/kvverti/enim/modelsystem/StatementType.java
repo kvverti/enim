@@ -7,9 +7,10 @@ public enum StatementType {
 	SET		("set", TokenType.IDENTIFIER, TokenType.AXIS, TokenType.FLOATING_POINT),
 	ROTATE		("rotate", TokenType.IDENTIFIER, TokenType.AXIS, TokenType.FLOATING_POINT),
 	PAUSE		("pause", TokenType.UNSIGNED_INTEGER),
-	REPEAT		("repeat", TokenType.UNSIGNED_INTEGER, TokenType.IDENTIFIER),
-	OVER		("over", TokenType.UNSIGNED_INTEGER, TokenType.IDENTIFIER),
-	END		("end", TokenType.IDENTIFIER);
+	REPEAT		("repeat", TokenType.UNSIGNED_INTEGER),
+	OVER		("over", TokenType.UNSIGNED_INTEGER),
+	START_FRAME	("{"),
+	END_FRAME	("}");
 
 	private final String name;
 	private final TokenType[] args;

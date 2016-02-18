@@ -7,7 +7,8 @@ public enum TokenType {
 	AXIS			("[xyz]"),
 	UNSIGNED_INTEGER	("\\d+"),
 	FLOATING_POINT		("[+-]?\\d*\\.?\\d+(?:[eE][+-]?\\d+)?"),
-	IDENTIFIER		("[A-Za-z_][A-Za-z_0-9]*");
+	IDENTIFIER		("[A-Za-z_][A-Za-z_0-9]*"),
+	BRACE			("[{}]");
 
 	private final Pattern regex;
 

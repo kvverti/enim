@@ -6,21 +6,20 @@ import java.util.ArrayList;
 
 import net.minecraft.client.resources.IResource;
 
-public final class Lexer {
+public final class AnimationParser {
 
 	private final IResource file;
 
-	public Lexer(IResource loc) {
+	public AnimationParser(IResource loc) {
 
 		file = loc;
 	}
 
-	public List<Token> lex() throws LexerException {
+	public List<Token> parseSource() throws LexerException {
 
 		try(InputStream input = file.getInputStream()) {
 
 			List<Token> tokens = new ArrayList<>();
-
 			StringBuilder s = new StringBuilder();
 			int charValue;
 
@@ -50,5 +49,29 @@ public final class Lexer {
 
 			throw new LexerException(e);
 		}
+	}
+
+	public List<Statement> parseTokens(List<Token> tokens) throws ParserException {
+
+		List<Statement> statements = new ArrayList<>();
+		StatementType current;
+		for(int i = 0; i < tokens.size(); ) {
+
+			current = StatementType.byName(tokens.get(i).getValue());
+			if(current != null) {
+
+				try {
+					Token[] arr = tokens.subList(++i, i += current.tokenCount())
+						.toArray(new Token[current.tokenCount()]);
+					statements.add(Statement.compile(current, arr));
+
+				} catch(SyntaxException|IndexOutOfBoundsException e) {
+
+					throw new ParserException(e);
+				}
+
+			} else throw new ParserException("Expected command at token " + i + ": " + tokens.get(i));
+		}
+		return statements;
 	}
 }

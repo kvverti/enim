@@ -14,7 +14,17 @@ public abstract class StateLoop extends Statement {
 		return loopBody.clone();
 	}
 
-	public final void initBody(Statement... statements) {
+	public final Statement get(int index) {
+
+		return loopBody[index];
+	}
+
+	public final int bodyLength() {
+
+		return loopBody.length;
+	}
+
+	final void initBody(Statement... statements) {
 
 		if(loopBody == null) {
 

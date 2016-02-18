@@ -33,6 +33,14 @@ public final class Keys {
 	public static final String STATE_ROTATION = "rotation";
 	public static final String STATE_SCALE = "scale";
 
+	public static final String STATES_DIR = "entitystates/";
+	public static final String MODELS_DIR = "models/entity/";
+	public static final String TEXTURES_DIR = "textures/";
+
+	public static final String JSON = ".json";
+	public static final String PNG = ".png";
+	public static final String ENIM = ".enim";
+
 	public static final Pattern IDENTIFIER_REGEX = Pattern.compile("[A-Za-z_][A-Za-z_0-9]*");
 	public static final Pattern RESOURCE_LOCATION_REGEX =
 		Pattern.compile("(?:(?<domain>[A-Za-z_0-9]+):)?(?<filepath>[A-Za-z_0-9/]+)");

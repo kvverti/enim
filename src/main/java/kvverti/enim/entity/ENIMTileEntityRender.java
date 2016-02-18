@@ -25,7 +25,7 @@ public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecia
 
 	public ENIMTileEntityRender(String modDomain, String entityStateName) {
 
-		entityStateFile = new ResourceLocation(modDomain, "entitystates/" + entityStateName + ".json");
+		entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateName + Keys.JSON);
 		states = new HashMap<>();
 		for(String s : getEntityStateNames()) {
 

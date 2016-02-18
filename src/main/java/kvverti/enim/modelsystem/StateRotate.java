@@ -14,7 +14,7 @@ public final class StateRotate extends Statement {
 
 	public int getAxis() {
 
-		return getTokens()[1].getValue().charAt(0) - 0x78;
+		return getTokens()[1].getValue().charAt(0);
 	}
 
 	public float getRotationAngle() {

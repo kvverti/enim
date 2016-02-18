@@ -21,7 +21,6 @@ public class ENIMModel extends ModelBase {
 	private final List<ModelRenderer> parents = new ArrayList<>();
 	private final Map<ModelRenderer, float[]> defaultRotations = new HashMap<>();
 	private final Map<ModelRenderer, Float> scales = new HashMap<>();
-	private final Map<String, ModelElement> elems = new HashMap<>();
 
 	@Override
 	public void render(Entity entity, float time, float distance, float roll, float yaw, float pitch, float scale) {
@@ -72,7 +71,6 @@ public class ENIMModel extends ModelBase {
 			boxes.put(m.getName(), box);
 			defaultRotations.put(box, defrot);
 			scales.put(box, scale);
-			elems.put(m.getName(), m);
 		}
 		for(ModelElement m : elements) {
 
@@ -100,16 +98,10 @@ public class ENIMModel extends ModelBase {
 		return boxes.get(name);
 	}
 
-	public final ModelElement getElement(String name) {
-
-		return elems.get(name);
-	}
-
 	private void clearMaps() {
 
 		boxes.clear();
 		parents.clear();
 		defaultRotations.clear();
-		elems.clear();
 	}
 }
