@@ -1,24 +1,26 @@
 package kvverti.enim.modelsystem;
 
-public final class StateSet extends Statement {
+public final class StateSet extends StateAneme {
 
 	StateSet(Token... tokens) {
 
 		super(StatementType.SET, tokens);
 	}
 
-	public String getElementToSet() {
+	@Override
+	public String getSpecifiedElement() {
 
 		return getTokens()[0].getValue();
 	}
 
-	public int getAxis() {
+	@Override
+	public float[] getAngles() {
 
-		return getTokens()[1].getValue().charAt(0);
-	}
+		float[] angles = new float[3];
+		for(int i = 0; i < 3; i++) {
 
-	public float getAngle() {
-
-		return Float.parseFloat(getTokens()[2].getValue());
+			angles[i] = Float.parseFloat(getTokens()[i + 1].getValue());
+		}
+		return angles;
 	}
 }

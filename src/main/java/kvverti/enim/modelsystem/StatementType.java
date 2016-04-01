@@ -4,8 +4,8 @@ public enum StatementType {
 
 	DEFINITION	("define", TokenType.IDENTIFIER),
 	FREQUENCY	("freq", TokenType.UNSIGNED_INTEGER),
-	SET		("set", TokenType.IDENTIFIER, TokenType.AXIS, TokenType.FLOATING_POINT),
-	ROTATE		("rotate", TokenType.IDENTIFIER, TokenType.AXIS, TokenType.FLOATING_POINT),
+	SET		("set", TokenType.IDENTIFIER, TokenType.FLOATING_POINT, TokenType.FLOATING_POINT, TokenType.FLOATING_POINT),
+	ROTATE		("rotate", TokenType.IDENTIFIER, TokenType.FLOATING_POINT, TokenType.FLOATING_POINT, TokenType.FLOATING_POINT),
 	PAUSE		("pause", TokenType.UNSIGNED_INTEGER),
 	REPEAT		("repeat", TokenType.UNSIGNED_INTEGER),
 	OVER		("over", TokenType.UNSIGNED_INTEGER),

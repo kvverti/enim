@@ -1,31 +1,26 @@
 package kvverti.enim.modelsystem;
 
-public final class StateRotate extends Statement {
+public final class StateRotate extends StateAneme {
 
 	StateRotate(Token... tokens) {
 
 		super(StatementType.ROTATE, tokens);
 	}
 
-	public String getElementToRotate() {
+	@Override
+	public String getSpecifiedElement() {
 
 		return getTokens()[0].getValue();
 	}
 
-	public int getAxis() {
+	@Override
+	public float[] getAngles() {
 
-		return getTokens()[1].getValue().charAt(0);
-	}
+		float[] angles = new float[3];
+		for(int i = 0; i < 3; i++) {
 
-	public float getRotationAngle() {
-
-		return Float.parseFloat(getTokens()[2].getValue());
-	}
-
-	public float getRotatedAngle(float angle) {
-
-		float result = angle + getRotationAngle();
-		if(result > 180.0f) result -= 360.0f;
-		return result;
+			angles[i] = Float.parseFloat(getTokens()[i + 1].getValue());
+		}
+		return angles;
 	}
 }

@@ -54,6 +54,7 @@ public class SignRender extends ENIMTileEntityRender<TileEntitySign> {
 	@Override
 	public void postRender(TileEntitySign tile) {
 
+		//BEGIN MAGIC
 		FontRenderer render = this.getFontRenderer();
 		float f = 0.667f * 0.015625f;
 		GlStateManager.scale(f, f, f);
@@ -73,8 +74,9 @@ public class SignRender extends ENIMTileEntityRender<TileEntitySign> {
 					(line * 10) - (tile.signText.length * 25), 0);
 			}
 		}
-		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		GlStateManager.depthMask(true);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+		//END MAGIC
 	}
 
 	@Override
@@ -132,6 +134,8 @@ public class SignRender extends ENIMTileEntityRender<TileEntitySign> {
 				case 4: entityState = states.get("wall_east");
 					break;
 				case 5: entityState = states.get("wall_west");
+					break;
+				default: entityState = states.get("floor_00");
 					break;
 			}
 		}

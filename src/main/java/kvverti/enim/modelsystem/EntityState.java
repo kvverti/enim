@@ -26,7 +26,7 @@ public final class EntityState {
 		model.setMissingno();
 	}
 
-	public EntityState(String name, ResourceLocation modelLoc, float[] rots, float scale, ResourceLocation tex, int x, int y) {
+	EntityState(String name, ResourceLocation modelLoc, float[] rots, float scale, ResourceLocation tex, int x, int y) {
 
 		this.modelFile = modelLoc;
 		this.name = name;
