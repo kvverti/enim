@@ -3,10 +3,13 @@ package kvverti.enim.modelsystem;
 import java.io.IOException;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
+import kvverti.enim.Logger;
 import kvverti.enim.entity.ENIMModel;
 
 public final class EntityState {
@@ -52,12 +55,23 @@ public final class EntityState {
 	private final void parseModel(ResourceLocation loc) {
 
 		Set<ModelElement> elements = new HashSet<>();
+		Map<AnimationType, Animation> animations = new HashMap<>();
 		try {
 			EntityJsonParser parser = new EntityJsonParser(
 				Minecraft.getMinecraft().getResourceManager().getResource(loc));
 			parser.parseElements(elements);
 			parser.getElementImports(elements);
-			model.reloadModel(elements);
+			parser.parseAnimations(animations);
+			Set<String> elementNames = new HashSet<>();
+			for(ModelElement e : elements) {
+
+				elementNames.add(e.name());
+			}
+			for(Animation anim : animations.values()) {
+
+				anim.validate(elementNames);
+			}
+			model.reloadModel(elements, animations);
 
 		} catch(ParserException|IOException e) {
 
@@ -65,37 +79,37 @@ public final class EntityState {
 		}
 	}
 
-	public int getXSize() {
+	public int xSize() {
 
 		return xSize;
 	}
 
-	public int getYSize() {
+	public int ySize() {
 
 		return ySize;
 	}
 
-	public ResourceLocation getTexture() {
+	public ResourceLocation texture() {
 
 		return image;
 	}
 
-	public ENIMModel getModel() {
+	public ENIMModel model() {
 
 		return model;
 	}
 
-	public float[] getRotation() {
+	public float[] rotation() {
 
 		return rotation;
 	}
 
-	public float getScale() {
+	public float scale() {
 
 		return scale;
 	}
 
-	public String getName() {
+	public String name() {
 
 		return name;
 	}

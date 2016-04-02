@@ -16,7 +16,6 @@ import net.minecraft.util.ResourceLocation;
 import kvverti.enim.modelsystem.ModelElement;
 import kvverti.enim.modelsystem.EntityState;
 import kvverti.enim.modelsystem.Keys;
-import kvverti.enim.Logger;
 
 public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecialRenderer<T> implements ReloadableRender {
 
@@ -56,14 +55,14 @@ public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecia
 		GlStateManager.rotate(180.0f, 1.0f, 0.0f, 0.0f);
 
 		EntityState state = getStateFromTile(tileEntity);
-		ENIMModel model = state.getModel();
+		ENIMModel model = state.model();
 		bindTexture(getTileTexture(tileEntity));
-		float[] rots = state.getRotation();
+		float[] rots = state.rotation();
 		GlStateManager.rotate(+rots[2], 0.0f, 0.0f, 1.0f);
 		GlStateManager.rotate(+rots[1], 0.0f, 1.0f, 0.0f);
 		GlStateManager.rotate(-rots[0], 1.0f, 0.0f, 0.0f);
 		preRender(tileEntity);
-		model.render(null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.getScale()); //tile specific version?
+		model.render(null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.scale()); //tile specific version?
 		postRender(tileEntity);
 		GlStateManager.popMatrix();
 	}
@@ -80,18 +79,18 @@ public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecia
 	protected final ResourceLocation getTileTexture(T tile) {
 
 		EntityState state = getStateFromTile(tile);
-		return state.getTexture();
+		return state.texture();
 	}
 
 	@Override
 	public final void reloadRender(EntityState state) {
 
-		if(getEntityStateNames().contains(state.getName())) {
+		if(getEntityStateNames().contains(state.name())) {
 
-			EntityState realState = states.get(state.getName());
+			EntityState realState = states.get(state.name());
 			realState.reloadState(state);
-			realState.getModel().textureWidth = state.getXSize();
-			realState.getModel().textureHeight = state.getYSize();
+			realState.model().textureWidth = state.xSize();
+			realState.model().textureHeight = state.ySize();
 		}
 	}
 
@@ -100,7 +99,7 @@ public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecia
 
 		for(EntityState s : states.values()) {
 
-			s.getModel().setMissingno();
+			s.model().setMissingno();
 		}
 	}
 }

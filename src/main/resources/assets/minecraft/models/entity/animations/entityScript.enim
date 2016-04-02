@@ -3,19 +3,9 @@
 
 #definition
 define node
-define base
 
 #frametime
-freq 1
+freq 2
 
-set node -0 30.0 -0
-over 4
-{
-set node 180.0 -0 -0
-rotate base -0 90.0 -20.0
-}
-repeat 6
-rotate node -0 -0 60.0
-
-#empty frames
-pause 2
+over 80
+rotate node 360.0 720.0 -0

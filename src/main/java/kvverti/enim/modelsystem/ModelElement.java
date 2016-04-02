@@ -32,42 +32,42 @@ public final class ModelElement {
 		scale = scales;
 	}
 
-	public String getName() {
+	public String name() {
 
 		return name;
 	}
 
-	public String getParent() {
+	public String parent() {
 
 		return parent;
 	}
 
-	public int[] getTexCoords() {
+	public int[] texCoords() {
 
 		return coords;
 	}
 
-	public float[] getFrom() {
+	public float[] from() {
 
 		return from;
 	}
 
-	public float[] getTo() {
+	public float[] to() {
 
 		return to;
 	}
 
-	public float[] getRotationPoint() {
+	public float[] rotationPoint() {
 
 		return rotationPoint;
 	}
 
-	public float[] getDefaultRotation() {
+	public float[] defaultRotation() {
 
 		return defaultRotation;
 	}
 
-	public float getScale() {
+	public float scale() {
 
 		return scale;
 	}

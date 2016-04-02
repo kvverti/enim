@@ -18,9 +18,6 @@ public final class Keys {
 	public static final String ELEM_SCALE = "scale";
 
 	public static final String ANIMS_TAG = "animations";
-	public static final String ANIM_TYPE_IDLE = "idle";
-	public static final String ANIM_TYPE_MOVE = "moving";
-	public static final String ANIM_TYPE_ATTACK = "attack";
 	public static final String ANIM_SCRIPT = "script";
 	public static final String ANIM_DEFINES = "with";
 
@@ -35,6 +32,7 @@ public final class Keys {
 
 	public static final String STATES_DIR = "entitystates/";
 	public static final String MODELS_DIR = "models/entity/";
+	public static final String ANIMS_DIR = "models/entity/animations/";
 	public static final String TEXTURES_DIR = "textures/";
 
 	public static final String JSON = ".json";

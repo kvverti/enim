@@ -1,7 +1,5 @@
 package kvverti.enim.modelsystem;
 
-import kvverti.enim.Logger;
-
 public final class AnimationFrame {
 
 	private final StateFrameModifier modifier;
@@ -38,12 +36,12 @@ public final class AnimationFrame {
 		}
 	}
 
-	public StateFrameModifier getModifier() {
+	public StateFrameModifier modifier() {
 
 		return modifier;
 	}
 
-	public StateAneme[] getAnemes() {
+	public StateAneme[] anemes() {
 
 		return anemes.clone();
 	}

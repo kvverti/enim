@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 
 import net.minecraft.client.Minecraft;
@@ -149,10 +150,49 @@ public final class EntityJsonParser {
 		}
 	}
 
+	public void parseAnimations(Map<? super AnimationType, ? super Animation> map) throws ParserException {
+
+		initJson();
+		if(json.has(Keys.ANIMS_TAG)) {
+
+			try {
+				JsonObject obj = json.getAsJsonObject(Keys.ANIMS_TAG);
+				for(AnimationType type : AnimationType.values()) {
+
+					JsonObject anim = obj.getAsJsonObject(type.key());
+					Animation a = anim == null ? Animation.NO_OP : getAnimation(anim);
+					map.put(type, a);
+				}
+
+			} catch(JsonParseException|IOException e) {
+
+				throw new ParserException(e);
+			}
+
+		} else for(AnimationType type : AnimationType.values()) {
+
+			map.put(type, Animation.NO_OP);
+		}
+	}
+
+	private Animation getAnimation(JsonObject anim) throws IOException {
+
+		ResourceLocation loc = getResourceLocation(
+			anim.get(Keys.ANIM_SCRIPT).getAsString(), Keys.ANIMS_DIR, Keys.ENIM);
+		IResource animFile = Minecraft.getMinecraft().getResourceManager().getResource(loc);
+		JsonObject defines = anim.getAsJsonObject(Keys.ANIM_DEFINES);
+		Map<String, String> defineMap = new HashMap<>();
+		for(Map.Entry<String, JsonElement> entry : defines.entrySet()) {
+
+			defineMap.put(entry.getKey(), getString(defines, entry.getKey()));
+		}
+		return Animation.compile(animFile, defineMap);
+	}
+
 	private void addSafely(Set<? super ModelElement> set, ModelElement elem) throws DuplicateElementException {
 
 		if(!set.add(elem)) throw new DuplicateElementException(
-			elem.getName() + " in file " + file.getResourceLocation());
+			elem.name() + " in file " + file.getResourceLocation());
 	}
 
 	private ResourceLocation getResourceLocation(String loc, String relative, String ext) {

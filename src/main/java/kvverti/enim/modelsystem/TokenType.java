@@ -4,7 +4,6 @@ import java.util.regex.*;
 
 public enum TokenType {
 
-	AXIS			("[xyz]"),
 	UNSIGNED_INTEGER	("[1-9]\\d*"),
 	FLOATING_POINT		("[+-]?\\d*\\.?\\d+(?:[eE][+-]?\\d+)?"),
 	IDENTIFIER		("[A-Za-z_][A-Za-z_0-9]*"),

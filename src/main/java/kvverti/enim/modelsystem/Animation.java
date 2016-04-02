@@ -1,21 +1,32 @@
 package kvverti.enim.modelsystem;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.HashSet;
 
-public class Animation {
+import net.minecraft.client.resources.IResource;
 
-	private final Map<String, String> defines;
+import kvverti.enim.Logger;
+
+public final class Animation {
+
+	public static final Animation NO_OP = new Animation(new ArrayList<Map<String, float[]>>(0), new HashSet<String>(0));
+
+	      //defineName - elementName
+	private final Map<String, String> definesElements;
+	private final Set<String> defines;
 	private final List<Map<String, float[]>> frames;
 
-	private Animation(List<Map<String, float[]>> frames, Map<String, String> defines) {
+	private Animation(List<Map<String, float[]>> frames, Set<String> defines) {
 
 		this.frames = frames;
 		this.defines = defines;
+		this.definesElements = new HashMap<>();
 	}
 
 	public int frameCount() {
@@ -26,12 +37,12 @@ public class Animation {
 	public String toElementName(String defineName) {
 
 		if(defineName == null) throw new NullPointerException("Null defineName");
-		String result = defines.get(defineName);
+		String result = definesElements.get(defineName);
 		if(result == null) throw new IllegalArgumentException("No define: " + defineName);
 		return result;
 	}
 
-	public Map<String, float[]> getFrame(int frame) {
+	public Map<String, float[]> frame(int frame) {
 
 		return new HashMap<>(frames.get(frame));
 	}
@@ -41,20 +52,45 @@ public class Animation {
 		return frames.size();
 	}
 
+	void validate(Set<String> elements) throws ParserException {
+
+		for(String s : definesElements.values()) {
+
+			if(!elements.contains(s)) throw new ParserException("Element " + s + " does not exist");
+		}
+	}
+
+	public static Animation compile(IResource file, Map<String, String> defineToElement) {
+
+		AnimationParser parser = new AnimationParser(file);
+		try {
+			Animation result = parser.parseFrames(parser.parseTokens(parser.parseSource()));
+			for(String key : defineToElement.keySet()) {
+
+				if(!result.defines.contains(key)) throw new ParserException("Define not found: " + key);
+			}
+			result.definesElements.putAll(defineToElement);
+			return result;
+
+		} catch(ParserException e) {
+
+			Logger.error(e);
+			return NO_OP;
+		}
+	}
+
 	static Animation compile(List<AnimationFrame> frames, Set<String> defines, int freq) throws SyntaxException {
 
 		assert freq > 0 : "Non-positive frequency";
-		Map<String, String> defMap = new HashMap<>();
 		List<Map<String, float[]>> frameList = new ArrayList<>();
 		Map<String, float[]> frameMap = new HashMap<>();
 		for(String define : defines) {
 
 			frameMap.put(define, new float[3]);
-			defMap.put(define, null);
 		}
 		for(AnimationFrame frame : frames) {
 
-			for(StateAneme s : frame.getAnemes()) {
+			for(StateAneme s : frame.anemes()) {
 
 				String name = s.getSpecifiedElement();
 				if(!defines.contains(name))
@@ -62,7 +98,7 @@ public class Animation {
 			}
 			addTrueFrames(frameList, frame, frameMap, freq);
 		}
-		return new Animation(frameList, defMap);
+		return new Animation(frameList, defines);
 	}
 
 	private static void addTrueFrames(List<Map<String, float[]>> frames,
@@ -70,7 +106,7 @@ public class Animation {
 		Map<String, float[]> trueFrame,
 		int freq) {
 
-		StateFrameModifier modifier = animFrame.getModifier();
+		StateFrameModifier modifier = animFrame.modifier();
 		if(modifier != null) {
 
 			int iValue = modifier.getIntModifier();
@@ -115,7 +151,7 @@ public class Animation {
 		Map<String, float[]> prevCopy = new HashMap<>(prevFrame);
 		while(duration > 0) {
 
-			for(StateAneme aneme : animFrame.getAnemes()) {
+			for(StateAneme aneme : animFrame.anemes()) {
 
 				float[] start = prevFrame.get(aneme.getSpecifiedElement());
 				float[] stCopy = prevCopy.get(aneme.getSpecifiedElement());
@@ -153,7 +189,7 @@ public class Animation {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("Defines:");
-		for(Map.Entry<String, String> entry : defines.entrySet()) {
+		for(Map.Entry<String, String> entry : definesElements.entrySet()) {
 
 			sb.append("\n    " + entry.getKey() + " -> " + entry.getValue());
 		}

@@ -10,6 +10,8 @@ import net.minecraft.client.model.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 
+import kvverti.enim.modelsystem.Animation;
+import kvverti.enim.modelsystem.AnimationType;
 import kvverti.enim.modelsystem.ModelElement;
 
 public class ENIMModel extends ModelBase {
@@ -21,6 +23,7 @@ public class ENIMModel extends ModelBase {
 	private final List<ModelRenderer> parents = new ArrayList<>();
 	private final Map<ModelRenderer, float[]> defaultRotations = new HashMap<>();
 	private final Map<ModelRenderer, Float> scales = new HashMap<>();
+	private final Map<AnimationType, Animation> animations = new HashMap<>();
 
 	@Override
 	public void render(Entity entity, float time, float distance, float roll, float yaw, float pitch, float scale) {
@@ -45,21 +48,40 @@ public class ENIMModel extends ModelBase {
 	@Override
 	public void setRotationAngles(float time, float distance, float roll, float yaw, float pitch, float scale, Entity entity) {
 
+		Animation idle = animations.get(AnimationType.IDLE);
+		if(idle != null && idle != Animation.NO_OP) {
+
+			int frame = (EntityRandomCounters.get(entity) + entity.ticksExisted) % idle.frameCount();
+			if(frame < 0) frame += idle.frameCount();
+			for(Map.Entry<String, float[]> entry : idle.frame(frame).entrySet()) {
+
+				ModelRenderer box = boxes.get(idle.toElementName(entry.getKey()));
+				box.rotateAngleX = toRadians(entry.getValue()[0]);
+				box.rotateAngleY = toRadians(entry.getValue()[1]);
+				box.rotateAngleZ = toRadians(entry.getValue()[2]);
+			}
+		}
 	}
 
-	public final void reloadModel(Set<ModelElement> elements) {
+	private float toRadians(float degrees) {
+
+		return degrees * (float) Math.PI / 180.0f;
+	}
+
+	public final void reloadModel(Set<ModelElement> elements, Map<AnimationType, Animation> animations) {
 
 		clearMaps();
+		this.animations.putAll(animations);
 		for(ModelElement m : elements) {
 
-			float[] to = m.getTo();
-			float[] from = m.getFrom();
-			int[] texcrds = m.getTexCoords();
-			float[] rotpnt = m.getRotationPoint();
-			float[] defrot = m.getDefaultRotation();
-			float scale = m.getScale();
+			float[] to = m.to();
+			float[] from = m.from();
+			int[] texcrds = m.texCoords();
+			float[] rotpnt = m.rotationPoint();
+			float[] defrot = m.defaultRotation();
+			float scale = m.scale();
 
-			ModelRenderer box = new ModelRenderer(this, m.getName()).setTextureOffset(texcrds[0], texcrds[1]);
+			ModelRenderer box = new ModelRenderer(this, m.name()).setTextureOffset(texcrds[0], texcrds[1]);
 			box.setRotationPoint(rotpnt[0] - 8.0f, -rotpnt[1], 8.0f - rotpnt[2]);
 			box.addBox(from[0] - rotpnt[0],
 				rotpnt[1] - to[1],
@@ -68,14 +90,14 @@ public class ENIMModel extends ModelBase {
 			(int)	(to[1] - from[1]),
 			(int)	(to[2] - from[2]));
 
-			boxes.put(m.getName(), box);
+			boxes.put(m.name(), box);
 			defaultRotations.put(box, defrot);
 			scales.put(box, scale);
 		}
 		for(ModelElement m : elements) {
 
-			ModelRenderer current = boxes.get(m.getName());
-			String parent = m.getParent();
+			ModelRenderer current = boxes.get(m.name());
+			String parent = m.parent();
 			if(boxes.containsKey(parent)) {
 
 				boxes.get(parent).addChild(current);
@@ -90,7 +112,9 @@ public class ENIMModel extends ModelBase {
 		ModelRenderer missingno = new ModelRenderer(this, "#missingno");
 		missingno.addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
 		boxes.put("#missingno", missingno);
+		parents.add(missingno);
 		defaultRotations.put(missingno, new float[] { 0.0f, 0.0f, 0.0f });
+		scales.put(missingno, 1.0f);
 	}
 
 	public final ModelRenderer getBox(String name) {
@@ -103,5 +127,7 @@ public class ENIMModel extends ModelBase {
 		boxes.clear();
 		parents.clear();
 		defaultRotations.clear();
+		scales.clear();
+		animations.clear();
 	}
 }

@@ -8,16 +8,16 @@ import java.util.HashSet;
 
 import net.minecraft.client.resources.IResource;
 
-public final class AnimationParser {
+final class AnimationParser {
 
 	private final IResource file;
 
-	public AnimationParser(IResource loc) {
+	AnimationParser(IResource loc) {
 
 		file = loc;
 	}
 
-	public List<Token> parseSource() throws LexerException {
+	List<Token> parseSource() throws LexerException {
 
 		try(InputStream input = file.getInputStream()) {
 
@@ -53,7 +53,7 @@ public final class AnimationParser {
 		}
 	}
 
-	public List<Statement> parseTokens(List<Token> tokens) throws ParserException {
+	List<Statement> parseTokens(List<Token> tokens) throws ParserException {
 
 		List<Statement> statements = new ArrayList<>();
 		StatementType current;
@@ -123,7 +123,7 @@ public final class AnimationParser {
 		return index;
 	}
 
-	public Animation parseFrames(List<Statement> statements) throws ParserException {
+	Animation parseFrames(List<Statement> statements) throws ParserException {
 
 		List<AnimationFrame> frames = new ArrayList<>();
 		Set<String> defines = new HashSet<>();

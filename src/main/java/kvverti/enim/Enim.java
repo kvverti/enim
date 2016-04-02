@@ -93,26 +93,6 @@ public final class Enim implements IResourceManagerReloadListener {
 			}
 		}
 
-		animTest(manager);
-
 		Logger.info("Reload complete");
-	}
-
-	private void animTest(IResourceManager manager) {
-
-		try {
-			ResourceLocation loc = new ResourceLocation("minecraft:models/entity/animations/entityScript.enim");
-			AnimationParser p = new AnimationParser(manager.getResource(loc));
-			List<Token> tokl = p.parseSource();
-			for(Token t : tokl) Logger.info(t);
-			List<Statement> statel = p.parseTokens(tokl);
-			for(Statement s : statel) Logger.info(s);
-			Animation anim = p.parseFrames(statel);
-			Logger.info(anim);
-
-		} catch(IOException|ENIMException e) {
-
-			Logger.error(e);
-		}
 	}
 }
