@@ -1,0 +1,5 @@
+{
+	"states": {
+		"normal": { "model": "minecart", "texture": "entity/minecart", "size": [64,32] }
+	}
+}

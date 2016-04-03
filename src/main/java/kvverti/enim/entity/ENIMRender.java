@@ -84,16 +84,22 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 		GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
 
 		EntityState state = getStateFromEntity(entity);
-		ENIMModel model = state.getModel();
+		ENIMModel model = state.model();
 		bindEntityTexture(entity);
-		float[] rots = state.getRotation();
+		float[] rots = state.rotation();
 		GlStateManager.rotate(+rots[2], 0.0f, 0.0f, 1.0f);
 		GlStateManager.rotate(+rots[1], 0.0f, 1.0f, 0.0f);
 		GlStateManager.rotate(-rots[0], 1.0f, 0.0f, 0.0f);
-		model.render(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.getScale());
+		preRender(entity, x, y, z, yaw, partialTicks);
+		model.render(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.scale());
+		postRender(entity);
 		GlStateManager.popMatrix();
 		super.doRender(entity, x, y, z, yaw, partialTicks);
 	}
+
+	public void preRender(T entity, double x, double y, double z, float yaw, float partialTicks) { }
+
+	public void postRender(T entity) { }
 
 	public EntityState getStateFromEntity(T entity) {
 
@@ -104,19 +110,19 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 	protected final ResourceLocation getEntityTexture(T entity) {
 
 		EntityState state = getStateFromEntity(entity);
-		ResourceLocation result = bind(state.getTexture());
+		ResourceLocation result = bind(state.texture());
 		return result;
 	}
 
 	@Override
 	public final void reloadRender(EntityState state) {
 
-		if(getEntityStateNames().contains(state.getName())) {
+		if(getEntityStateNames().contains(state.name())) {
 
-			EntityState realState = states.get(state.getName());
+			EntityState realState = states.get(state.name());
 			realState.reloadState(state);
-			realState.getModel().textureWidth = state.getXSize();
-			realState.getModel().textureHeight = state.getYSize();
+			realState.model().textureWidth = state.xSize();
+			realState.model().textureHeight = state.ySize();
 		}
 	}
 
@@ -125,7 +131,7 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 
 		for(EntityState s : states.values()) {
 
-			s.getModel().setMissingno();
+			s.model().setMissingno();
 		}
 	}
 }

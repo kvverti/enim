@@ -1,0 +1,206 @@
+package kvverti.enim.modelsystem;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
+
+import net.minecraft.client.resources.IResource;
+
+import kvverti.enim.Logger;
+
+public final class Animation {
+
+	public static final Animation NO_OP = new Animation(new ArrayList<Map<String, float[]>>(0), new HashSet<String>(0));
+
+	      //defineName - elementName
+	private final Map<String, String> definesElements;
+	private final Set<String> defines;
+	private final List<Map<String, float[]>> frames;
+
+	private Animation(List<Map<String, float[]>> frames, Set<String> defines) {
+
+		this.frames = frames;
+		this.defines = defines;
+		this.definesElements = new HashMap<>();
+	}
+
+	public int frameCount() {
+
+		return frames.size();
+	}
+
+	public String toElementName(String defineName) {
+
+		if(defineName == null) throw new NullPointerException("Null defineName");
+		String result = definesElements.get(defineName);
+		if(result == null) throw new IllegalArgumentException("No define: " + defineName);
+		return result;
+	}
+
+	public Map<String, float[]> frame(int frame) {
+
+		return new HashMap<>(frames.get(frame));
+	}
+
+	public int length() {
+
+		return frames.size();
+	}
+
+	void validate(Set<String> elements) throws ParserException {
+
+		for(String s : definesElements.values()) {
+
+			if(!elements.contains(s)) throw new ParserException("Element " + s + " does not exist");
+		}
+	}
+
+	public static Animation compile(IResource file, Map<String, String> defineToElement) {
+
+		AnimationParser parser = new AnimationParser(file);
+		try {
+			Animation result = parser.parseFrames(parser.parseTokens(parser.parseSource()));
+			for(String key : defineToElement.keySet()) {
+
+				if(!result.defines.contains(key)) throw new ParserException("Define not found: " + key);
+			}
+			result.definesElements.putAll(defineToElement);
+			return result;
+
+		} catch(ParserException e) {
+
+			Logger.error(e);
+			return NO_OP;
+		}
+	}
+
+	static Animation compile(List<AnimationFrame> frames, Set<String> defines, int freq) throws SyntaxException {
+
+		assert freq > 0 : "Non-positive frequency";
+		List<Map<String, float[]>> frameList = new ArrayList<>();
+		Map<String, float[]> frameMap = new HashMap<>();
+		for(String define : defines) {
+
+			frameMap.put(define, new float[3]);
+		}
+		for(AnimationFrame frame : frames) {
+
+			for(StateAneme s : frame.anemes()) {
+
+				String name = s.getSpecifiedElement();
+				if(!defines.contains(name))
+					throw new SyntaxException("Undefined element: " + name);
+			}
+			addTrueFrames(frameList, frame, frameMap, freq);
+		}
+		return new Animation(frameList, defines);
+	}
+
+	private static void addTrueFrames(List<Map<String, float[]>> frames,
+		AnimationFrame animFrame,
+		Map<String, float[]> trueFrame,
+		int freq) {
+
+		StateFrameModifier modifier = animFrame.modifier();
+		if(modifier != null) {
+
+			int iValue = modifier.getIntModifier();
+			switch(modifier.getStatementType()) {
+
+				case REPEAT:
+					fillRepeat(frames, animFrame, trueFrame, iValue, freq);
+					break;
+
+				case OVER:
+					fillOver(frames, animFrame, trueFrame, iValue, freq);
+					break;
+
+				default: assert false : "Switch error";
+			}
+
+		} else {
+
+			fillOver(frames, animFrame, trueFrame, 1, freq);
+		}
+	}
+
+	private static void fillRepeat(List<Map<String, float[]>> frames,
+		AnimationFrame animFrame,
+		Map<String, float[]> prevFrame,
+		int repeats,
+		int freq) {
+
+		while(repeats-- > 0) {
+
+			fillOver(frames, animFrame, prevFrame, 1, freq);
+		}
+	}
+
+	private static void fillOver(List<Map<String, float[]>> frames,
+		AnimationFrame animFrame,
+		Map<String, float[]> prevFrame,
+		int duration,
+		int freq) {
+
+		duration *= freq;
+		Map<String, float[]> prevCopy = new HashMap<>(prevFrame);
+		while(duration > 0) {
+
+			for(StateAneme aneme : animFrame.anemes()) {
+
+				float[] start = prevFrame.get(aneme.getSpecifiedElement());
+				float[] stCopy = prevCopy.get(aneme.getSpecifiedElement());
+				float[] end = aneme.getAngles();
+				float[] angles = new float[3];
+				for(int i = 0; i < 3; i++) {
+
+					if(aneme.getStatementType() == StatementType.ROTATE) {
+
+						end[i] += stCopy[i];
+
+					} else if(Float.valueOf(end[i]).equals(Float.valueOf(-0.0f))) {
+
+						end[i] = start[i];
+					}
+					angles[i] = interpolate(start[i], end[i], 1.0f / duration);
+				}
+				prevFrame.put(aneme.getSpecifiedElement(), angles);
+			}
+			frames.add(new HashMap<>(prevFrame));
+			duration--;
+		}
+	}
+
+	public static float interpolate(float start, float end, float percent) {
+
+		float result = start + percent * (end - start);
+	//	if(result > 180.0f) result -= 360.0f;
+	//	else if(result <= -180.0f) result += 360.0f;
+		return result;
+	}
+
+	@Override
+	public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("Defines:");
+		for(Map.Entry<String, String> entry : definesElements.entrySet()) {
+
+			sb.append("\n    " + entry.getKey() + " -> " + entry.getValue());
+		}
+		for(int i = 0; i < frames.size(); i++) {
+
+			sb.append("\nFrame " + i);
+			for(Map.Entry<String, float[]> entry : frames.get(i).entrySet()) {
+
+				sb.append("\n    " + entry.getKey() + " set " + Arrays.toString(entry.getValue()));
+			}
+		}
+		return sb.toString();
+	}
+}

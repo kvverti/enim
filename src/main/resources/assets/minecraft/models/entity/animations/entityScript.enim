@@ -7,22 +7,5 @@ define node
 #frametime
 freq 1
 
-set node y 0.0
-set node y 30.0
-set node y 60.0
-set node y 90.0
-set node y 120.0
-set node y 150.0
-set node y 180.0
-
-repeat 6
-rotate node y 30.0
-
-over 10
-{
-rotate node y 360.0
-rotate node x 360.0
-}
-
-#empty frames
-pause 387
+over 80
+rotate node 360.0 720.0 -0

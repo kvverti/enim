@@ -69,4 +69,9 @@ public abstract class Statement {
 		}
 		return sb.toString();
 	}
+
+	public boolean isAneme() {
+
+		return false;
+	}
 }

@@ -1,9 +1,0 @@
-{
-	"texture": {
-		"size": [64,32],
-		"atlases": ["enim:test_entity", "enim:test_entity_2"]
-	},
-	"states": {
-		"normal": { "model": "enim:entityJson" }
-	}
-}
