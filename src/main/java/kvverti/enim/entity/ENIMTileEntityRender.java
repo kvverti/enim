@@ -61,13 +61,13 @@ public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecia
 		GlStateManager.rotate(+rots[2], 0.0f, 0.0f, 1.0f);
 		GlStateManager.rotate(+rots[1], 0.0f, 1.0f, 0.0f);
 		GlStateManager.rotate(-rots[0], 1.0f, 0.0f, 0.0f);
-		preRender(tileEntity);
+		preRender(tileEntity, x, y, z, partialTicks, destroyStage);
 		model.render(null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.scale()); //tile specific version?
 		postRender(tileEntity);
 		GlStateManager.popMatrix();
 	}
 
-	public void preRender(T tile) { }
+	public void preRender(T tile, double x, double y, double z, float partialTicks, int destroyStage) { }
 
 	public void postRender(T tile) { }
 

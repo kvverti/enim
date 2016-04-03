@@ -90,10 +90,16 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 		GlStateManager.rotate(+rots[2], 0.0f, 0.0f, 1.0f);
 		GlStateManager.rotate(+rots[1], 0.0f, 1.0f, 0.0f);
 		GlStateManager.rotate(-rots[0], 1.0f, 0.0f, 0.0f);
+		preRender(entity, x, y, z, yaw, partialTicks);
 		model.render(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.scale());
+		postRender(entity);
 		GlStateManager.popMatrix();
 		super.doRender(entity, x, y, z, yaw, partialTicks);
 	}
+
+	public void preRender(T entity, double x, double y, double z, float yaw, float partialTicks) { }
+
+	public void postRender(T entity) { }
 
 	public EntityState getStateFromEntity(T entity) {
 

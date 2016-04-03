@@ -20,8 +20,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.entity.item.EntityBoat;
-import net.minecraft.entity.EntityLeashKnot;
+import net.minecraft.entity.*;
+import net.minecraft.entity.item.*;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.ResourceLocation;
 
@@ -54,6 +54,8 @@ public final class Enim implements IResourceManagerReloadListener {
 			EntityBoat.class, new ENIMRender<EntityBoat>("minecraft", "boat"));
 		RenderingRegistry.registerEntityRenderingHandler(
 			EntityLeashKnot.class, new ENIMRender<EntityLeashKnot>("minecraft", "lead"));
+		RenderingRegistry.registerEntityRenderingHandler(
+			EntityMinecartEmpty.class, new MinecartRender("minecraft", "minecart"));
 
 		ClientRegistry.bindTileEntitySpecialRenderer(
 			TileEntitySign.class, new SignRender("minecraft", "sign"));
