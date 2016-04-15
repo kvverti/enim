@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.*;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -17,6 +18,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
@@ -51,11 +53,11 @@ public final class Enim implements IResourceManagerReloadListener {
     		manager.registerReloadListener(Enim.instance);
 
 		RenderingRegistry.registerEntityRenderingHandler(
-			EntityBoat.class, new ENIMRender<EntityBoat>("minecraft", "boat"));
+			EntityBoat.class, f(new ENIMRender<>("minecraft", "boat")));
 		RenderingRegistry.registerEntityRenderingHandler(
-			EntityLeashKnot.class, new ENIMRender<EntityLeashKnot>("minecraft", "lead"));
+			EntityLeashKnot.class, f(new ENIMRender<>("minecraft", "lead")));
 		RenderingRegistry.registerEntityRenderingHandler(
-			EntityMinecartEmpty.class, new MinecartRender("minecraft", "minecart"));
+			EntityMinecartEmpty.class, f(new MinecartRender("minecraft", "minecart")));
 
 		ClientRegistry.bindTileEntitySpecialRenderer(
 			TileEntitySign.class, new SignRender("minecraft", "sign"));
@@ -96,5 +98,17 @@ public final class Enim implements IResourceManagerReloadListener {
 		}
 
 		Logger.info("Reload complete");
+	}
+
+	private <T extends Entity> IRenderFactory<T> f(final ENIMRender<T> render) {
+
+		return new IRenderFactory<T>() {
+
+			@Override
+			public ENIMRender<T> createRenderFor(RenderManager manager) {
+
+				return render;
+			}
+		};
 	}
 }
