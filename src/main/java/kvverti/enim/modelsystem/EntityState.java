@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -62,11 +63,9 @@ public final class EntityState {
 			parser.parseElements(elements);
 			parser.getElementImports(elements);
 			parser.parseAnimations(animations);
-			Set<String> elementNames = new HashSet<>();
-			for(ModelElement e : elements) {
-
-				elementNames.add(e.name());
-			}
+			Set<String> elementNames = elements.stream()
+				.map(ModelElement::name)
+				.collect(Collectors.toSet());
 			for(Animation anim : animations.values()) {
 
 				anim.validate(elementNames);
@@ -75,6 +74,7 @@ public final class EntityState {
 
 		} catch(ParserException|IOException e) {
 
+			Logger.error(e);
 			model.setMissingno();
 		}
 	}

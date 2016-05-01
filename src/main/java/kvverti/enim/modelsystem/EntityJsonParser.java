@@ -182,17 +182,14 @@ public final class EntityJsonParser {
 		IResource animFile = Minecraft.getMinecraft().getResourceManager().getResource(loc);
 		JsonObject defines = anim.getAsJsonObject(Keys.ANIM_DEFINES);
 		Map<String, String> defineMap = new HashMap<>();
-		for(Map.Entry<String, JsonElement> entry : defines.entrySet()) {
-
-			defineMap.put(entry.getKey(), getString(defines, entry.getKey()));
-		}
+		defines.entrySet().forEach(entry -> defineMap.put(entry.getKey(), getString(defines, entry.getKey())));
 		return Animation.compile(animFile, defineMap);
 	}
 
 	private void addSafely(Set<? super ModelElement> set, ModelElement elem) throws DuplicateElementException {
 
-		if(!set.add(elem)) throw new DuplicateElementException(
-			elem.name() + " in file " + file.getResourceLocation());
+		if(!set.add(elem))
+			throw new DuplicateElementException(elem.name() + " in file " + file.getResourceLocation());
 	}
 
 	private ResourceLocation getResourceLocation(String loc, String relative, String ext) {
@@ -201,8 +198,7 @@ public final class EntityJsonParser {
 		Matcher m = Keys.RESOURCE_LOCATION_REGEX.matcher(loc);
 		if(loc != null && m.matches()) {
 
-			result = new ResourceLocation(
-				m.group("domain"), relative + m.group("filepath") + ext);
+			result = new ResourceLocation(m.group("domain"), relative + m.group("filepath") + ext);
 
 		} else result = MISSING_LOCATION;
 		return result;

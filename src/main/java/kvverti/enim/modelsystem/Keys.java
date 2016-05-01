@@ -37,7 +37,7 @@ public final class Keys {
 
 	public static final String JSON = ".json";
 	public static final String PNG = ".png";
-	public static final String ENIM = ".enim";
+	public static final String ENIM = ".abie";
 
 	public static final Pattern IDENTIFIER_REGEX = Pattern.compile("[A-Za-z_][A-Za-z_0-9]*");
 	public static final Pattern RESOURCE_LOCATION_REGEX =

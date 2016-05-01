@@ -26,10 +26,7 @@ public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecia
 
 		entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateName + Keys.JSON);
 		states = new HashMap<>();
-		for(String s : getEntityStateNames()) {
-
-			states.put(s, new EntityState(s));
-		}
+		getEntityStateNames().forEach(s -> states.put(s, new EntityState(s)));
 		ReloadableRender.renders.add(this);
 	}
 
@@ -62,7 +59,7 @@ public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecia
 		GlStateManager.rotate(+rots[1], 0.0f, 1.0f, 0.0f);
 		GlStateManager.rotate(-rots[0], 1.0f, 0.0f, 0.0f);
 		preRender(tileEntity, x, y, z, partialTicks, destroyStage);
-		model.render(null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.scale()); //tile specific version?
+		model.render(tileEntity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.scale());
 		postRender(tileEntity);
 		GlStateManager.popMatrix();
 	}
@@ -97,9 +94,6 @@ public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecia
 	@Override
 	public final void setMissingno() {
 
-		for(EntityState s : states.values()) {
-
-			s.model().setMissingno();
-		}
+		states.values().forEach(state -> state.model().setMissingno());
 	}
 }

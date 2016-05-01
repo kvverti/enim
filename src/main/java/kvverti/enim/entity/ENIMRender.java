@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -28,21 +29,21 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 
 //	protected final RenderManager renderManager;
 
-	private static final TextureManager texManager = Minecraft.getMinecraft().getTextureManager();
-
 	protected final Map<String, EntityState> states;
 	private final ResourceLocation entityStateFile;
 
-	public ENIMRender(String modDomain, String entityStateName) {
+	public ENIMRender(RenderManager manager, String modDomain, String entityStateName) {
 
-		super(Minecraft.getMinecraft().getRenderManager());
+		super(manager);
 		entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateName + Keys.JSON);
 		states = new HashMap<>();
-		for(String s : getEntityStateNames()) {
-
-			states.put(s, new EntityState(s));
-		}
+		getEntityStateNames().forEach(s -> states.put(s, new EntityState(s)));
 		ReloadableRender.renders.add(this);
+	}
+
+	private static TextureManager texManager() {
+
+		return Minecraft.getMinecraft().getTextureManager();
 	}
 
 	@Override
@@ -63,9 +64,9 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 
 		try(InputStream istream = Minecraft.getMinecraft().getResourceManager().getResource(loc).getInputStream()) {
 
-			ResourceLocation tex = texManager.getDynamicTextureLocation(
+			ResourceLocation tex = texManager().getDynamicTextureLocation(
 				"enim_entity_texture", new DynamicTexture(ImageIO.read(istream)));
-			texManager.bindTexture(tex);
+			texManager().bindTexture(tex);
 			return tex;
 
 		} catch(IOException e) {
@@ -129,9 +130,6 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 	@Override
 	public final void setMissingno() {
 
-		for(EntityState s : states.values()) {
-
-			s.model().setMissingno();
-		}
+		states.values().forEach(state -> state.model().setMissingno());
 	}
 }

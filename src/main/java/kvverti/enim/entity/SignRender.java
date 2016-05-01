@@ -66,8 +66,8 @@ public class SignRender extends ENIMTileEntityRender<TileEntitySign> {
 			if(tile.signText[line] != null) {
 
 				IChatComponent raw = tile.signText[line];
-				List<IChatComponent> frmtd = GuiUtilRenderComponents.func_178908_a(
-					raw, 90, render, false, true);
+				List<IChatComponent> frmtd =
+					GuiUtilRenderComponents.func_178908_a(raw, 90, render, false, true);
 				String text = frmtd != null && !frmtd.isEmpty() ? frmtd.get(0).getFormattedText() : "";
 				if(tile.lineBeingEdited == line) text = "> " + text + " <";
 				render.drawString(text, -render.getStringWidth(text) / 2,

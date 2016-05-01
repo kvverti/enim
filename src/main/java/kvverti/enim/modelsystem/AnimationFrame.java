@@ -51,7 +51,7 @@ public final class AnimationFrame {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(modifier != null ? modifier : "").append("\n{");
-		for(Statement s : anemes) {
+		for(StateAneme s : anemes) {
 
 			sb.append("\n    ").append(s);
 		}
