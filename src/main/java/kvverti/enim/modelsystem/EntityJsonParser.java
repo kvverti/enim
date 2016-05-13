@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.regex.Matcher;
+import java.util.stream.StreamSupport;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
@@ -15,6 +16,8 @@ import net.minecraft.util.ResourceLocation;
 import com.google.gson.*;
 
 import kvverti.enim.Logger;
+import kvverti.enim.entity.Entities;
+import kvverti.enim.Util.*;
 
 public final class EntityJsonParser {
 
@@ -54,15 +57,13 @@ public final class EntityJsonParser {
 		try {
 			ResourceLocation model;
 			ResourceLocation texture;
-			float[] rotation = new float[3];
+			float rotation;
 			float scale;
 			int[] texSize;
 
 			model = getResourceLocation(obj.get(Keys.STATE_MODEL_NAME).getAsString(), Keys.MODELS_DIR, Keys.JSON);
 			texture = getResourceLocation(obj.get(Keys.STATE_TEXTURE).getAsString(), Keys.TEXTURES_DIR, Keys.PNG);
-			rotation[0] = getFloat(obj, Keys.STATE_ROTATION, 0);
-			rotation[1] = getFloat(obj, Keys.STATE_ROTATION, 1);
-			rotation[2] = getFloat(obj, Keys.STATE_ROTATION, 2);
+			rotation = getFloat(obj, Keys.STATE_ROTATION);
 			scale = getScaleOptional(obj, Keys.STATE_SCALE);
 			texSize = getDims(obj);
 
@@ -88,19 +89,31 @@ public final class EntityJsonParser {
 			initJson();
 			if(!json.has(Keys.ELEMENTS_TAG)) return null;
 			JsonArray elems = json.getAsJsonArray(Keys.ELEMENTS_TAG);
-			for(JsonElement elem : elems) {
+			return StreamSupport.stream(elems.spliterator(), false)
+				.map(JsonElement::getAsJsonObject)
+				.filter(obj -> getString(obj, Keys.ELEM_NAME).equals(name))
+				.map(ThrowingFunction.of(this::buildElement))
+				.findFirst()
+				.orElse(null);
+
+		/*	for(JsonElement elem : elems) {
 
 				JsonObject obj = elem.getAsJsonObject();
-				if((name == null ? "" : name).equals(getString(obj, Keys.ELEM_NAME))) {
+				if(getString(obj, Keys.ELEM_NAME).equals(name)) {
 
 					return buildElement(obj);
 				}
 			}
 			return null;
+		*/
 
-		} catch(JsonParseException|SyntaxException e) {
+		} catch(JsonParseException e) {
 
 			throw new ParserException(e);
+
+		} catch(WrappedCheckedException e) {
+
+			throw new ParserException(e.getCause());
 		}
 	}
 
@@ -110,15 +123,26 @@ public final class EntityJsonParser {
 			initJson();
 			if(!json.has(Keys.ELEMENTS_TAG)) return;
 			JsonArray elems = json.getAsJsonArray(Keys.ELEMENTS_TAG);
-			for(JsonElement elem : elems) {
+			StreamSupport.stream(elems.spliterator(), false)
+				.map(JsonElement::getAsJsonObject)
+				.map(ThrowingFunction.of(this::buildElement))
+				.forEach(ThrowingConsumer.of(modelElem -> addSafely(set, modelElem)));
+
+		/*	for(JsonElement elem : elems) {
 
 				ModelElement mdelem = buildElement(elem.getAsJsonObject());
 				addSafely(set, mdelem);
 			}
+		*/
 
-		} catch(JsonParseException|SyntaxException e) {
+		} catch(JsonParseException e) {
 
 			throw new ParserException(e);
+
+		} catch(WrappedCheckedException e) {
+
+			throw e.ifInstance(ParserException.class)
+				.elseIn(ParserException::new);
 		}
 	}
 
@@ -179,7 +203,7 @@ public final class EntityJsonParser {
 
 		ResourceLocation loc = getResourceLocation(
 			anim.get(Keys.ANIM_SCRIPT).getAsString(), Keys.ANIMS_DIR, Keys.ENIM);
-		IResource animFile = Minecraft.getMinecraft().getResourceManager().getResource(loc);
+		IResource animFile = Entities.resourceManager().getResource(loc);
 		JsonObject defines = anim.getAsJsonObject(Keys.ANIM_DEFINES);
 		Map<String, String> defineMap = new HashMap<>();
 		defines.entrySet().forEach(entry -> defineMap.put(entry.getKey(), getString(defines, entry.getKey())));
@@ -207,7 +231,7 @@ public final class EntityJsonParser {
 	private EntityJsonParser getParserFor(String key) throws IOException {
 
 		ResourceLocation loc = getResourceLocation(key, Keys.MODELS_DIR, Keys.JSON);
-		IResource nextResource = Minecraft.getMinecraft().getResourceManager().getResource(loc);
+		IResource nextResource = Entities.resourceManager().getResource(loc);
 		return new EntityJsonParser(nextResource);
 	}
 
@@ -252,13 +276,19 @@ public final class EntityJsonParser {
 	private String getString(JsonObject obj, String key) {
 
 		JsonElement elem = obj.get(key);
-		return elem == null || elem.isJsonNull() || elem.getAsString().length() == 0 ? null : elem.getAsString();
+		return elem == null || elem.isJsonNull() || elem.getAsString().length() == 0 ? "" : elem.getAsString();
 	}
 
 	private int getInt(JsonObject obj, String key, int index) {
 
 		JsonArray arr = obj.getAsJsonArray(key);
 		return arr == null || arr.isJsonNull() || index >= arr.size() ? 0 : arr.get(index).getAsInt();
+	}
+
+	private float getFloat(JsonObject obj, String key) {
+
+		JsonElement elem = obj.get(key);
+		return elem == null || elem.isJsonNull() ? 0.0f : elem.getAsFloat();
 	}
 
 	private float getFloat(JsonObject obj, String key, int index) {

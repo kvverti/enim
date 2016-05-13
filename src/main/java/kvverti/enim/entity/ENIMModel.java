@@ -24,7 +24,6 @@ public class ENIMModel extends ModelBase {
 //	public int textureHeight = 32;
 
 	private final Map<String, ModelRenderer> boxes = new HashMap<>();
-	private final List<ModelRenderer> parents = new ArrayList<>();
 	private final Map<AnimationType, Animation> animations = new EnumMap<>(AnimationType.class);
 
 	@Override
@@ -42,16 +41,7 @@ public class ENIMModel extends ModelBase {
 
 	private void renderHelper(float time, float distance, float roll, float yaw, float pitch, float scale) {
 
-		float[] defRots;
-		for(ModelRenderer m : boxes.values()) {
-
-			if(parents.contains(m)) {
-
-				GlStateManager.pushMatrix();
-				m.render(scale);
-				GlStateManager.popMatrix();
-			}
-		}
+		boxes.values().forEach(box -> box.render(scale));
 	}
 
 	private void setAnglesHelper(float time, float distance, float roll, float yaw, float pitch, float scale, Animation anim, int frame) {
@@ -103,7 +93,7 @@ public class ENIMModel extends ModelBase {
 			float scale = m.scale();
 
 			ModelRenderer box = new ENIMModelRenderer(this, m.name(), defrot, scale)
-			.setTextureOffset(texcrds[0], texcrds[1]);
+				.setTextureOffset(texcrds[0], texcrds[1]);
 			box.setRotationPoint(rotpnt[0] - 8.0f, -rotpnt[1], 8.0f - rotpnt[2]);
 			box.addBox(from[0] - rotpnt[0],
 				rotpnt[1] - to[1],
@@ -121,8 +111,8 @@ public class ENIMModel extends ModelBase {
 			if(boxes.containsKey(parent)) {
 
 				boxes.get(parent).addChild(current);
-
-			} else parents.add(current);
+				boxes.remove(m.name());
+			}
 		}
 	}
 
@@ -132,13 +122,11 @@ public class ENIMModel extends ModelBase {
 		ModelRenderer missingno = new ModelRenderer(this, "#missingno");
 		missingno.addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
 		boxes.put("#missingno", missingno);
-		parents.add(missingno);
 	}
 
 	private void clearMaps() {
 
 		boxes.clear();
-		parents.clear();
 		animations.replaceAll((type, anim) -> Animation.NO_OP);
 	}
 }

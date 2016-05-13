@@ -3,6 +3,9 @@ package kvverti.enim.entity;
 import java.util.WeakHashMap;
 import java.util.Objects;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
@@ -26,12 +29,10 @@ public final class Entities {
 
 	public static int randomCounterFor(Entity entity) {
 
-		Integer i = counters.get(entity);
-		return i != null ? i.intValue() : computeCounter(entity);
+		return counters.computeIfAbsent(entity, Entities::computeCounter).intValue();
 	}
 
 	private static int computeCounter(Entity entity) {
-
 
 		int result = Objects.hash(entity.getUniqueID());
 		result = result < 0 ? -result : result;
@@ -41,8 +42,7 @@ public final class Entities {
 
 	public static int randomCounterFor(TileEntity tile) {
 
-		Integer i = tileCounters.get(tile);
-		return i != null ? i.intValue() : computeCounter(tile);
+		return tileCounters.computeIfAbsent(tile, Entities::computeCounter).intValue();
 	}
 
 	private static int computeCounter(TileEntity tile) {
@@ -51,5 +51,15 @@ public final class Entities {
 		result = result < 0 ? -result : result;
 		tileCounters.put(tile, result);
 		return result;
+	}
+
+	public static TextureManager textureManager() {
+
+		return Minecraft.getMinecraft().getTextureManager();
+	}
+
+	public static IReloadableResourceManager resourceManager() {
+
+		return (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
 	}
 }

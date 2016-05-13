@@ -1,7 +1,6 @@
 package kvverti.enim.entity;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import net.minecraft.client.model.ModelBase;
@@ -9,6 +8,8 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+
+import kvverti.enim.Util;
 
 import static kvverti.enim.entity.Entities.*;
 
@@ -28,9 +29,10 @@ public final class ENIMModelRenderer extends ModelRenderer {
 			null,
 			new String[] { "func_78788_d", "compileDisplayList" },
 			float.class);
+		assert compileDisplayList.getReturnType() == void.class : "Type of compileDisplayList()";
 
 		displayList = ReflectionHelper.findField(ModelRenderer.class, "field_78811_r", "displayList");
-		assert displayList.getType() == int.class;
+		assert displayList.getType() == int.class : "Type of displayList";
 	}
 
 	public ENIMModelRenderer(ModelBase model, String boxName, float[] defRots, float scale) {
@@ -85,23 +87,12 @@ public final class ENIMModelRenderer extends ModelRenderer {
 
 	private void compileDisplayList(float scale) {
 
-		try { compileDisplayList.invoke(this, scale); compiled = true; }
-		catch(InvocationTargetException e) {
-
-			throw (RuntimeException) e.getCause();
-
-		} catch(IllegalAccessException e) {
-
-			throw new AssertionError("Method was not accessible!");
-		}
+		Util.invokeUnchecked(compileDisplayList, this, scale);
+		compiled = true;
 	}
 
 	private int displayList() {
 
-		try { return displayList.getInt(this); }
-		catch(IllegalAccessException e) {
-
-			throw new AssertionError("Field was not accessible!");
-		}
+		return Util.getIntField(displayList, this);
 	}
 }

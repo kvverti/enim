@@ -1,24 +1,29 @@
 package kvverti.enim.modelsystem;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 
 import kvverti.enim.Logger;
 import kvverti.enim.entity.ENIMModel;
+import kvverti.enim.entity.Entities;
+import kvverti.enim.Util.*;
 
 public final class EntityState {
 
 	private final String name;
 	private final ENIMModel model = new ENIMModel();
 	private ResourceLocation modelFile;
-	private float[] rotation;
+	private float rotation;
 	private float scale;
 	private ResourceLocation image;
 	private int xSize;
@@ -30,14 +35,14 @@ public final class EntityState {
 		model.setMissingno();
 	}
 
-	EntityState(String name, ResourceLocation modelLoc, float[] rots, float scale, ResourceLocation tex, int x, int y) {
+	EntityState(String name, ResourceLocation modelLoc, float rot, float scale, ResourceLocation tex, int x, int y) {
 
 		this.modelFile = modelLoc;
 		this.name = name;
 		parseModel(modelLoc);
-		rotation = rots;
+		rotation = rot;
 		this.scale = scale;
-		image = tex;
+		image = bind(tex);
 		xSize = x;
 		ySize = y;
 	}
@@ -58,8 +63,7 @@ public final class EntityState {
 		Set<ModelElement> elements = new HashSet<>();
 		Map<AnimationType, Animation> animations = new HashMap<>();
 		try {
-			EntityJsonParser parser = new EntityJsonParser(
-				Minecraft.getMinecraft().getResourceManager().getResource(loc));
+			EntityJsonParser parser = new EntityJsonParser(Entities.resourceManager().getResource(loc));
 			parser.parseElements(elements);
 			parser.getElementImports(elements);
 			parser.parseAnimations(animations);
@@ -76,6 +80,22 @@ public final class EntityState {
 
 			Logger.error(e);
 			model.setMissingno();
+		}
+	}
+
+	private ResourceLocation bind(ResourceLocation loc) {
+
+		try(InputStream istream = Minecraft.getMinecraft().getResourceManager().getResource(loc).getInputStream()) {
+
+			ResourceLocation tex = Entities.textureManager().getDynamicTextureLocation(
+				"enim_entity_texture", new DynamicTexture(ImageIO.read(istream)));
+			Entities.textureManager().bindTexture(tex);
+			return tex;
+
+		} catch(IOException e) {
+
+			Logger.error("Could not bind texture for " + loc);
+			return loc;
 		}
 	}
 
@@ -99,7 +119,7 @@ public final class EntityState {
 		return model;
 	}
 
-	public float[] rotation() {
+	public float rotation() {
 
 		return rotation;
 	}

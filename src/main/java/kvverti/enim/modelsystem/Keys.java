@@ -27,7 +27,7 @@ public final class Keys {
 	public static final String STATE_MODEL_WEIGHT = "weight";
 	public static final String STATE_TEXTURE = "texture";
 	public static final String STATE_TEX_SIZE = "size";
-	public static final String STATE_ROTATION = "rotation";
+	public static final String STATE_ROTATION = "y";
 	public static final String STATE_SCALE = "scale";
 
 	public static final String STATES_DIR = "entitystates/";

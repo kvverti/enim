@@ -20,7 +20,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
-import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.*;
@@ -51,9 +50,7 @@ public final class Enim implements IResourceManagerReloadListener {
 	@EventHandler
 	public void init(FMLInitializationEvent e) {
 
-		IReloadableResourceManager manager =
-			(IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
-    		manager.registerReloadListener(Enim.instance);
+    		Entities.resourceManager().registerReloadListener(Enim.instance);
 
 		registerTile(TileEntitySign.class, new SignRender("minecraft", "sign"));
 	}

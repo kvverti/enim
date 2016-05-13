@@ -1,21 +1,16 @@
 package kvverti.enim.entity;
 
-import java.io.InputStream;
-import java.io.IOException;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
-import javax.imageio.ImageIO;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -41,11 +36,6 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 		ReloadableRender.renders.add(this);
 	}
 
-	private static TextureManager texManager() {
-
-		return Minecraft.getMinecraft().getTextureManager();
-	}
-
 	@Override
 	public final ResourceLocation getEntityStateFile() {
 
@@ -60,22 +50,6 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 		return s;
 	}
 
-	private ResourceLocation bind(ResourceLocation loc) {
-
-		try(InputStream istream = Minecraft.getMinecraft().getResourceManager().getResource(loc).getInputStream()) {
-
-			ResourceLocation tex = texManager().getDynamicTextureLocation(
-				"enim_entity_texture", new DynamicTexture(ImageIO.read(istream)));
-			texManager().bindTexture(tex);
-			return tex;
-
-		} catch(IOException e) {
-
-			Logger.error("Could not bind texture for " + loc);
-			return loc;
-		}
-	}
-
 	@Override
 	public final void doRender(T entity, double x, double y, double z, float yaw, float partialTicks) {
 
@@ -87,10 +61,7 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 		EntityState state = getStateFromEntity(entity);
 		ENIMModel model = state.model();
 		bindEntityTexture(entity);
-		float[] rots = state.rotation();
-		GlStateManager.rotate(+rots[2], 0.0f, 0.0f, 1.0f);
-		GlStateManager.rotate(+rots[1], 0.0f, 1.0f, 0.0f);
-		GlStateManager.rotate(-rots[0], 1.0f, 0.0f, 0.0f);
+		GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
 		preRender(entity, x, y, z, yaw, partialTicks);
 		model.render(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.scale());
 		postRender(entity);
@@ -110,9 +81,7 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 	@Override
 	protected final ResourceLocation getEntityTexture(T entity) {
 
-		EntityState state = getStateFromEntity(entity);
-		ResourceLocation result = bind(state.texture());
-		return result;
+		return getStateFromEntity(entity).texture();
 	}
 
 	@Override
