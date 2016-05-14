@@ -1,0 +1,10 @@
+define banner
+
+freq 20
+
+over 8
+rotate banner -3.5 -0 -0
+pause 1
+over 8
+rotate banner  3.5 -0 -0
+pause 1

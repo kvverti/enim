@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -51,8 +52,10 @@ public final class Enim implements IResourceManagerReloadListener {
 	public void init(FMLInitializationEvent e) {
 
     		Entities.resourceManager().registerReloadListener(Enim.instance);
+		MinecraftForge.EVENT_BUS.register(Entities.WorldTickEventHandler.INSTANCE);
 
 		registerTile(TileEntitySign.class, new SignRender("minecraft", "sign"));
+		registerTile(TileEntityBanner.class, new BannerRender("minecraft", "banner"));
 	}
 
 	@EventHandler

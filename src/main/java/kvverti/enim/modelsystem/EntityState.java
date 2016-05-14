@@ -26,6 +26,7 @@ public final class EntityState {
 	private float rotation;
 	private float scale;
 	private ResourceLocation image;
+	private ResourceLocation imageLoc;
 	private int xSize;
 	private int ySize;
 
@@ -43,6 +44,7 @@ public final class EntityState {
 		rotation = rot;
 		this.scale = scale;
 		image = bind(tex);
+		imageLoc = tex;
 		xSize = x;
 		ySize = y;
 	}
@@ -53,6 +55,7 @@ public final class EntityState {
 		this.modelFile = state.modelFile;
 		this.scale = state.scale;
 		this.image = state.image;
+		this.imageLoc = state.imageLoc;
 		this.xSize = state.xSize;
 		this.ySize = state.ySize;
 		parseModel(modelFile);
@@ -112,6 +115,11 @@ public final class EntityState {
 	public ResourceLocation texture() {
 
 		return image;
+	}
+
+	public ResourceLocation textureFile() {
+
+		return imageLoc;
 	}
 
 	public ENIMModel model() {

@@ -1,0 +1,25 @@
+{
+	"states": {
+		"wall_south": { "model": "wall_banner", "texture": "entity/banner_base", "size": [64,64] },
+		"wall_north": { "model": "wall_banner", "texture": "entity/banner_base", "size": [64,64], "y": 180 },
+		"wall_west" : { "model": "wall_banner", "texture": "entity/banner_base", "size": [64,64], "y": -90 },
+		"wall_east" : { "model": "wall_banner", "texture": "entity/banner_base", "size": [64,64], "y": 90 },
+
+		"floor_00": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64] },
+		"floor_01": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": 22.5 },
+		"floor_02": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": 45 },
+		"floor_03": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": 67.5 },
+		"floor_04": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": 90 },
+		"floor_05": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": 112.5 },
+		"floor_06": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": 135 },
+		"floor_07": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": 157.5 },
+		"floor_08": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": 180 },
+		"floor_09": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": -157.5 },
+		"floor_10": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": -135 },
+		"floor_11": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": -112.5 },
+		"floor_12": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": -90 },
+		"floor_13": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": -67.5 },
+		"floor_14": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": -45 },
+		"floor_15": { "model": "floor_banner", "texture": "entity/banner_base", "size": [64,64], "y": -22.5 }
+	}
+}

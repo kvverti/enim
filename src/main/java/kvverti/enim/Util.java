@@ -83,7 +83,7 @@ public final class Util {
 			return this;
 		}
 
-		public <X extends Throwable> X elseIn(Function<Throwable, X> cnstr) throws X {
+		public <X extends Throwable> X orElseWrap(Function<? super Throwable, X> cnstr) throws X {
 
 			throw cnstr.apply(getCause());
 		}

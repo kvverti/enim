@@ -62,14 +62,14 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 		ENIMModel model = state.model();
 		bindEntityTexture(entity);
 		GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
-		preRender(entity, x, y, z, yaw, partialTicks);
+		preRender(entity, state, x, y, z, yaw, partialTicks);
 		model.render(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.scale());
 		postRender(entity);
 		GlStateManager.popMatrix();
 		super.doRender(entity, x, y, z, yaw, partialTicks);
 	}
 
-	public void preRender(T entity, double x, double y, double z, float yaw, float partialTicks) { }
+	public void preRender(T entity, EntityState state, double x, double y, double z, float yaw, float partialTicks) { }
 
 	public void postRender(T entity) { }
 

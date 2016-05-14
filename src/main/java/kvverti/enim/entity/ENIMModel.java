@@ -24,6 +24,7 @@ public class ENIMModel extends ModelBase {
 //	public int textureHeight = 32;
 
 	private final Map<String, ModelRenderer> boxes = new HashMap<>();
+	private final List<ModelRenderer> parents = new ArrayList<>();
 	private final Map<AnimationType, Animation> animations = new EnumMap<>(AnimationType.class);
 
 	@Override
@@ -41,7 +42,7 @@ public class ENIMModel extends ModelBase {
 
 	private void renderHelper(float time, float distance, float roll, float yaw, float pitch, float scale) {
 
-		boxes.values().forEach(box -> box.render(scale));
+		parents.forEach(box -> box.render(scale));
 	}
 
 	private void setAnglesHelper(float time, float distance, float roll, float yaw, float pitch, float scale, Animation anim, int frame) {
@@ -61,7 +62,7 @@ public class ENIMModel extends ModelBase {
 		Animation idle = animations.get(AnimationType.IDLE);
 		if(idle != Animation.NO_OP) {
 
-			int frame = (randomCounterFor(entity) + entity.ticksExisted) % idle.frameCount();
+			int frame = randomCounterFor(entity) % idle.frameCount();
 			if(frame < 0) frame += idle.frameCount();
 			setAnglesHelper(time, distance, roll, yaw, pitch, scale, idle, frame);
 		}
@@ -72,8 +73,7 @@ public class ENIMModel extends ModelBase {
 		Animation idle = animations.get(AnimationType.IDLE);
 		if(idle != Animation.NO_OP) {
 
-			int frame = (randomCounterFor(tile) +
-				(int) (tile.getWorld().getWorldTime() % Integer.MAX_VALUE)) % idle.frameCount();
+			int frame = randomCounterFor(tile) % idle.frameCount();
 			if(frame < 0) frame += idle.frameCount();
 			setAnglesHelper(time, distance, roll, yaw, pitch, scale, idle, frame);
 		}
@@ -108,11 +108,9 @@ public class ENIMModel extends ModelBase {
 
 			ModelRenderer current = boxes.get(m.name());
 			String parent = m.parent();
-			if(boxes.containsKey(parent)) {
-
+			if(boxes.containsKey(parent))
 				boxes.get(parent).addChild(current);
-				boxes.remove(m.name());
-			}
+			else parents.add(current);
 		}
 	}
 
@@ -122,11 +120,13 @@ public class ENIMModel extends ModelBase {
 		ModelRenderer missingno = new ModelRenderer(this, "#missingno");
 		missingno.addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
 		boxes.put("#missingno", missingno);
+		parents.add(missingno);
 	}
 
 	private void clearMaps() {
 
 		boxes.clear();
+		parents.clear();
 		animations.replaceAll((type, anim) -> Animation.NO_OP);
 	}
 }

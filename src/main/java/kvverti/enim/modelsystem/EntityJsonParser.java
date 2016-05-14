@@ -142,7 +142,7 @@ public final class EntityJsonParser {
 		} catch(WrappedCheckedException e) {
 
 			throw e.ifInstance(ParserException.class)
-				.elseIn(ParserException::new);
+				.orElseWrap(ParserException::new);
 		}
 	}
 
