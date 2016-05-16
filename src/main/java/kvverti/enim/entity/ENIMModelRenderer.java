@@ -54,12 +54,9 @@ public final class ENIMModelRenderer extends ModelRenderer {
 			GlStateManager.rotate(+defaultRotations[2], 0.0f, 0.0f, 1.0f);
 			GlStateManager.rotate(+defaultRotations[1], 0.0f, 1.0f, 0.0f);
 			GlStateManager.rotate(-defaultRotations[0], 1.0f, 0.0f, 0.0f);
-			if(boxName.equals("y")) rotateAngleY += 3.0f / 180.0f;
-			if(boxName.equals("x")) rotateAngleX += 3.0f / 180.0f;
-			if(boxName.equals("z")) rotateAngleZ += 3.0f / 180.0f;
-			GlStateManager.rotate(toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
-			GlStateManager.rotate(toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
-			GlStateManager.rotate(toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
+			GlStateManager.rotate(+toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
+			GlStateManager.rotate(+toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
+			GlStateManager.rotate(-toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
 			GlStateManager.callList(displayList());
 			if(childModels != null) childModels.forEach(box -> box.render(scale * defaultScale));
 			GlStateManager.popMatrix();
@@ -77,9 +74,9 @@ public final class ENIMModelRenderer extends ModelRenderer {
 			GlStateManager.rotate(+defaultRotations[2], 0.0f, 0.0f, 1.0f);
 			GlStateManager.rotate(+defaultRotations[1], 0.0f, 1.0f, 0.0f);
 			GlStateManager.rotate(-defaultRotations[0], 1.0f, 0.0f, 0.0f);
-			GlStateManager.rotate(toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
-			GlStateManager.rotate(toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
-			GlStateManager.rotate(toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
+			GlStateManager.rotate(+toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
+			GlStateManager.rotate(+toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
+			GlStateManager.rotate(-toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
 			GlStateManager.callList(displayList());
 			GlStateManager.popMatrix();
 		}
@@ -87,12 +84,12 @@ public final class ENIMModelRenderer extends ModelRenderer {
 
 	private void compileDisplayList(float scale) {
 
-		Util.invokeUnchecked(compileDisplayList, this, scale);
+		Util.invokeUnchecked(this, compileDisplayList, scale);
 		compiled = true;
 	}
 
 	private int displayList() {
 
-		return Util.getIntField(displayList, this);
+		return Util.getIntField(this, displayList);
 	}
 }

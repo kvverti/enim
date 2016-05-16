@@ -85,7 +85,7 @@ public final class Entities {
 
 		public int count() {
 
-			return count;
+			return count / 3;
 		}
 	}
 }

@@ -35,7 +35,7 @@ public class BannerRender extends SignLikeRender<TileEntityBanner> {
 
 		Field textures = ReflectionHelper.findField(TileEntityBannerRenderer.class, "BANNERTEXTURES", "field_178464_d");
 		assert textures.getType() == ResourceLocation.class : "Type of bannerTextures";
-		bannerTextures = Util.getField(textures, null);
+		bannerTextures = Util.getField(null, textures);
 
 		bannerTextures_domain = ReflectionHelper.findField(ResourceLocation.class, "resourceDomain", "field_110626_a");
 		assert bannerTextures_domain.getType() == String.class : "Type of resourceDomain";
@@ -59,18 +59,19 @@ public class BannerRender extends SignLikeRender<TileEntityBanner> {
 	@Override
 	public EntityState getStateFromTile(TileEntityBanner tile) {
 
-		if(tile.getWorld() == null) return states.get("floor_00"); //until we implement item rendering
+		if(!tile.hasWorldObj()) return states.get("floor_00"); //until we implement item rendering
 		return super.getStateFromTile(tile);
 	}
 
 	private ResourceLocation bindBannerTexture(TileEntityBanner banner) {
 
-		return Util.invokeUnchecked(bindBannerTexture, proxy, banner);
+		ResourceLocation loc = Util.invokeUnchecked(proxy, bindBannerTexture, banner);
+		return loc != null ? loc : Util.MISSING_LOCATION;
 	}
 
 	private void setBannerTextures(ResourceLocation loc) {
 
-		Util.setField(bannerTextures_domain, bannerTextures, loc.getResourceDomain());
-		Util.setField(bannerTextures_path, bannerTextures, loc.getResourcePath());
+		Util.setField(bannerTextures, bannerTextures_domain, loc.getResourceDomain());
+		Util.setField(bannerTextures, bannerTextures_path, loc.getResourcePath());
 	}
 }

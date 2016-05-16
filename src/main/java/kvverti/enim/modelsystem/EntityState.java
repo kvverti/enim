@@ -16,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import kvverti.enim.Logger;
 import kvverti.enim.entity.ENIMModel;
 import kvverti.enim.entity.Entities;
-import kvverti.enim.Util.*;
+import kvverti.enim.Util;
 
 public final class EntityState {
 
@@ -83,6 +83,7 @@ public final class EntityState {
 
 			Logger.error(e);
 			model.setMissingno();
+			image = imageLoc = Util.MISSING_LOCATION;
 		}
 	}
 

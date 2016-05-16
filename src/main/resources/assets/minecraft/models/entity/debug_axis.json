@@ -1,0 +1,41 @@
+{
+	"elements": [
+		{
+			"name": "origin",
+			"from": [0,0,0],
+			"to": [2,2,2],
+			"uv": [0,0]
+		},
+		{
+			"name": "axis_x",
+			"from": [2,0,0],
+			"to": [16,2,2],
+			"origin": [1,1,1],
+			"uv": [0,18]
+		},
+		{
+			"name": "axis_y",
+			"from": [0,2,0],
+			"to": [2,16,2],
+			"origin": [1,1,1],
+			"uv": [18,0]
+		},
+		{
+			"name": "axis_z",
+			"from": [0,0,2],
+			"to": [2,2,16],
+			"origin": [1,1,1],
+			"uv": [0,2]
+		}
+	],
+	"animations": {
+		"idle": {
+			"script": "axis_spin",
+			"with": {
+				"x": "axis_x",
+				"y": "axis_y",
+				"z": "axis_z"
+			}
+		}
+	}
+}

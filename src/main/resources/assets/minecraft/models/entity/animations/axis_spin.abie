@@ -1,0 +1,10 @@
+define x
+define y
+define z
+
+over 40
+{
+rotate x +360 -0 -0
+rotate y -0 +360 -0
+rotate z -0 -0 +360
+}

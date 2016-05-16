@@ -5,13 +5,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.*;
 
+import net.minecraft.util.ResourceLocation;
+
 /** Utility class */
 public final class Util {
+
+	public static final ResourceLocation MISSING_LOCATION = new ResourceLocation("missingno");
 
 	private Util() { }
 
 	@SuppressWarnings("unchecked")
-	public static <T> T getField(Field field, Object instance) {
+	public static <T> T getField(Object instance, Field field) {
 
 		try { return (T) field.get(instance); }
 		catch(IllegalAccessException e) {
@@ -20,7 +24,7 @@ public final class Util {
 		}
 	}
 
-	public static int getIntField(Field field, Object instance) {
+	public static int getIntField(Object instance, Field field) {
 
 		try { return field.getInt(instance); }
 		catch(IllegalAccessException e) {
@@ -29,7 +33,7 @@ public final class Util {
 		}
 	}
 
-	public static void setField(Field field, Object instance, Object value) {
+	public static void setField(Object instance, Field field, Object value) {
 
 		try { field.set(instance, value); }
 		catch(IllegalAccessException e) {
@@ -39,7 +43,7 @@ public final class Util {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T invokeMethod(Method method, Object instance, Object... args) throws InvocationTargetException {
+	public static <T> T invokeMethod(Object instance, Method method, Object... args) throws InvocationTargetException {
 
 		try { return (T) method.invoke(instance, args); }
 		catch(IllegalAccessException e) {
@@ -48,9 +52,9 @@ public final class Util {
 		}
 	}
 
-	public static <T> T invokeUnchecked(Method method, Object instance, Object... args) {
+	public static <T> T invokeUnchecked(Object instance, Method method, Object... args) {
 
-		try { return invokeMethod(method, instance, args); }
+		try { return invokeMethod(instance, method, args); }
 		catch(InvocationTargetException e) {
 
 			throw unchecked(e.getCause());
@@ -83,9 +87,9 @@ public final class Util {
 			return this;
 		}
 
-		public <X extends Throwable> X orElseWrap(Function<? super Throwable, X> cnstr) throws X {
+		public <X extends Throwable> X orElseWrap(Function<? super Throwable, X> cnstr) {
 
-			throw cnstr.apply(getCause());
+			return cnstr.apply(getCause());
 		}
 	}
 

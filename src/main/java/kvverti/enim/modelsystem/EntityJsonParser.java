@@ -17,11 +17,10 @@ import com.google.gson.*;
 
 import kvverti.enim.Logger;
 import kvverti.enim.entity.Entities;
+import kvverti.enim.Util;
 import kvverti.enim.Util.*;
 
 public final class EntityJsonParser {
-
-	private static final ResourceLocation MISSING_LOCATION = new ResourceLocation("missingno");
 
 	private final IResource file;
 	JsonObject json = null;
@@ -224,7 +223,7 @@ public final class EntityJsonParser {
 
 			result = new ResourceLocation(m.group("domain"), relative + m.group("filepath") + ext);
 
-		} else result = MISSING_LOCATION;
+		} else result = Util.MISSING_LOCATION;
 		return result;
 	}
 
