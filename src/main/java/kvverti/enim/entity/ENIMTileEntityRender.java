@@ -55,13 +55,13 @@ public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecia
 		ENIMModel model = state.model();
 		bindTexture(state.texture());
 		GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
-		preRender(tileEntity, state, x, y, z, partialTicks, destroyStage);
+		preRender(tileEntity, state);
 		model.render(tileEntity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.scale());
 		postRender(tileEntity);
 		GlStateManager.popMatrix();
 	}
 
-	public void preRender(T tile, EntityState state, double x, double y, double z, float partialTicks, int destroyStage) { }
+	public void preRender(T tile, EntityState state) { }
 
 	public void postRender(T tile) { }
 

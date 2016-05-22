@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 
 import kvverti.enim.modelsystem.ModelElement;
@@ -62,14 +63,37 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 		ENIMModel model = state.model();
 		bindEntityTexture(entity);
 		GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
-		preRender(entity, state, x, y, z, yaw, partialTicks);
-		model.render(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.scale());
-		postRender(entity);
+		if(shouldRender(entity)) {
+
+			preRender(entity, state, yaw);
+			model.render(entity,
+				speed(entity),
+				yaw,
+				entity.ticksExisted + partialTicks,
+				headYaw(entity),
+				entity.rotationPitch,
+				0.0625f * state.scale());
+			postRender(entity);
+		}
 		GlStateManager.popMatrix();
 		super.doRender(entity, x, y, z, yaw, partialTicks);
 	}
 
-	public void preRender(T entity, EntityState state, double x, double y, double z, float yaw, float partialTicks) { }
+	private float speed(Entity entity) {
+
+		double dx = entity.posX - entity.lastTickPosX;
+		double dz = entity.posZ - entity.lastTickPosZ;
+		return (float) Math.sqrt(dx * dx + dz * dz);
+	}
+
+	private float headYaw(Entity entity) {
+
+		return entity instanceof EntityLivingBase ? ((EntityLivingBase) entity).rotationYawHead : 0.0f;
+	}
+
+	public boolean shouldRender(T entity) { return true; }
+
+	public void preRender(T entity, EntityState state, float yaw) { }
 
 	public void postRender(T entity) { }
 

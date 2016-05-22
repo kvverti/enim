@@ -4,7 +4,12 @@ public enum AnimationType {
 
 	IDLE	("idle"),
 	MOVE	("moving"),
-	ATTACK	("attack");
+	SWIM	("swimming"),
+	FLY	("flying"),
+	ATTACK	("attack"),
+	DAMAGE	("damage"),
+	GREET	("greeting"),
+	PART	("parting");
 
 	private final String key;
 

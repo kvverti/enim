@@ -7,12 +7,22 @@ import java.util.function.*;
 
 import net.minecraft.util.ResourceLocation;
 
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+
 /** Utility class */
 public final class Util {
 
 	public static final ResourceLocation MISSING_LOCATION = new ResourceLocation("missingno");
 
 	private Util() { }
+
+	public static Field findField(Class<?> declareClass, Class<?> returnType, String... names) {
+
+		Field f = ReflectionHelper.findField(declareClass, names);
+		assertThat(f.getType() == returnType,
+			String.format("Type of field %s was %s, expected %s", f, f.getType(), returnType));
+		return f;
+	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getField(Object instance, Field field) {
@@ -42,6 +52,14 @@ public final class Util {
 		}
 	}
 
+	public static <T> Method findMethod(Class<T> declareClass, Class<?> returnType, String[] names, Class<?>... params) {
+
+		Method m = ReflectionHelper.findMethod(declareClass, null, names, params);
+		assertThat(m.getReturnType() == returnType,
+			String.format("Type of method %s was %s, expected %s", m, m.getReturnType(), returnType));
+		return m;
+	}
+
 	@SuppressWarnings("unchecked")
 	public static <T> T invokeMethod(Object instance, Method method, Object... args) throws InvocationTargetException {
 
@@ -68,6 +86,29 @@ public final class Util {
 		else if(e instanceof Error)
 			throw (Error) e;
 		else throw new WrappedCheckedException(e);
+	}
+
+	public static <E, X extends Exception>
+		void validate(Iterable<E> coll, Predicate<? super E> check, Function<? super E, X> exc) throws X {
+
+		for(E e : coll) { if(!check.test(e)) throw exc.apply(e); }
+	}
+
+	public static <E, X extends Exception>
+		void validate(E[] arr, Predicate<? super E> check, Function<? super E, X> exc) throws X {
+
+		for(E e : arr) { if(!check.test(e)) throw exc.apply(e); }
+	}
+
+	public static <E, X extends Exception>
+		void validate(Iterable<E> coll, ThrowingConsumer<? super E, X> check) throws X {
+
+		for(E e : coll) { check.acceptThrowing(e); }
+	}
+
+	public static void assertThat(boolean condition, Object message) {
+
+		if(!condition) throw new AssertionError(message);
 	}
 
 	public static class WrappedCheckedException extends RuntimeException {

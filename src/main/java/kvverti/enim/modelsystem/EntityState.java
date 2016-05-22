@@ -73,10 +73,7 @@ public final class EntityState {
 			Set<String> elementNames = elements.stream()
 				.map(ModelElement::name)
 				.collect(Collectors.toSet());
-			for(Animation anim : animations.values()) {
-
-				anim.validate(elementNames);
-			}
+			Util.validate(animations.values(), anim -> anim.validate(elementNames));
 			model.reloadModel(elements, animations);
 
 		} catch(ParserException|IOException e) {

@@ -28,24 +28,24 @@ public class ENIMModel extends ModelBase {
 	private final Map<AnimationType, Animation> animations = new EnumMap<>(AnimationType.class);
 
 	@Override
-	public void render(Entity entity, float time, float distance, float roll, float yaw, float pitch, float scale) {
+	public void render(Entity entity, float speed, float dir, float timeExisted, float headYaw, float pitch, float scale) {
 
-		setRotationAngles(time, distance, roll, yaw, pitch, scale, entity);
-		renderHelper(time, distance, roll, yaw, pitch, scale);
+		setRotationAngles(speed, dir, timeExisted, headYaw, pitch, scale, entity);
+		renderHelper(speed, dir, timeExisted, headYaw, pitch, scale);
 	}
 
-	public void render(TileEntity tile, float time, float distance, float roll, float yaw, float pitch, float scale) {
+	public void render(TileEntity tile, float speed, float dir, float timeExisted, float headYaw, float pitch, float scale) {
 
-		setRotationAngles(time, distance, roll, yaw, pitch, scale, tile);
-		renderHelper(time, distance, roll, yaw, pitch, scale);
+		setRotationAngles(speed, dir, timeExisted, headYaw, pitch, scale, tile);
+		renderHelper(speed, dir, timeExisted, headYaw, pitch, scale);
 	}
 
-	private void renderHelper(float time, float distance, float roll, float yaw, float pitch, float scale) {
+	private void renderHelper(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale) {
 
 		parents.forEach(box -> box.render(scale));
 	}
 
-	private void setAnglesHelper(float time, float distance, float roll, float yaw, float pitch, float scale, Animation anim, int frame) {
+	private void setAnglesHelper(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, Animation anim, int frame) {
 
 		anim.frame(frame).forEach((define, angles) -> {
 
@@ -57,25 +57,25 @@ public class ENIMModel extends ModelBase {
 	}
 
 	@Override
-	public void setRotationAngles(float time, float distance, float roll, float yaw, float pitch, float scale, Entity entity) {
+	public void setRotationAngles(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, Entity entity) {
 
 		Animation idle = animations.get(AnimationType.IDLE);
 		if(idle != Animation.NO_OP) {
 
 			int frame = randomCounterFor(entity) % idle.frameCount();
 			if(frame < 0) frame += idle.frameCount();
-			setAnglesHelper(time, distance, roll, yaw, pitch, scale, idle, frame);
+			setAnglesHelper(speed, dir, timeExisted, headYaw, pitch, scale, idle, frame);
 		}
 	}
 
-	public void setRotationAngles(float time, float distance, float roll, float yaw, float pitch, float scale, TileEntity tile) {
+	public void setRotationAngles(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, TileEntity tile) {
 
 		Animation idle = animations.get(AnimationType.IDLE);
 		if(idle != Animation.NO_OP) {
 
 			int frame = randomCounterFor(tile) % idle.frameCount();
 			if(frame < 0) frame += idle.frameCount();
-			setAnglesHelper(time, distance, roll, yaw, pitch, scale, idle, frame);
+			setAnglesHelper(speed, dir, timeExisted, headYaw, pitch, scale, idle, frame);
 		}
 	}
 

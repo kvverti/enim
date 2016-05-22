@@ -95,17 +95,6 @@ public final class EntityJsonParser {
 				.findFirst()
 				.orElse(null);
 
-		/*	for(JsonElement elem : elems) {
-
-				JsonObject obj = elem.getAsJsonObject();
-				if(getString(obj, Keys.ELEM_NAME).equals(name)) {
-
-					return buildElement(obj);
-				}
-			}
-			return null;
-		*/
-
 		} catch(JsonParseException e) {
 
 			throw new ParserException(e);
@@ -126,13 +115,6 @@ public final class EntityJsonParser {
 				.map(JsonElement::getAsJsonObject)
 				.map(ThrowingFunction.of(this::buildElement))
 				.forEach(ThrowingConsumer.of(modelElem -> addSafely(set, modelElem)));
-
-		/*	for(JsonElement elem : elems) {
-
-				ModelElement mdelem = buildElement(elem.getAsJsonObject());
-				addSafely(set, mdelem);
-			}
-		*/
 
 		} catch(JsonParseException e) {
 
@@ -217,14 +199,10 @@ public final class EntityJsonParser {
 
 	private ResourceLocation getResourceLocation(String loc, String relative, String ext) {
 
-		ResourceLocation result;
 		Matcher m = Keys.RESOURCE_LOCATION_REGEX.matcher(loc);
-		if(loc != null && m.matches()) {
-
-			result = new ResourceLocation(m.group("domain"), relative + m.group("filepath") + ext);
-
-		} else result = Util.MISSING_LOCATION;
-		return result;
+		return loc != null && m.matches() ?
+			new ResourceLocation(m.group("domain"), relative + m.group("filepath") + ext)
+			: Util.MISSING_LOCATION;
 	}
 
 	private EntityJsonParser getParserFor(String key) throws IOException {
