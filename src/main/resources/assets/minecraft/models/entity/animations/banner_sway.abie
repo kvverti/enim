@@ -1,0 +1,8 @@
+define banner
+
+over 53
+rotate banner +3.5 -0 -0
+pause 7
+over 53
+rotate banner -3.5 -0 -0
+pause 7

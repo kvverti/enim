@@ -1,25 +1,32 @@
 package kvverti.enim.modelsystem;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 
 import kvverti.enim.Logger;
 import kvverti.enim.entity.ENIMModel;
+import kvverti.enim.entity.Entities;
+import kvverti.enim.Util;
 
 public final class EntityState {
 
 	private final String name;
 	private final ENIMModel model = new ENIMModel();
 	private ResourceLocation modelFile;
-	private float[] rotation;
+	private float rotation;
 	private float scale;
 	private ResourceLocation image;
+	private ResourceLocation imageLoc;
 	private int xSize;
 	private int ySize;
 
@@ -29,14 +36,15 @@ public final class EntityState {
 		model.setMissingno();
 	}
 
-	EntityState(String name, ResourceLocation modelLoc, float[] rots, float scale, ResourceLocation tex, int x, int y) {
+	EntityState(String name, ResourceLocation modelLoc, float rot, float scale, ResourceLocation tex, int x, int y) {
 
 		this.modelFile = modelLoc;
 		this.name = name;
 		parseModel(modelLoc);
-		rotation = rots;
+		rotation = rot;
 		this.scale = scale;
-		image = tex;
+		image = bind(tex);
+		imageLoc = tex;
 		xSize = x;
 		ySize = y;
 	}
@@ -47,6 +55,7 @@ public final class EntityState {
 		this.modelFile = state.modelFile;
 		this.scale = state.scale;
 		this.image = state.image;
+		this.imageLoc = state.imageLoc;
 		this.xSize = state.xSize;
 		this.ySize = state.ySize;
 		parseModel(modelFile);
@@ -57,16 +66,13 @@ public final class EntityState {
 		Set<ModelElement> elements = new HashSet<>();
 		Map<AnimationType, Animation> animations = new HashMap<>();
 		try {
-			EntityJsonParser parser = new EntityJsonParser(
-				Minecraft.getMinecraft().getResourceManager().getResource(loc));
+			EntityJsonParser parser = new EntityJsonParser(Entities.resourceManager().getResource(loc));
 			parser.parseElements(elements);
 			parser.getElementImports(elements);
 			parser.parseAnimations(animations);
-			Set<String> elementNames = new HashSet<>();
-			for(ModelElement e : elements) {
-
-				elementNames.add(e.name());
-			}
+			Set<String> elementNames = elements.stream()
+				.map(ModelElement::name)
+				.collect(Collectors.toSet());
 			for(Animation anim : animations.values()) {
 
 				anim.validate(elementNames);
@@ -75,7 +81,25 @@ public final class EntityState {
 
 		} catch(ParserException|IOException e) {
 
+			Logger.error(e);
 			model.setMissingno();
+			image = imageLoc = Util.MISSING_LOCATION;
+		}
+	}
+
+	private ResourceLocation bind(ResourceLocation loc) {
+
+		try(InputStream istream = Minecraft.getMinecraft().getResourceManager().getResource(loc).getInputStream()) {
+
+			ResourceLocation tex = Entities.textureManager().getDynamicTextureLocation(
+				"enim_entity_texture", new DynamicTexture(ImageIO.read(istream)));
+			Entities.textureManager().bindTexture(tex);
+			return tex;
+
+		} catch(IOException e) {
+
+			Logger.error("Could not bind texture for " + loc);
+			return loc;
 		}
 	}
 
@@ -94,12 +118,17 @@ public final class EntityState {
 		return image;
 	}
 
+	public ResourceLocation textureFile() {
+
+		return imageLoc;
+	}
+
 	public ENIMModel model() {
 
 		return model;
 	}
 
-	public float[] rotation() {
+	public float rotation() {
 
 		return rotation;
 	}

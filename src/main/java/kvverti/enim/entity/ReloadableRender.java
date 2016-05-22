@@ -1,6 +1,6 @@
 package kvverti.enim.entity;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -10,7 +10,7 @@ import kvverti.enim.modelsystem.EntityState;
 
 public interface ReloadableRender {
 
-	List<ReloadableRender> renders = new ArrayList<>();
+	Collection<ReloadableRender> renders = new ArrayList<>();
 
 	ResourceLocation getEntityStateFile();
 	Set<String> getEntityStateNames();

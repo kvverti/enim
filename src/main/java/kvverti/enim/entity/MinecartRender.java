@@ -1,17 +1,20 @@
 package kvverti.enim.entity;
 
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityMinecart;
+
+import kvverti.enim.modelsystem.EntityState;
 
 public class MinecartRender extends ENIMRender<EntityMinecart> {
 
-	public MinecartRender(String modDomain, String entityStateName) {
+	public MinecartRender(RenderManager manager, String modDomain, String entityStateName) {
 
-		super(modDomain, entityStateName);
+		super(manager, modDomain, entityStateName);
 	}
 
 	@Override
-	public void preRender(EntityMinecart entity, double x, double y, double z, float yaw, float partialTicks) {
+	public void preRender(EntityMinecart entity, EntityState state, double x, double y, double z, float yaw, float partialTicks) {
 
 		GlStateManager.rotate(-yaw, 0.0f, 1.0f, 0.0f);
 		double dx = entity.posX - entity.lastTickPosX;

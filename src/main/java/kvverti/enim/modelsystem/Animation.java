@@ -1,13 +1,14 @@
 package kvverti.enim.modelsystem;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Objects;
 
 import net.minecraft.client.resources.IResource;
 
@@ -15,7 +16,7 @@ import kvverti.enim.Logger;
 
 public final class Animation {
 
-	public static final Animation NO_OP = new Animation(new ArrayList<Map<String, float[]>>(0), new HashSet<String>(0));
+	public static final Animation NO_OP = new Animation(Collections.emptyList(), Collections.emptySet());
 
 	      //defineName - elementName
 	private final Map<String, String> definesElements;
@@ -36,7 +37,7 @@ public final class Animation {
 
 	public String toElementName(String defineName) {
 
-		if(defineName == null) throw new NullPointerException("Null defineName");
+		Objects.requireNonNull(defineName, "Null defineName");
 		String result = definesElements.get(defineName);
 		if(result == null) throw new IllegalArgumentException("No define: " + defineName);
 		return result;
@@ -84,10 +85,7 @@ public final class Animation {
 		assert freq > 0 : "Non-positive frequency";
 		List<Map<String, float[]>> frameList = new ArrayList<>();
 		Map<String, float[]> frameMap = new HashMap<>();
-		for(String define : defines) {
-
-			frameMap.put(define, new float[3]);
-		}
+		defines.forEach(define -> frameMap.put(define, new float[3]));
 		for(AnimationFrame frame : frames) {
 
 			for(StateAneme s : frame.anemes()) {
@@ -189,17 +187,11 @@ public final class Animation {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("Defines:");
-		for(Map.Entry<String, String> entry : definesElements.entrySet()) {
-
-			sb.append("\n    " + entry.getKey() + " -> " + entry.getValue());
-		}
+		definesElements.forEach((key, value) -> sb.append("\n    " + key + " -> " + value));
 		for(int i = 0; i < frames.size(); i++) {
 
 			sb.append("\nFrame " + i);
-			for(Map.Entry<String, float[]> entry : frames.get(i).entrySet()) {
-
-				sb.append("\n    " + entry.getKey() + " set " + Arrays.toString(entry.getValue()));
-			}
+			frames.get(i).forEach((key, value) -> sb.append("\n    " + key + " set " + Arrays.toString(value)));
 		}
 		return sb.toString();
 	}

@@ -26,10 +26,7 @@ public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecia
 
 		entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateName + Keys.JSON);
 		states = new HashMap<>();
-		for(String s : getEntityStateNames()) {
-
-			states.put(s, new EntityState(s));
-		}
+		getEntityStateNames().forEach(s -> states.put(s, new EntityState(s)));
 		ReloadableRender.renders.add(this);
 	}
 
@@ -56,30 +53,21 @@ public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecia
 
 		EntityState state = getStateFromTile(tileEntity);
 		ENIMModel model = state.model();
-		bindTexture(getTileTexture(tileEntity));
-		float[] rots = state.rotation();
-		GlStateManager.rotate(+rots[2], 0.0f, 0.0f, 1.0f);
-		GlStateManager.rotate(+rots[1], 0.0f, 1.0f, 0.0f);
-		GlStateManager.rotate(-rots[0], 1.0f, 0.0f, 0.0f);
-		preRender(tileEntity, x, y, z, partialTicks, destroyStage);
-		model.render(null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.scale()); //tile specific version?
+		bindTexture(state.texture());
+		GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
+		preRender(tileEntity, state, x, y, z, partialTicks, destroyStage);
+		model.render(tileEntity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.scale());
 		postRender(tileEntity);
 		GlStateManager.popMatrix();
 	}
 
-	public void preRender(T tile, double x, double y, double z, float partialTicks, int destroyStage) { }
+	public void preRender(T tile, EntityState state, double x, double y, double z, float partialTicks, int destroyStage) { }
 
 	public void postRender(T tile) { }
 
 	public EntityState getStateFromTile(T tile) {
 
 		return states.get(Keys.STATE_NORMAL);
-	}
-
-	protected final ResourceLocation getTileTexture(T tile) {
-
-		EntityState state = getStateFromTile(tile);
-		return state.texture();
 	}
 
 	@Override
@@ -97,9 +85,6 @@ public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecia
 	@Override
 	public final void setMissingno() {
 
-		for(EntityState s : states.values()) {
-
-			s.model().setMissingno();
-		}
+		states.values().forEach(state -> state.model().setMissingno());
 	}
 }
