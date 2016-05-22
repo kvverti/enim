@@ -7,8 +7,6 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-
 import kvverti.enim.Util;
 
 import static kvverti.enim.entity.Entities.*;
@@ -24,15 +22,12 @@ public final class ENIMModelRenderer extends ModelRenderer {
 
 	static {
 
-		compileDisplayList = ReflectionHelper.findMethod(
-			ModelRenderer.class,
-			null,
+		compileDisplayList = Util.findMethod(ModelRenderer.class,
+			void.class,
 			new String[] { "func_78788_d", "compileDisplayList" },
 			float.class);
-		assert compileDisplayList.getReturnType() == void.class : "Type of compileDisplayList()";
 
-		displayList = ReflectionHelper.findField(ModelRenderer.class, "field_78811_r", "displayList");
-		assert displayList.getType() == int.class : "Type of displayList";
+		displayList = Util.findField(ModelRenderer.class, int.class, "field_78811_r", "displayList");
 	}
 
 	public ENIMModelRenderer(ModelBase model, String boxName, float[] defRots, float scale) {

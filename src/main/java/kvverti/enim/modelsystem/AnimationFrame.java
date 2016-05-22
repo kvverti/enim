@@ -1,5 +1,7 @@
 package kvverti.enim.modelsystem;
 
+import kvverti.enim.Util;
+
 public final class AnimationFrame {
 
 	private final StateFrameModifier modifier;
@@ -14,11 +16,8 @@ public final class AnimationFrame {
 	public static AnimationFrame compile(StateFrameModifier modifier, Statement[] anemes) throws SyntaxException {
 
 		StateAneme[] validAnemes = new StateAneme[anemes.length];
-		for(int i = 0; i < anemes.length; i++) {
-
-			if(!anemes[i].isAneme()) throw new SyntaxException("Not an aneme: " + anemes[i]);
-			validAnemes[i] = (StateAneme) anemes[i];
-		}
+		Util.validate(anemes, Statement::isAneme, state -> new SyntaxException("Not an aneme: " + state));
+		System.arraycopy(anemes, 0, validAnemes, 0, anemes.length);
 		return new AnimationFrame(modifier, validAnemes);
 	}
 

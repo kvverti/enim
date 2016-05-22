@@ -13,6 +13,7 @@ import java.util.Objects;
 import net.minecraft.client.resources.IResource;
 
 import kvverti.enim.Logger;
+import kvverti.enim.Util;
 
 public final class Animation {
 
@@ -55,10 +56,9 @@ public final class Animation {
 
 	void validate(Set<String> elements) throws ParserException {
 
-		for(String s : definesElements.values()) {
-
-			if(!elements.contains(s)) throw new ParserException("Element " + s + " does not exist");
-		}
+		Util.validate(definesElements.values(),
+			elements::contains,
+			elem -> new ParserException("Element " + elem + " does not exist"));
 	}
 
 	public static Animation compile(IResource file, Map<String, String> defineToElement) {
@@ -66,10 +66,9 @@ public final class Animation {
 		AnimationParser parser = new AnimationParser(file);
 		try {
 			Animation result = parser.parseFrames(parser.parseTokens(parser.parseSource()));
-			for(String key : defineToElement.keySet()) {
-
-				if(!result.defines.contains(key)) throw new ParserException("Define not found: " + key);
-			}
+			Util.validate(defineToElement.keySet(),
+				result.defines::contains,
+				def -> new ParserException("Define not found: " + def));
 			result.definesElements.putAll(defineToElement);
 			return result;
 
@@ -88,12 +87,9 @@ public final class Animation {
 		defines.forEach(define -> frameMap.put(define, new float[3]));
 		for(AnimationFrame frame : frames) {
 
-			for(StateAneme s : frame.anemes()) {
-
-				String name = s.getSpecifiedElement();
-				if(!defines.contains(name))
-					throw new SyntaxException("Undefined element: " + name);
-			}
+			Util.validate(frame.anemes(),
+				aneme -> defines.contains(aneme.getSpecifiedElement()),
+				aneme -> new SyntaxException("Undefined element: " + aneme.getSpecifiedElement()));
 			addTrueFrames(frameList, frame, frameMap, freq);
 		}
 		return new Animation(frameList, defines);

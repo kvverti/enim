@@ -11,8 +11,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.util.ResourceLocation;
 
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-
 import kvverti.enim.Util;
 import kvverti.enim.modelsystem.EntityState;
 
@@ -26,22 +24,20 @@ public class BannerRender extends SignLikeRender<TileEntityBanner> {
 
 	static {
 
-		bindBannerTexture = ReflectionHelper.findMethod(
-			TileEntityBannerRenderer.class,
-			null,
+		bindBannerTexture = Util.findMethod(TileEntityBannerRenderer.class,
+			ResourceLocation.class,
 			new String[] { "func_178463_a" },
 			TileEntityBanner.class);
-		assert bindBannerTexture.getReturnType() == ResourceLocation.class : "Type of bindBannerTexture()";
 
-		Field textures = ReflectionHelper.findField(TileEntityBannerRenderer.class, "BANNERTEXTURES", "field_178464_d");
-		assert textures.getType() == ResourceLocation.class : "Type of bannerTextures";
+		Field textures =
+			Util.findField(TileEntityBannerRenderer.class, ResourceLocation.class, "field_178464_d", "BANNERTEXTURES");
 		bannerTextures = Util.getField(null, textures);
 
-		bannerTextures_domain = ReflectionHelper.findField(ResourceLocation.class, "resourceDomain", "field_110626_a");
-		assert bannerTextures_domain.getType() == String.class : "Type of resourceDomain";
+		bannerTextures_domain =
+			Util.findField(ResourceLocation.class, String.class, "field_110626_a", "resourceDomain");
 
-		bannerTextures_path = ReflectionHelper.findField(ResourceLocation.class, "resourcePath", "field_110625_b");
-		assert bannerTextures_path.getType() == String.class : "Type of resourcePath";
+		bannerTextures_path =
+			Util.findField(ResourceLocation.class, String.class, "field_110625_b", "resourcePath");
 	}
 
 	public BannerRender(String modDomain, String entityStateFile) {
@@ -50,7 +46,7 @@ public class BannerRender extends SignLikeRender<TileEntityBanner> {
 	}
 
 	@Override
-	public void preRender(TileEntityBanner tile, EntityState state, double x, double y, double z, float partialTicks, int destroyStage) {
+	public void preRender(TileEntityBanner tile, EntityState state) {
 
 		setBannerTextures(state.textureFile());
 		bindTexture(bindBannerTexture(tile));
@@ -59,8 +55,8 @@ public class BannerRender extends SignLikeRender<TileEntityBanner> {
 	@Override
 	public EntityState getStateFromTile(TileEntityBanner tile) {
 
-		if(!tile.hasWorldObj()) return states.get("floor_00"); //until we implement item rendering
-		return super.getStateFromTile(tile);
+		//until we implement item rendering
+		return tile.hasWorldObj() ? super.getStateFromTile(tile) : states.get("floor_00");
 	}
 
 	private ResourceLocation bindBannerTexture(TileEntityBanner banner) {
