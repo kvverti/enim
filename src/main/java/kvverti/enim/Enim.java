@@ -24,6 +24,7 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.*;
+import net.minecraft.entity.monster.*;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.ResourceLocation;
 
@@ -46,6 +47,7 @@ public final class Enim implements IResourceManagerReloadListener {
 		registerEntity(EntityBoat.class, m -> new ENIMRender<>(m, "minecraft", "boat"));
 		registerEntity(EntityLeashKnot.class, m -> new ENIMRender<>(m, "minecraft", "lead"));
 		registerEntity(EntityMinecartEmpty.class, m -> new MinecartRender(m, "minecraft", "minecart"));
+		registerEntity(EntitySlime.class, m -> new SlimeRender(m, "minecraft", "slime"));
 	}
 
 	@EventHandler

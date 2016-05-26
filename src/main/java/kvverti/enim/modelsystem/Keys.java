@@ -16,6 +16,7 @@ public final class Keys {
 	public static final String ELEM_ROTPOINT = "origin";
 	public static final String ELEM_DEFROT = "rotation";
 	public static final String ELEM_SCALE = "scale";
+	public static final String ELEM_TRANSLUCENT = "translucent";
 
 	public static final String ANIMS_TAG = "animations";
 	public static final String ANIM_SCRIPT = "script";

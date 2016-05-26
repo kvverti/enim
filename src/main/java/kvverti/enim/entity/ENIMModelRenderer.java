@@ -18,6 +18,7 @@ public final class ENIMModelRenderer extends ModelRenderer {
 
 	private final float[] defaultRotations;
 	private final float defaultScale;
+	private final boolean translucent;
 	private boolean compiled = false;
 
 	static {
@@ -30,11 +31,12 @@ public final class ENIMModelRenderer extends ModelRenderer {
 		displayList = Util.findField(ModelRenderer.class, int.class, "field_78811_r", "displayList");
 	}
 
-	public ENIMModelRenderer(ModelBase model, String boxName, float[] defRots, float scale) {
+	public ENIMModelRenderer(ModelBase model, String boxName, float[] defRots, float scale, boolean translucent) {
 
 		super(model, boxName);
 		defaultRotations = defRots.clone();
 		defaultScale = scale;
+		this.translucent = translucent;
 	}
 
 	@Override
@@ -52,7 +54,9 @@ public final class ENIMModelRenderer extends ModelRenderer {
 			GlStateManager.rotate(+toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
 			GlStateManager.rotate(+toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
 			GlStateManager.rotate(-toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
+			if(translucent) makeLucent();
 			GlStateManager.callList(displayList());
+			if(translucent) endLucent();
 			if(childModels != null) childModels.forEach(box -> box.render(scale * defaultScale));
 			GlStateManager.popMatrix();
 		}
@@ -75,6 +79,19 @@ public final class ENIMModelRenderer extends ModelRenderer {
 			GlStateManager.callList(displayList());
 			GlStateManager.popMatrix();
 		}
+	}
+
+	private void makeLucent() {
+
+		GlStateManager.enableNormalize();
+		GlStateManager.enableBlend();
+		GlStateManager.blendFunc(770, 771);
+	}
+
+	private void endLucent() {
+
+		GlStateManager.disableBlend();
+		GlStateManager.disableNormalize();
 	}
 
 	private void compileDisplayList(float scale) {

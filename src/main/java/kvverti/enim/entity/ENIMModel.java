@@ -24,7 +24,8 @@ public class ENIMModel extends ModelBase {
 //	public int textureHeight = 32;
 
 	private final Map<String, ModelRenderer> boxes = new HashMap<>();
-	private final List<ModelRenderer> parents = new ArrayList<>();
+	private final List<ModelRenderer> opaques = new ArrayList<>();
+	private final List<ModelRenderer> lucents = new ArrayList<>();
 	private final Map<AnimationType, Animation> animations = new EnumMap<>(AnimationType.class);
 
 	@Override
@@ -42,7 +43,8 @@ public class ENIMModel extends ModelBase {
 
 	private void renderHelper(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale) {
 
-		parents.forEach(box -> box.render(scale));
+		opaques.forEach(box -> box.render(scale));
+		lucents.forEach(box -> box.render(scale));
 	}
 
 	private void setAnglesHelper(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, Animation anim, int frame) {
@@ -91,8 +93,9 @@ public class ENIMModel extends ModelBase {
 			float[] rotpnt = m.rotationPoint();
 			float[] defrot = m.defaultRotation();
 			float scale = m.scale();
+			boolean lucent = m.isTranslucent();
 
-			ModelRenderer box = new ENIMModelRenderer(this, m.name(), defrot, scale)
+			ModelRenderer box = new ENIMModelRenderer(this, m.name(), defrot, scale, lucent)
 				.setTextureOffset(texcrds[0], texcrds[1]);
 			box.setRotationPoint(rotpnt[0] - 8.0f, -rotpnt[1], 8.0f - rotpnt[2]);
 			box.addBox(from[0] - rotpnt[0],
@@ -103,14 +106,19 @@ public class ENIMModel extends ModelBase {
 			(int)	(to[2] - from[2]));
 
 			boxes.put(m.name(), box);
+			if(lucent) lucents.add(box);
+			else opaques.add(box);
 		}
 		for(ModelElement m : elements) {
 
 			ModelRenderer current = boxes.get(m.name());
 			String parent = m.parent();
-			if(boxes.containsKey(parent))
+			if(boxes.containsKey(parent)) {
+
 				boxes.get(parent).addChild(current);
-			else parents.add(current);
+				lucents.remove(current);
+				opaques.remove(current);
+			}
 		}
 	}
 
@@ -120,13 +128,14 @@ public class ENIMModel extends ModelBase {
 		ModelRenderer missingno = new ModelRenderer(this, "#missingno");
 		missingno.addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
 		boxes.put("#missingno", missingno);
-		parents.add(missingno);
+		opaques.add(missingno);
 	}
 
 	private void clearMaps() {
 
 		boxes.clear();
-		parents.clear();
+		opaques.clear();
+		lucents.clear();
 		animations.replaceAll((type, anim) -> Animation.NO_OP);
 	}
 }

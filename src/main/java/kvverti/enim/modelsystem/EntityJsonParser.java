@@ -232,7 +232,14 @@ public final class EntityJsonParser {
 				getFloat(obj, Keys.ELEM_DEFROT, 1),
 				getFloat(obj, Keys.ELEM_DEFROT, 2))
 			.setScale(getScaleOptional(obj, Keys.ELEM_SCALE))
+			.setTranslucent(getBoolean(obj, Keys.ELEM_TRANSLUCENT))
 			.build();
+	}
+
+	private boolean getBoolean(JsonObject obj, String key) {
+
+		JsonElement elem = obj.get(key);
+		return elem == null || elem.isJsonNull() ? false : elem.getAsBoolean();
 	}
 
 	private float getScaleOptional(JsonObject obj, String key) {
