@@ -4,6 +4,7 @@ import java.util.WeakHashMap;
 import java.util.Objects;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.Entity;
@@ -58,6 +59,11 @@ public final class Entities {
 		return result;
 	}
 
+	public static float interpolate(float start, float end, float percent) {
+
+		return start + (end - start) * percent;
+	}
+
 	public static TextureManager textureManager() {
 
 		return Minecraft.getMinecraft().getTextureManager();
@@ -66,6 +72,11 @@ public final class Entities {
 	public static IReloadableResourceManager resourceManager() {
 
 		return (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
+	}
+
+	public static EntityPlayerSP thePlayer() {
+
+		return Minecraft.getMinecraft().thePlayer;
 	}
 
 	public static class WorldTickEventHandler {

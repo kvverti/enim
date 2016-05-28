@@ -4,6 +4,7 @@ public enum AnimationType {
 
 	IDLE	("idle"),
 	MOVE	("moving"),
+	JUMP	("jump"),
 	SWIM	("swimming"),
 	FLY	("flying"),
 	ATTACK	("attack"),

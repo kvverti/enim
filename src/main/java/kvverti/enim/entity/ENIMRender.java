@@ -54,17 +54,17 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 	@Override
 	public final void doRender(T entity, double x, double y, double z, float yaw, float partialTicks) {
 
-		GlStateManager.pushMatrix();
-		GlStateManager.translate((float) x, (float) y, (float) z);
-		GlStateManager.rotate(180.0f, 1.0f, 0.0f, 0.0f);
-		GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
-
-		EntityState state = getStateFromEntity(entity);
-		ENIMModel model = state.model();
-		bindEntityTexture(entity);
-		GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
 		if(shouldRender(entity)) {
 
+			GlStateManager.pushMatrix();
+			GlStateManager.translate((float) x, (float) y, (float) z);
+			GlStateManager.rotate(180.0f, 1.0f, 0.0f, 0.0f);
+			GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
+
+			EntityState state = getStateFromEntity(entity);
+			ENIMModel model = state.model();
+			bindEntityTexture(entity);
+			GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
 			preRender(entity, state, yaw);
 			model.render(entity,
 				speed(entity),
@@ -74,8 +74,8 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 				entity.rotationPitch,
 				0.0625f * state.scale());
 			postRender(entity);
+			GlStateManager.popMatrix();
 		}
-		GlStateManager.popMatrix();
 		super.doRender(entity, x, y, z, yaw, partialTicks);
 	}
 

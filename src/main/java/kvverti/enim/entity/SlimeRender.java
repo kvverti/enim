@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 import kvverti.enim.modelsystem.EntityState;
 
-public class SlimeRender extends ENIMRender<EntitySlime> {
+public class SlimeRender extends LivingRender<EntitySlime> {
 
 
 	public SlimeRender(RenderManager manager, String modDomain, String entityStateFile) {
@@ -41,6 +41,7 @@ public class SlimeRender extends ENIMRender<EntitySlime> {
 	@Override
 	public void preRender(EntitySlime entity, EntityState state, float yaw) {
 
+		super.preRender(entity, state, yaw);
 		float squish = 2.0f / (2.0f + entity.squishFactor);
 		GlStateManager.scale(squish, 1.0f / squish, squish);
 	}
