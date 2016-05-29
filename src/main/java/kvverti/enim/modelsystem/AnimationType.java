@@ -6,7 +6,7 @@ public enum AnimationType {
 	MOVE	("moving"),
 	JUMP	("jump"),
 	SWIM	("swimming"),
-	FLY	("flying"),
+	AIR	("airborne"),
 	ATTACK	("attack"),
 	DAMAGE	("damage"),
 	GREET	("greeting"),

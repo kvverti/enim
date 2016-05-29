@@ -47,7 +47,7 @@ public class ENIMModel extends ModelBase {
 		lucents.forEach(box -> box.render(scale));
 	}
 
-	private void setAnglesHelper(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, Animation anim, int frame) {
+	private void setAnglesHelper(Animation anim, int frame) {
 
 		anim.frame(frame).forEach((define, angles) -> {
 
@@ -61,24 +61,31 @@ public class ENIMModel extends ModelBase {
 	@Override
 	public void setRotationAngles(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, Entity entity) {
 
-		Animation idle = animations.get(AnimationType.IDLE);
-		if(idle != Animation.NO_OP) {
+		//reset
+		boxes.values().forEach(box -> {
 
-			int frame = randomCounterFor(entity) % idle.frameCount();
-			if(frame < 0) frame += idle.frameCount();
-			setAnglesHelper(speed, dir, timeExisted, headYaw, pitch, scale, idle, frame);
-		}
+			box.rotateAngleX = 0.0f;
+			box.rotateAngleY = 0.0f;
+			box.rotateAngleZ = 0.0f;
+		});
+
+		Animation anim = animations.get(AnimationType.IDLE);
+		int frame = randomCounterFor(entity) % anim.frameCount();
+		if(frame < 0) frame += anim.frameCount();
+		setAnglesHelper(anim, frame);
+
+		anim = animations.get(AnimationType.MOVE);
+		frame = randomCounterFor(entity) % anim.frameCount();
+		if(frame < 0) frame += anim.frameCount();
+		if(speed > 0.0f) setAnglesHelper(anim, frame);
 	}
 
 	public void setRotationAngles(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, TileEntity tile) {
 
 		Animation idle = animations.get(AnimationType.IDLE);
-		if(idle != Animation.NO_OP) {
-
-			int frame = randomCounterFor(tile) % idle.frameCount();
-			if(frame < 0) frame += idle.frameCount();
-			setAnglesHelper(speed, dir, timeExisted, headYaw, pitch, scale, idle, frame);
-		}
+		int frame = randomCounterFor(tile) % idle.frameCount();
+		if(frame < 0) frame += idle.frameCount();
+		setAnglesHelper(idle, frame);
 	}
 
 	public final void reloadModel(Set<ModelElement> elements, Map<AnimationType, Animation> animations) {

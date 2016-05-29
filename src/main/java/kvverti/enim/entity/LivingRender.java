@@ -26,10 +26,8 @@ public class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 
 		if(entity.deathTime > 0)
 			rotateCorpse(entity);
-		if(entity.hurtTime > 0 || entity.deathTime > 0) {
-
+		if(entity.hurtTime > 0 || entity.deathTime > 0)
 			GlStateManager.color(1.0f, 0.5f, 0.5f);
-		}
 		if(entity.isInvisible() && !entity.isInvisibleToPlayer(Entities.thePlayer())) {
 
 			GlStateManager.enableBlend();

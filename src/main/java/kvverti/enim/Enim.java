@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.*;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.item.*;
 import net.minecraft.entity.monster.*;
 import net.minecraft.tileentity.*;

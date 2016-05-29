@@ -17,7 +17,7 @@ import kvverti.enim.Util;
 
 public final class Animation {
 
-	public static final Animation NO_OP = new Animation(Collections.emptyList(), Collections.emptySet());
+	public static final Animation NO_OP = new Animation(Arrays.asList(Collections.emptyMap()), Collections.emptySet());
 
 	      //defineName - elementName
 	private final Map<String, String> definesElements;

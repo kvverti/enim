@@ -1,0 +1,8 @@
+define limb
+
+freq 5
+
+rotate limb -45 -0 -0
+rotate limb +45 -0 -0
+rotate limb +45 -0 -0
+rotate limb -45 -0 -0
