@@ -57,6 +57,8 @@ public final class ENIMModelRenderer extends ModelRenderer {
 			if(translucent) makeLucent();
 			GlStateManager.callList(displayList());
 			if(translucent) endLucent();
+			GlStateManager.translate(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
+			GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
 			if(childModels != null) childModels.forEach(box -> box.render(scale * defaultScale));
 			GlStateManager.popMatrix();
 		}
