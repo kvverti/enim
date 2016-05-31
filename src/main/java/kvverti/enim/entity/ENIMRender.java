@@ -56,9 +56,13 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 
 		if(shouldRender(entity)) {
 
+			final float VIEW_LOCK = 60.0f;
 			GlStateManager.pushMatrix();
 			GlStateManager.translate((float) x, (float) y, (float) z);
 			GlStateManager.rotate(180.0f, 1.0f, 0.0f, 0.0f);
+			float diff = headYaw(entity, yaw);
+			if     (diff >  VIEW_LOCK) entity.rotationYaw = yaw += diff - VIEW_LOCK;
+			else if(diff < -VIEW_LOCK) entity.rotationYaw = yaw += diff + VIEW_LOCK;
 			GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
 
 			EntityState state = getStateFromEntity(entity);
@@ -70,7 +74,7 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 				speed(entity),
 				yaw,
 				entity.ticksExisted + partialTicks,
-				headYaw(entity),
+				headYaw(entity, yaw),
 				entity.rotationPitch,
 				0.0625f * state.scale());
 			postRender(entity);
@@ -86,9 +90,9 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 		return (float) Math.sqrt(dx * dx + dz * dz);
 	}
 
-	private float headYaw(Entity entity) {
+	private float headYaw(Entity entity, float bodyYaw) {
 
-		return entity instanceof EntityLivingBase ? ((EntityLivingBase) entity).rotationYawHead : 0.0f;
+		return entity instanceof EntityLivingBase ? ((EntityLivingBase) entity).rotationYawHead - bodyYaw : 0.0f;
 	}
 
 	public boolean shouldRender(T entity) { return true; }

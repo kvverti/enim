@@ -23,9 +23,9 @@ public class ENIMModel extends ModelBase {
 //	public int textureWidth = 64;
 //	public int textureHeight = 32;
 
-	private final Map<String, ModelRenderer> boxes = new HashMap<>();
-	private final List<ModelRenderer> opaques = new ArrayList<>();
-	private final List<ModelRenderer> lucents = new ArrayList<>();
+	private final Map<String, ENIMModelRenderer> boxes = new HashMap<>();
+	private final List<ENIMModelRenderer> opaques = new ArrayList<>();
+	private final List<ENIMModelRenderer> lucents = new ArrayList<>();
 	private final Map<AnimationType, Animation> animations = new EnumMap<>(AnimationType.class);
 
 	@Override
@@ -43,15 +43,15 @@ public class ENIMModel extends ModelBase {
 
 	private void renderHelper(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale) {
 
-		opaques.forEach(box -> box.render(scale));
-		lucents.forEach(box -> box.render(scale));
+		opaques.forEach(box -> box.render(scale, headYaw, pitch));
+		lucents.forEach(box -> box.render(scale, headYaw, pitch));
 	}
 
 	private void setAnglesHelper(Animation anim, int frame) {
 
 		anim.frame(frame).forEach((define, angles) -> {
 
-			ModelRenderer box = boxes.get(anim.toElementName(define));
+			ENIMModelRenderer box = boxes.get(anim.toElementName(define));
 			box.rotateAngleX = toRadians(angles[0]);
 			box.rotateAngleY = toRadians(angles[1]);
 			box.rotateAngleZ = toRadians(angles[2]);
@@ -77,7 +77,17 @@ public class ENIMModel extends ModelBase {
 		anim = animations.get(AnimationType.MOVE);
 		frame = randomCounterFor(entity) % anim.frameCount();
 		if(frame < 0) frame += anim.frameCount();
-		if(speed > 0.0f) setAnglesHelper(anim, frame);
+		if(speed > 0.05f) setAnglesHelper(anim, frame);
+
+		anim = animations.get(AnimationType.AIR);
+		frame = randomCounterFor(entity) % anim.frameCount();
+		if(frame < 0) frame += anim.frameCount();
+		if(entity.isAirBorne) setAnglesHelper(anim, frame);
+
+	//	anim = animations.get(AnimationType.JUMP);
+	//	frame = jumpTime(entity);
+	//	kvverti.enim.Logger.info(frame);
+	//	if(frame >= 0 && frame < anim.frameCount()) setAnglesHelper(anim, frame);
 	}
 
 	public void setRotationAngles(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, TileEntity tile) {
@@ -94,31 +104,14 @@ public class ENIMModel extends ModelBase {
 		this.animations.putAll(animations);
 		for(ModelElement m : elements) {
 
-			float[] to = m.to();
-			float[] from = m.from();
-			int[] texcrds = m.texCoords();
-			float[] rotpnt = m.rotationPoint();
-			float[] defrot = m.defaultRotation();
-			float scale = m.scale();
-			boolean lucent = m.isTranslucent();
-
-			ModelRenderer box = new ENIMModelRenderer(this, m.name(), defrot, scale, lucent)
-				.setTextureOffset(texcrds[0], texcrds[1]);
-			box.setRotationPoint(rotpnt[0] - 8.0f, -rotpnt[1], 8.0f - rotpnt[2]);
-			box.addBox(from[0] - rotpnt[0],
-				rotpnt[1] - to[1],
-				rotpnt[2] - to[2],
-			(int)	(to[0] - from[0]),
-			(int)	(to[1] - from[1]),
-			(int)	(to[2] - from[2]));
-
+			ENIMModelRenderer box = new ENIMModelRenderer(this, m);
 			boxes.put(m.name(), box);
-			if(lucent) lucents.add(box);
+			if(m.isTranslucent()) lucents.add(box);
 			else opaques.add(box);
 		}
 		for(ModelElement m : elements) {
 
-			ModelRenderer current = boxes.get(m.name());
+			ENIMModelRenderer current = boxes.get(m.name());
 			String parent = m.parent();
 			if(boxes.containsKey(parent)) {
 
@@ -132,8 +125,7 @@ public class ENIMModel extends ModelBase {
 	public final void setMissingno() {
 
 		clearMaps();
-		ModelRenderer missingno = new ModelRenderer(this, "#missingno");
-		missingno.addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
+		ENIMModelRenderer missingno = new ENIMModelRenderer(this);
 		boxes.put("#missingno", missingno);
 		opaques.add(missingno);
 	}

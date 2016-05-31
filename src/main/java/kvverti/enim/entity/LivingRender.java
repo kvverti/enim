@@ -32,7 +32,7 @@ public class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 
 			GlStateManager.enableBlend();
 			GlStateManager.blendFunc(770, 771);
-			GlStateManager.color(1.0f, 1.0f, 1.0f, 0.15f);
+			GlStateManager.color(1.0f, 1.0f, 1.0f, 0.25f);
 		}
 	}
 

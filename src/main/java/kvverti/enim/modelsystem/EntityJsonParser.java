@@ -233,6 +233,7 @@ public final class EntityJsonParser {
 				getFloat(obj, Keys.ELEM_DEFROT, 2))
 			.setScale(getScaleOptional(obj, Keys.ELEM_SCALE))
 			.setTranslucent(getBoolean(obj, Keys.ELEM_TRANSLUCENT))
+			.setHead(getBoolean(obj, Keys.ELEM_HEAD))
 			.build();
 	}
 

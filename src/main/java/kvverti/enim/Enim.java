@@ -49,6 +49,7 @@ public final class Enim implements IResourceManagerReloadListener {
 		registerEntity(EntityLeashKnot.class, m -> new ENIMRender<>(m, "minecraft", "lead"));
 		registerEntity(EntityMinecartEmpty.class, m -> new MinecartRender(m, "minecraft", "minecart"));
 		registerEntity(EntitySlime.class, m -> new SlimeRender(m, "minecraft", "slime"));
+		registerEntity(EntityCreeper.class, m -> new LivingRender<>(m, "minecraft", "creeper"));
 	}
 
 	@EventHandler

@@ -2,11 +2,12 @@ package kvverti.enim.modelsystem;
 
 public enum AnimationType {
 
+	//These are arranged in increasing order of precedence
 	IDLE	("idle"),
 	MOVE	("moving"),
-	JUMP	("jump"),
-	SWIM	("swimming"),
 	AIR	("airborne"),
+	SWIM	("swimming"),
+	JUMP	("jump"),
 	ATTACK	("attack"),
 	DAMAGE	("damage"),
 	GREET	("greeting"),

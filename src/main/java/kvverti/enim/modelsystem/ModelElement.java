@@ -13,26 +13,20 @@ public final class ModelElement {
 	private final float scale;
 	private final String parent;
 	private final boolean translucent;
+	private final boolean head;
 
-	private ModelElement(String name,
-		String parent,
-		int[] coords,
-		float[] dims,
-		float[] offs,
-		float[] rots,
-		float[] defRots,
-		float scales,
-		boolean lucent) {
+	private ModelElement(Builder b) {
 
-		this.name = name;
-		this.parent = parent;
-		this.coords = coords;
-		from = dims;
-		to = offs;
-		rotationPoint = rots;
-		defaultRotation = defRots;
-		scale = scales;
-		translucent = lucent;
+		name = b.name;
+		parent = b.parent;
+		coords = b.coords;
+		from = b.from;
+		to = b.to;
+		rotationPoint = b.rotationPoint;
+		defaultRotation = b.defrots;
+		scale = b.scale;
+		translucent = b.translucent;
+		head = b.head;
 	}
 
 	public String name() {
@@ -80,6 +74,11 @@ public final class ModelElement {
 		return translucent;
 	}
 
+	public boolean isHead() {
+
+		return head;
+	}
+
 	@Override
 	public String toString() {
 
@@ -112,6 +111,7 @@ public final class ModelElement {
 		private float scale = 1.0f;
 		private String parent = null;
 		private boolean translucent = false;
+		private boolean head = false;
 
 		public Builder setName(String name) {
 
@@ -185,6 +185,13 @@ public final class ModelElement {
 			return this;
 		}
 
+		public Builder setHead(boolean value) {
+
+			head = value;
+
+			return this;
+		}
+
 		private void verify(String name) throws SyntaxException {
 
 			boolean flag;
@@ -205,7 +212,7 @@ public final class ModelElement {
 			verify(name);
 			verify(coords);
 
-			return new ModelElement(name, parent, coords, from, to, rotationPoint, defrots, scale, translucent);
+			return new ModelElement(this);
 		}
 	}
 }
