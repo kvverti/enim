@@ -9,6 +9,8 @@ import kvverti.enim.modelsystem.EntityState;
 
 public class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 
+	public static final float NAMETAG_VISIBILITY_RANGE_SQ = 64.0f * 64.0f;
+
 	public LivingRender(RenderManager manager, String modDomain, String entityStateFile) {
 
 		super(manager, modDomain, entityStateFile);
@@ -41,5 +43,34 @@ public class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 		final float time = 15.0f; //ticks
 		float rot = Entities.interpolate(0.0f, 90.0f, (float) entity.deathTime / time);
 		GlStateManager.rotate(Math.min(rot, 90.0f), 0.0f, 0.0f, 1.0f);
+	}
+
+	@Override
+	protected boolean canRenderName(T entity) {
+
+		return entity.hasCustomName() &&
+			Minecraft.isGuiEnabled() &&
+			entity != renderManager.livingPlayer &&
+			!entity.isInvisibleToPlayer(Entities.thePlayer()) &&
+			entity.riddenByEntity == null;
+	}
+
+	@Override
+	public void renderName(T entity, double x, double y, double z) {
+
+		if(canRenderName(entity)) {
+
+			double distanceSq = entity.getDistanceSqToEntity(renderManager.livingPlayer);
+			if(distanceSq < NAMETAG_VISIBILITY_RANGE_SQ) {
+
+				renderOffsetLivingLabel(entity,
+					x,
+					y - (entity.isChild() ? entity.height / 2.0 : 0.0),
+					z,
+					entity.getDisplayName().getFormattedText(),
+					2.0f / 75.0f,
+					distanceSq);
+			}
+		}
 	}
 }

@@ -58,6 +58,24 @@ public class ENIMModel extends ModelBase {
 		});
 	}
 
+	private void animateLooping(Entity entity, AnimationType type, boolean predicate) {
+
+		if(predicate) {
+
+			Animation anim = animations.get(type);
+			int frame = randomCounterFor(entity) % anim.frameCount();
+			if(frame < 0) frame += anim.frameCount();
+			setAnglesHelper(anim, frame);
+		}
+	}
+
+	private void animateNoLooping(AnimationType type, int frame) {
+
+		Animation anim = animations.get(type);
+		if(frame >= 0 && frame < anim.frameCount())
+			setAnglesHelper(anim, frame);
+	}
+
 	@Override
 	public void setRotationAngles(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, Entity entity) {
 
@@ -69,25 +87,11 @@ public class ENIMModel extends ModelBase {
 			box.rotateAngleZ = 0.0f;
 		});
 
-		Animation anim = animations.get(AnimationType.IDLE);
-		int frame = randomCounterFor(entity) % anim.frameCount();
-		if(frame < 0) frame += anim.frameCount();
-		setAnglesHelper(anim, frame);
-
-		anim = animations.get(AnimationType.MOVE);
-		frame = randomCounterFor(entity) % anim.frameCount();
-		if(frame < 0) frame += anim.frameCount();
-		if(speed > 0.05f) setAnglesHelper(anim, frame);
-
-		anim = animations.get(AnimationType.AIR);
-		frame = randomCounterFor(entity) % anim.frameCount();
-		if(frame < 0) frame += anim.frameCount();
-		if(entity.isAirBorne) setAnglesHelper(anim, frame);
-
-	//	anim = animations.get(AnimationType.JUMP);
-	//	frame = jumpTime(entity);
-	//	kvverti.enim.Logger.info(frame);
-	//	if(frame >= 0 && frame < anim.frameCount()) setAnglesHelper(anim, frame);
+		animateLooping(entity, AnimationType.IDLE, true);
+		animateLooping(entity, AnimationType.MOVE, speed > 0.05f);
+		animateLooping(entity, AnimationType.AIR, entity.isAirBorne);
+		animateLooping(entity, AnimationType.SWIM, entity.isInWater() && !entity.onGround);
+		animateNoLooping(AnimationType.JUMP, jumpTime(entity));
 	}
 
 	public void setRotationAngles(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, TileEntity tile) {

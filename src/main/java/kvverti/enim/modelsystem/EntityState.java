@@ -65,10 +65,12 @@ public final class EntityState {
 
 		Set<ModelElement> elements = new HashSet<>();
 		Map<AnimationType, Animation> animations = new HashMap<>();
+		for(AnimationType type : AnimationType.values())
+			animations.put(type, Animation.NO_OP);
 		try {
 			EntityJsonParser parser = new EntityJsonParser(Entities.resourceManager().getResource(loc));
+			parser.getImports(elements, animations);
 			parser.parseElements(elements);
-			parser.getElementImports(elements);
 			parser.parseAnimations(animations);
 			Set<String> elementNames = elements.stream()
 				.map(ModelElement::name)

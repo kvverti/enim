@@ -93,7 +93,7 @@ public final class EntityJsonParser {
 				.filter(obj -> getString(obj, Keys.ELEM_NAME).equals(name))
 				.map(ThrowingFunction.of(this::buildElement))
 				.findFirst()
-				.orElse(null);
+				.orElseThrow(() -> new ElementNotFoundException(name));
 
 		} catch(JsonParseException e) {
 
@@ -127,7 +127,7 @@ public final class EntityJsonParser {
 		}
 	}
 
-	public void getElementImports(Set<? super ModelElement> set) throws ParserException {
+	public void getImports(Set<? super ModelElement> set, Map<AnimationType, Animation> map) throws ParserException {
 
 		try {
 			initJson();
@@ -136,16 +136,24 @@ public final class EntityJsonParser {
 			for(Map.Entry<String, JsonElement> entry : imports.entrySet()) {
 
 				EntityJsonParser parser = getParserFor(entry.getKey());
-				JsonArray arr = entry.getValue().getAsJsonArray();
-				if(contains(arr, new JsonPrimitive(Keys.WILDCARD))) {
+				for(JsonElement elem : entry.getValue().getAsJsonArray()) {
 
-					parser.parseElements(set);
+					String str = elem.getAsString();
+					if(str.startsWith(Keys.ANIMS_TAG + ":")) {
 
-				} else for(JsonElement elem : arr) {
+						str = str.substring(Keys.ANIMS_TAG.length() + 1);
+						if(Keys.WILDCARD.equals(str))
+							parser.parseAnimations(map);
+						else {
+							Animation a = parser.getAnimation(str);
+							if(a != Animation.NO_OP) map.put(AnimationType.from(str), a);
+						}
+					} else {
 
-					ModelElement mdl = parser.parseElement(elem.getAsString());
-					if(mdl != null) addSafely(set, mdl);
-					else throw new ElementNotFoundException(elem.getAsString());
+						if(Keys.WILDCARD.equals(str))
+							parser.parseElements(set);
+						else addSafely(set, parser.parseElement(str));
+					}
 				}
 			}
 
@@ -161,12 +169,10 @@ public final class EntityJsonParser {
 		if(json.has(Keys.ANIMS_TAG)) {
 
 			try {
-				JsonObject obj = json.getAsJsonObject(Keys.ANIMS_TAG);
 				for(AnimationType type : AnimationType.values()) {
 
-					JsonObject anim = obj.getAsJsonObject(type.key());
-					Animation a = anim == null ? Animation.NO_OP : getAnimation(anim);
-					map.put(type, a);
+					Animation a = getAnimation(type.key());
+					if(a != Animation.NO_OP) map.put(type, a);
 				}
 
 			} catch(JsonParseException|IOException e) {
@@ -176,19 +182,26 @@ public final class EntityJsonParser {
 
 		} else for(AnimationType type : AnimationType.values()) {
 
-			map.put(type, Animation.NO_OP);
+			map.putIfAbsent(type, Animation.NO_OP);
 		}
 	}
 
-	private Animation getAnimation(JsonObject anim) throws IOException {
+	private Animation getAnimation(String str) throws IOException, ParserException {
 
-		ResourceLocation loc = getResourceLocation(
-			anim.get(Keys.ANIM_SCRIPT).getAsString(), Keys.ANIMS_DIR, Keys.ENIM);
-		IResource animFile = Entities.resourceManager().getResource(loc);
-		JsonObject defines = anim.getAsJsonObject(Keys.ANIM_DEFINES);
-		Map<String, String> defineMap = new HashMap<>();
-		defines.entrySet().forEach(entry -> defineMap.put(entry.getKey(), getString(defines, entry.getKey())));
-		return Animation.compile(animFile, defineMap);
+		initJson();
+		if(json.has(Keys.ANIMS_TAG)) {
+
+			JsonObject anim = json.getAsJsonObject(Keys.ANIMS_TAG).getAsJsonObject(str);
+			if(anim == null) return Animation.NO_OP;
+			ResourceLocation loc = getResourceLocation(
+				anim.get(Keys.ANIM_SCRIPT).getAsString(), Keys.ANIMS_DIR, Keys.ENIM);
+			IResource animFile = Entities.resourceManager().getResource(loc);
+			JsonObject defines = anim.getAsJsonObject(Keys.ANIM_DEFINES);
+			Map<String, String> defineMap = new HashMap<>();
+			defines.entrySet().forEach(entry -> defineMap.put(entry.getKey(), getString(defines, entry.getKey())));
+			return Animation.compile(animFile, defineMap);
+
+		} else return Animation.NO_OP;
 	}
 
 	private void addSafely(Set<? super ModelElement> set, ModelElement elem) throws DuplicateElementException {

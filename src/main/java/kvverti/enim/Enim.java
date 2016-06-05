@@ -50,13 +50,14 @@ public final class Enim implements IResourceManagerReloadListener {
 		registerEntity(EntityMinecartEmpty.class, m -> new MinecartRender(m, "minecraft", "minecart"));
 		registerEntity(EntitySlime.class, m -> new SlimeRender(m, "minecraft", "slime"));
 		registerEntity(EntityCreeper.class, m -> new LivingRender<>(m, "minecraft", "creeper"));
+		registerEntity(EntityRabbit.class, m -> new RabbitRender(m, "minecraft", "rabbit"));
 	}
 
 	@EventHandler
 	public void init(FMLInitializationEvent e) {
 
     		Entities.resourceManager().registerReloadListener(Enim.instance);
-		MinecraftForge.EVENT_BUS.register(Entities.WorldTickEventHandler.INSTANCE);
+		MinecraftForge.EVENT_BUS.register(Entities.TickEventHandler.INSTANCE);
 
 		registerTile(TileEntitySign.class, new SignRender("minecraft", "sign"));
 		registerTile(TileEntityBanner.class, new BannerRender("minecraft", "banner"));

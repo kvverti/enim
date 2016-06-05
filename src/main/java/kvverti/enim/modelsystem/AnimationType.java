@@ -24,4 +24,12 @@ public enum AnimationType {
 
 		return key;
 	}
+
+	public static AnimationType from(String name) {
+
+		for(AnimationType type : values())
+			if(type.key.equals(name))
+				return type;
+		return null;
+	}
 }
