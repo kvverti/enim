@@ -1,0 +1,58 @@
+{
+	"imports": {
+		"rabbit": ["body",
+			"right_foot",
+			"left_foot",
+			"right_hindleg",
+			"left_hindleg",
+			"right_foreleg",
+			"left_foreleg",
+			"tail",
+			"animations:*"]
+	},
+	"elements": [
+		{
+			"name": "head",
+			"from": [5.5,8,8],
+			"to": [10.5,12,13],
+			"uv": [32,0],
+			"origin": [8,9,8],
+			"scale": 2,
+			"head": true
+		},
+		{
+			"name": "nose",
+			"parent": "head",
+			"from": [7.5,9.5,12.5],
+			"to": [8.5,10.5,13.5],
+			"uv": [32,9]
+		},
+		{
+			"name": "right_ear",
+			"parent": "head",
+			"from": [5.5,12,8],
+			"to": [7.5,17,9],
+			"uv": [52,0],
+			"origin": [8,12,8],
+			"rotation": [0,-15,0]
+		},
+		{
+			"name": "left_ear",
+			"parent": "head",
+			"from": [8.5,12,8],
+			"to": [10.5,17,9],
+			"uv": [58,0],
+			"origin": [8,12,8],
+			"rotation": [0,15,0]
+		},
+		{
+			"name": "antennae",
+			"parent": "head",
+			"from": [5.5,12,12],
+			"to": [10.5,17,12],
+			"uv": [37,9],
+			"origin": [8,12,12],
+			"rotation": [15,0,0]
+		}
+	]
+}

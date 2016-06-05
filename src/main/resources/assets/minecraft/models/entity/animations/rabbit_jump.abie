@@ -1,0 +1,20 @@
+define left_fore
+define right_fore
+define left_hind
+define right_hind
+
+freq 3
+
+{
+rotate left_fore  +45 -0 -0
+rotate right_fore +45 -0 -0
+rotate left_hind  -45 -0 -0
+rotate right_hind -45 -0 -0
+}
+pause 1
+{
+rotate left_fore  -45 -0 -0
+rotate right_fore -45 -0 -0
+rotate left_hind  +45 -0 -0
+rotate right_hind +45 -0 -0
+}
