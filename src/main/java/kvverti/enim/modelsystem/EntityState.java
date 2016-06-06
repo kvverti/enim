@@ -71,6 +71,7 @@ public final class EntityState {
 			EntityJsonParser parser = new EntityJsonParser(Entities.resourceManager().getResource(loc));
 			parser.getImports(elements, animations);
 			parser.parseElements(elements);
+			parser.applyOverrides(elements);
 			parser.parseAnimations(animations);
 			Set<String> elementNames = elements.stream()
 				.map(ModelElement::name)
@@ -80,7 +81,8 @@ public final class EntityState {
 
 		} catch(ParserException|IOException e) {
 
-			Logger.error(e);
+			Logger.error(e.toString());
+			Logger.error("Could not load entity state " + this);
 			model.setMissingno();
 			image = imageLoc = Util.MISSING_LOCATION;
 		}
@@ -140,5 +142,11 @@ public final class EntityState {
 	public String name() {
 
 		return name;
+	}
+
+	@Override
+	public String toString() {
+
+		return modelFile + "#" + name;
 	}
 }

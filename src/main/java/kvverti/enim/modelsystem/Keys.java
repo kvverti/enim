@@ -32,6 +32,8 @@ public final class Keys {
 	public static final String STATE_ROTATION = "y";
 	public static final String STATE_SCALE = "scale";
 
+	public static final String OVERRIDES_TAG = "overrides";
+
 	public static final String STATES_DIR = "entitystates/";
 	public static final String MODELS_DIR = "models/entity/";
 	public static final String ANIMS_DIR = "models/entity/animations/";

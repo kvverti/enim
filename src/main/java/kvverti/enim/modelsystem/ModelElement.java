@@ -41,27 +41,27 @@ public final class ModelElement {
 
 	public int[] texCoords() {
 
-		return coords;
+		return coords.clone();
 	}
 
 	public float[] from() {
 
-		return from;
+		return from.clone();
 	}
 
 	public float[] to() {
 
-		return to;
+		return to.clone();
 	}
 
 	public float[] rotationPoint() {
 
-		return rotationPoint;
+		return rotationPoint.clone();
 	}
 
 	public float[] defaultRotation() {
 
-		return defaultRotation;
+		return defaultRotation.clone();
 	}
 
 	public float scale() {
@@ -82,10 +82,19 @@ public final class ModelElement {
 	@Override
 	public String toString() {
 
-		return "ModelElement[Name: " + name + ", Parent: " + parent + ", TexCoords: " + Arrays.toString(coords)
-			+ ", From: " + Arrays.toString(from) + ", To: " + Arrays.toString(to)
-			+ ", Rotation Point: " + Arrays.toString(rotationPoint)
-			+ ", Default Rotation: " + Arrays.toString(defaultRotation) + "]";
+		return String.format(
+			"ModelElement { \"%s\": \"%s\", \"%s\": \"%s\", \"%s\": [%d,%d,%d], \"%s\": [%d,%d,%d], " +
+			"\"%s\": [%d,%d], \"%s\": [%d,%d,%d], \"%s\": [%d,%d,%d], \"%s\": %d, \"%s\": %s, \"%s\": %s }",
+			Keys.ELEM_NAME, name,
+			Keys.ELEM_PARENT, parent,
+			Keys.ELEM_FROM, from[0], from[1], from[2],
+			Keys.ELEM_TO, to[0], to[1], to[2],
+			Keys.ELEM_TEXCOORDS, coords[0], coords[1],
+			Keys.ELEM_ROTPOINT, rotationPoint[0], rotationPoint[1], rotationPoint[2],
+			Keys.ELEM_DEFROT, defaultRotation[0], defaultRotation[1], defaultRotation[2],
+			Keys.ELEM_SCALE, scale,
+			Keys.ELEM_TRANSLUCENT, translucent,
+			Keys.ELEM_HEAD, head);
 	}
 
 	@Override
@@ -113,10 +122,25 @@ public final class ModelElement {
 		private boolean translucent = false;
 		private boolean head = false;
 
+		public Builder() { }
+
+		public Builder(ModelElement elem) {
+
+			name = elem.name;
+			coords = elem.coords.clone();
+			from = elem.from.clone();
+			to = elem.to.clone();
+			rotationPoint = elem.rotationPoint.clone();
+			defrots = elem.defaultRotation.clone();
+			scale = elem.scale;
+			parent = elem.parent;
+			translucent = elem.translucent;
+			head = elem.head;
+		}
+
 		public Builder setName(String name) {
 
 			this.name = name;
-
 			return this;
 		}
 
@@ -124,7 +148,6 @@ public final class ModelElement {
 
 			coords[0] = x;
 			coords[1] = y;
-
 			return this;
 		}
 
@@ -133,7 +156,6 @@ public final class ModelElement {
 			from[0] = x;
 			from[1] = y;
 			from[2] = z;
-
 			return this;
 		}
 
@@ -142,7 +164,6 @@ public final class ModelElement {
 			to[0] = x;
 			to[1] = y;
 			to[2] = z;
-
 			return this;
 		}
 
@@ -151,7 +172,6 @@ public final class ModelElement {
 			rotationPoint[0] = x;
 			rotationPoint[1] = y;
 			rotationPoint[2] = z;
-
 			return this;
 		}
 
@@ -160,35 +180,30 @@ public final class ModelElement {
 			defrots[0] = x;
 			defrots[1] = y;
 			defrots[2] = z;
-
 			return this;
 		}
 
 		public Builder setScale(float scale) {
 
 			this.scale = scale;
-
 			return this;
 		}
 
 		public Builder setParent(String parent) {
 
 			this.parent = parent;
-
 			return this;
 		}
 
 		public Builder setTranslucent(boolean value) {
 
 			translucent = value;
-
 			return this;
 		}
 
 		public Builder setHead(boolean value) {
 
 			head = value;
-
 			return this;
 		}
 
@@ -211,7 +226,6 @@ public final class ModelElement {
 
 			verify(name);
 			verify(coords);
-
 			return new ModelElement(this);
 		}
 	}

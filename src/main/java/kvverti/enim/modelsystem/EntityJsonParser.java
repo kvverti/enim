@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import net.minecraft.client.Minecraft;
@@ -125,6 +126,41 @@ public final class EntityJsonParser {
 			throw e.ifInstance(ParserException.class)
 				.orElseWrap(ParserException::new);
 		}
+	}
+
+	public void applyOverrides(Set<ModelElement> set) throws ParserException {
+
+		try {
+			initJson();
+			if(!json.has(Keys.OVERRIDES_TAG)) return;
+			JsonObject overrides = json.getAsJsonObject(Keys.OVERRIDES_TAG);
+			Set<ModelElement> rides = set.stream()
+				.filter(elem -> overrides.has(elem.name()))
+				.map(elem -> replaceOverride(overrides, elem))
+				.collect(Collectors.toSet());
+			rides.addAll(set);
+			set.clear();
+			set.addAll(rides);
+
+		} catch(JsonParseException e) {
+
+			throw new ParserException(e);
+		}
+	}
+
+	private ModelElement replaceOverride(JsonObject overrides, ModelElement elem) {
+
+		ModelElement.Builder b = new ModelElement.Builder(elem);
+		JsonObject obj = overrides.getAsJsonObject(elem.name());
+		if(obj.has(Keys.ELEM_SCALE))
+			b.setScale(getScaleOptional(obj, Keys.ELEM_SCALE));
+		if(obj.has(Keys.ELEM_DEFROT))
+			b.setDefaultRotation(getFloat(obj, Keys.ELEM_DEFROT, 0),
+				getFloat(obj, Keys.ELEM_DEFROT, 1),
+				getFloat(obj, Keys.ELEM_DEFROT, 2));
+		try { return b.build(); }
+		catch(SyntaxException e) { throw new AssertionError("Invalid element format here?!?!?"); }
+		//No exception should be thrown, as the name and coords are already validated
 	}
 
 	public void getImports(Set<? super ModelElement> set, Map<AnimationType, Animation> map) throws ParserException {
