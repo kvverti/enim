@@ -9,14 +9,14 @@
 		"caerbannog":     { "model": "rabbit", "texture": "entity/rabbit/caerbannog",      "size": [64,32] },
 		"toast":          { "model": "rabbit", "texture": "entity/rabbit/toast",           "size": [64,32] },
 		"eclipse":        { "model": "rabbit", "texture": "entity/rabbit/eclipse",         "size": [64,32] },
-		"baby_brown":     { "model": "baby_rabbit", "texture": "entity/rabbit/brown",           "size": [64,32], scale: 0.5 },
-		"baby_white":     { "model": "baby_rabbit", "texture": "entity/rabbit/white",           "size": [64,32], scale: 0.5 },
-		"baby_black":     { "model": "baby_rabbit", "texture": "entity/rabbit/black",           "size": [64,32], scale: 0.5 },
-		"baby_gold":      { "model": "baby_rabbit", "texture": "entity/rabbit/gold",            "size": [64,32], scale: 0.5 },
-		"baby_salt":      { "model": "baby_rabbit", "texture": "entity/rabbit/salt",            "size": [64,32], scale: 0.5 },
-		"baby_splotched": { "model": "baby_rabbit", "texture": "entity/rabbit/white_splotched", "size": [64,32], scale: 0.5 },
-		"baby_caerbannog":{ "model": "baby_rabbit", "texture": "entity/rabbit/caerbannog",      "size": [64,32], scale: 0.5 },
-		"baby_toast":     { "model": "baby_rabbit", "texture": "entity/rabbit/toast",           "size": [64,32], scale: 0.5 },
-		"baby_eclipse":   { "model": "baby_rabbit", "texture": "entity/rabbit/eclipse",         "size": [64,32], scale: 0.5 }
+		"baby_brown":     { "model": "baby_rabbit", "texture": "entity/rabbit/brown",           "size": [64,32], "scale": 0.5 },
+		"baby_white":     { "model": "baby_rabbit", "texture": "entity/rabbit/white",           "size": [64,32], "scale": 0.5 },
+		"baby_black":     { "model": "baby_rabbit", "texture": "entity/rabbit/black",           "size": [64,32], "scale": 0.5 },
+		"baby_gold":      { "model": "baby_rabbit", "texture": "entity/rabbit/gold",            "size": [64,32], "scale": 0.5 },
+		"baby_salt":      { "model": "baby_rabbit", "texture": "entity/rabbit/salt",            "size": [64,32], "scale": 0.5 },
+		"baby_splotched": { "model": "baby_rabbit", "texture": "entity/rabbit/white_splotched", "size": [64,32], "scale": 0.5 },
+		"baby_caerbannog":{ "model": "baby_rabbit", "texture": "entity/rabbit/caerbannog",      "size": [64,32], "scale": 0.5 },
+		"baby_toast":     { "model": "baby_rabbit", "texture": "entity/rabbit/toast",           "size": [64,32], "scale": 0.5 },
+		"baby_eclipse":   { "model": "baby_rabbit", "texture": "entity/rabbit/eclipse",         "size": [64,32], "scale": 0.5 }
 	}
 }

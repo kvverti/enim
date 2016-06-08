@@ -1,0 +1,106 @@
+{
+	"elements": [
+		{
+			"name": "body",
+			"from": [5,5,-2],
+			"to": [11,13,4],
+			"uv": [0,9],
+			"origin": [8,5,4],
+			"rotation": [-90,0,0]
+		},
+		{
+			"name": "right_wing",
+			"from": [4,7,5],
+			"to": [5,11,11],
+			"uv": [24,13],
+			"origin": [4,11,8]
+		},
+		{
+			"name": "left_wing",
+			"from": [11,7,5],
+			"to": [12,11,11],
+			"uv": [24,13],
+			"origin": [12,11,8]
+		},
+		{
+			"name": "right_leg_outside",
+			"from": [5,0,7],
+			"to": [8,5,10],
+			"uv": [26,0],
+			"origin": [6.5,5,7]
+		},
+		{
+			"name": "right_leg_inside",
+			"parent": "right_leg_outside",
+			"from": [5,0,7],
+			"to": [8,5,7],
+			"uv": [35,3]
+		},
+		{
+			"name": "right_foot_inside",
+			"parent": "right_leg_outside",
+			"from": [5,0.005,7],
+			"to": [8,0.005,10],
+			"uv": [29,0]
+		},
+		{
+			"name": "left_leg_outside",
+			"from": [8,0,7],
+			"to": [11,5,10],
+			"uv": [26,0],
+			"origin": [9.5,5,7]
+		},
+		{
+			"name": "left_leg_inside",
+			"parent": "left_leg_outside",
+			"from": [8,0,7],
+			"to": [11,5,7],
+			"uv": [35,3]
+		},
+		{
+			"name": "left_foot_inside",
+			"parent": "left_leg_outside",
+			"from": [8,0.005,7],
+			"to": [11,0.005,10],
+			"uv": [29,0]
+		},
+		{
+			"name": "head",
+			"from": [6,9,11],
+			"to": [10,15,14],
+			"uv": [0,0],
+			"origin": [8,11,11],
+			"head": true
+		},
+		{
+			"name": "wattle",
+			"parent": "head",
+			"from": [7,9,13],
+			"to": [9,11,15],
+			"uv": [14,4]
+		},
+		{
+			"name": "beak",
+			"parent": "head",
+			"from": [6,11,14],
+			"to": [10,13,16],
+			"uv": [14,0]
+		}
+	],
+	"animations": {
+		"moving": {
+			"script": "biped_swing",
+			"with": {
+				"left": "left_leg_outside",
+				"right": "right_leg_outside"
+			}
+		},
+		"airborne": {
+			"script": "chicken_wings",
+			"with": {
+				"left": "left_wing",
+				"right": "right_wing"
+			}
+		}
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"imports": {
+		"chicken": ["*","animations:*"]
+	},
+	"overrides": {
+		"head": { "scale": 2 }
+	}
+}
