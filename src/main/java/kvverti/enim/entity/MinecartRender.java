@@ -6,7 +6,7 @@ import net.minecraft.entity.item.EntityMinecart;
 
 import kvverti.enim.modelsystem.EntityState;
 
-public class MinecartRender extends ENIMRender<EntityMinecart> {
+public class MinecartRender extends BasicRender<EntityMinecart> {
 
 	public MinecartRender(RenderManager manager, String modDomain, String entityStateName) {
 

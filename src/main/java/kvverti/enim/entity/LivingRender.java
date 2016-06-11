@@ -7,13 +7,13 @@ import net.minecraft.entity.EntityLivingBase;
 
 import kvverti.enim.modelsystem.EntityState;
 
-public class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
+public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 
 	public static final float NAMETAG_VISIBILITY_RANGE_SQ = 64.0f * 64.0f;
 
-	public LivingRender(RenderManager manager, String modDomain, String entityStateFile) {
+	protected LivingRender(RenderManager manager, String modDomain, String entityStateFile, String... stateNames) {
 
-		super(manager, modDomain, entityStateFile);
+		super(manager, modDomain, entityStateFile, stateNames);
 	}
 
 	@Override

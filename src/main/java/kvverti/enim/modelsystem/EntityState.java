@@ -81,8 +81,7 @@ public final class EntityState {
 
 		} catch(ParserException|IOException e) {
 
-			Logger.error(e.toString());
-			Logger.error("Could not load entity state " + this);
+			Logger.error(e);
 			model.setMissingno();
 			image = imageLoc = Util.MISSING_LOCATION;
 		}
@@ -142,11 +141,5 @@ public final class EntityState {
 	public String name() {
 
 		return name;
-	}
-
-	@Override
-	public String toString() {
-
-		return modelFile + "#" + name;
 	}
 }

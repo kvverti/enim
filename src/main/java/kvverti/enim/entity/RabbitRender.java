@@ -7,59 +7,40 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.util.EnumChatFormatting;
 
-import kvverti.enim.modelsystem.EntityState;
-
-public class RabbitRender extends LivingRender<EntityRabbit> {
+public class RabbitRender extends LivingBabyRender<EntityRabbit> {
 
 	public RabbitRender(RenderManager manager, String modDomain, String entityStateFile) {
 
-		super(manager, modDomain, entityStateFile);
+		super(manager, modDomain, entityStateFile,
+			"brown",
+			"white",
+			"black",
+			"gold",
+			"salt",
+			"splotched",
+			"caerbannog",
+			"toast",
+			"eclipse");
 	}
 
 	@Override
-	public Set<String> getEntityStateNames() {
+	public String getAdultStateFromEntity(EntityRabbit entity) {
 
-		Set<String> set = new HashSet<>();
-		set.add("brown");
-		set.add("white");
-		set.add("black");
-		set.add("gold");
-		set.add("salt");
-		set.add("splotched");
-		set.add("caerbannog");
-		set.add("toast");
-		set.add("eclipse");
-		set.add("baby_brown");
-		set.add("baby_white");
-		set.add("baby_black");
-		set.add("baby_gold");
-		set.add("baby_salt");
-		set.add("baby_splotched");
-		set.add("baby_caerbannog");
-		set.add("baby_toast");
-		set.add("baby_eclipse");
-		return set;
-	}
-
-	@Override
-	public EntityState getStateFromEntity(EntityRabbit entity) {
-
-		String baby = entity.isChild() ? "baby_" : "";
 		String name = EnumChatFormatting.getTextWithoutFormattingCodes(entity.getName());
 		if("Toast".equals(name))
-			return states.get(baby + "toast");
+			return "toast";
 		else if("Eclipse".equals(name))
-			return states.get(baby + "eclipse");
+			return "eclipse";
 		else switch(entity.getRabbitType()) {
 
-			case 0: return states.get(baby + "brown");
-			case 1: return states.get(baby + "white");
-			case 2: return states.get(baby + "black");
-			case 3: return states.get(baby + "splotched");
-			case 4: return states.get(baby + "gold");
-			case 5: return states.get(baby + "salt");
-			case 99: return states.get(baby + "caerbannog");
-			default: return states.get(baby + "brown");
+			case 0: return "brown";
+			case 1: return "white";
+			case 2: return "black";
+			case 3: return "splotched";
+			case 4: return "gold";
+			case 5: return "salt";
+			case 99: return "caerbannog";
+			default: return "brown";
 		}
 	}
 }

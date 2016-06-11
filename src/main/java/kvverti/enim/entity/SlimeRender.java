@@ -16,25 +16,14 @@ public class SlimeRender extends LivingRender<EntitySlime> {
 
 	public SlimeRender(RenderManager manager, String modDomain, String entityStateFile) {
 
-		super(manager, modDomain, entityStateFile);
-	}
-
-	@Override
-	public Set<String> getEntityStateNames() {
-
-		Set<String> s = new HashSet<>();
-		s.add("size_0");
-		s.add("size_1");
-		s.add("size_2");
-		s.add("size_3");
-		return s;
+		super(manager, modDomain, entityStateFile, "size_0", "size_1", "size_2", "size_3");
 	}
 
 	@Override
 	public EntityState getStateFromEntity(EntitySlime entity) {
 
-		EntityState state = states.get("size_" + (entity.getSlimeSize() - 1));
-		if(state == null) state = states.get("size_3");
+		EntityState state = getState("size_" + (entity.getSlimeSize() - 1));
+		if(state == null) state = getState("size_3");
 		return state;
 	}
 

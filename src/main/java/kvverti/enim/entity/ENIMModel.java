@@ -89,7 +89,7 @@ public class ENIMModel extends ModelBase {
 
 		animateLooping(entity, AnimationType.IDLE, true);
 		animateLooping(entity, AnimationType.MOVE, speed > 0.05f);
-		animateLooping(entity, AnimationType.AIR, entity.isAirBorne);
+		animateLooping(entity, AnimationType.AIR, !entity.isInWater() && !entity.onGround);
 		animateLooping(entity, AnimationType.SWIM, entity.isInWater() && !entity.onGround);
 		animateNoLooping(AnimationType.JUMP, jumpTime(entity));
 	}

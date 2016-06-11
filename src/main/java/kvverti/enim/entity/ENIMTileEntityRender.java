@@ -17,18 +17,20 @@ import kvverti.enim.modelsystem.ModelElement;
 import kvverti.enim.modelsystem.EntityState;
 import kvverti.enim.modelsystem.Keys;
 
-public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecialRenderer<T> implements ReloadableRender {
+public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecialRenderer<T> implements ReloadableRender {
 
-	protected final Map<String, EntityState> states;
+	private final Map<String, EntityState> states;
 	private final ResourceLocation entityStateFile;
 
-	public ENIMTileEntityRender(String modDomain, String entityStateName) {
+	protected ENIMTileEntityRender(String modDomain, String entityStateFile, String... stateNames) {
 
-		entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateName + Keys.JSON);
+		this.entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateFile + Keys.JSON);
 		states = new HashMap<>();
-		getEntityStateNames().forEach(s -> states.put(s, new EntityState(s)));
+		for(String s : stateNames) { states.put(s, new EntityState(s)); }
 		ReloadableRender.renders.add(this);
 	}
+
+	public abstract EntityState getStateFromTile(T tile);
 
 	@Override
 	public final ResourceLocation getEntityStateFile() {
@@ -36,12 +38,15 @@ public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecia
 		return entityStateFile;
 	}
 
-	@Override
-	public Set<String> getEntityStateNames() {
+	protected EntityState getState(String name) {
 
-		Set<String> s = new HashSet<>();
-		s.add(Keys.STATE_NORMAL);
-		return s;
+		return states.get(name);
+	}
+
+	@Override
+	public final Set<String> getEntityStateNames() {
+
+		return new HashSet<>(states.keySet());
 	}
 
 	@Override
@@ -64,11 +69,6 @@ public class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecia
 	public void preRender(T tile, EntityState state) { }
 
 	public void postRender(T tile) { }
-
-	public EntityState getStateFromTile(T tile) {
-
-		return states.get(Keys.STATE_NORMAL);
-	}
 
 	@Override
 	public final void reloadRender(EntityState state) {

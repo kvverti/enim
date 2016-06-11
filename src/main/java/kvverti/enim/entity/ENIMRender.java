@@ -26,7 +26,7 @@ import kvverti.enim.modelsystem.Keys;
 import kvverti.enim.Logger;
 import kvverti.enim.Util;
 
-public class ENIMRender<T extends Entity> extends Render<T> implements ReloadableRender {
+public abstract class ENIMRender<T extends Entity> extends Render<T> implements ReloadableRender {
 
 //	protected final RenderManager renderManager;
 
@@ -54,16 +54,23 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 			float.class);
 	}
 
-	protected final Map<String, EntityState> states;
+	private final Map<String, EntityState> states;
 	private final ResourceLocation entityStateFile;
 
-	public ENIMRender(RenderManager manager, String modDomain, String entityStateName) {
+	protected ENIMRender(RenderManager manager, String modDomain, String entityStateFile, String... stateNames) {
 
 		super(manager);
-		entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateName + Keys.JSON);
+		this.entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateFile + Keys.JSON);
 		states = new HashMap<>();
-		getEntityStateNames().forEach(s -> states.put(s, new EntityState(s)));
+		for(String s : stateNames) { states.put(s, new EntityState(s)); }
 		ReloadableRender.renders.add(this);
+	}
+
+	public abstract EntityState getStateFromEntity(T entity);
+
+	protected EntityState getState(String name) {
+
+		return states.get(name);
 	}
 
 	@Override
@@ -73,11 +80,9 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 	}
 
 	@Override
-	public Set<String> getEntityStateNames() {
+	public final Set<String> getEntityStateNames() {
 
-		Set<String> s = new HashSet<>();
-		s.add(Keys.STATE_NORMAL);
-		return s;
+		return new HashSet<>(states.keySet());
 	}
 
 	@Override
@@ -131,11 +136,6 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 	public void preRender(T entity, EntityState state, float yaw) { }
 
 	public void postRender(T entity) { }
-
-	public EntityState getStateFromEntity(T entity) {
-
-		return states.get(Keys.STATE_NORMAL);
-	}
 
 	@Override
 	protected final ResourceLocation getEntityTexture(T entity) {

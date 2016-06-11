@@ -45,12 +45,13 @@ public final class Enim implements IResourceManagerReloadListener {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
 
-		registerEntity(EntityBoat.class, m -> new ENIMRender<>(m, "minecraft", "boat"));
-		registerEntity(EntityLeashKnot.class, m -> new ENIMRender<>(m, "minecraft", "lead"));
+		registerEntity(EntityBoat.class, m -> new BasicRender<>(m, "minecraft", "boat"));
+		registerEntity(EntityLeashKnot.class, m -> new BasicRender<>(m, "minecraft", "lead"));
 		registerEntity(EntityMinecartEmpty.class, m -> new MinecartRender(m, "minecraft", "minecart"));
 		registerEntity(EntitySlime.class, m -> new SlimeRender(m, "minecraft", "slime"));
-		registerEntity(EntityCreeper.class, m -> new LivingRender<>(m, "minecraft", "creeper"));
+		registerEntity(EntityCreeper.class, m -> new CreeperRender(m, "minecraft", "creeper"));
 		registerEntity(EntityRabbit.class, m -> new RabbitRender(m, "minecraft", "rabbit"));
+		registerEntity(EntityChicken.class, m -> new BasicLivingBabyRender<>(m, "minecraft", "chicken"));
 	}
 
 	@EventHandler
