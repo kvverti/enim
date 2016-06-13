@@ -1,12 +1,11 @@
 package kvverti.enim;
 
 import java.io.IOException;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.function.Function;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -38,6 +37,7 @@ public final class Enim implements IResourceManagerReloadListener {
 	public static final String ID = "enim";
 	public static final String NAME = "ENIM";
 	public static final String VERSION = "dev-2016.02.16";
+	private static final List<ReloadableRender> renders = new ArrayList<>(20);
 
 	@Instance(ID)
 	public static Enim instance;
@@ -75,7 +75,7 @@ public final class Enim implements IResourceManagerReloadListener {
 		Logger.info("Reloading resources...");
 
 		Map<String, EntityState> models = new HashMap<>();
-		for(ReloadableRender r : ReloadableRender.renders) {
+		for(ReloadableRender r : renders) {
 
 			try {
 				ResourceLocation estateLoc = r.getEntityStateFile();
@@ -97,13 +97,20 @@ public final class Enim implements IResourceManagerReloadListener {
 		Logger.info("Reload complete");
 	}
 
-	private <T extends Entity> void registerEntity(Class<T> cls, IRenderFactory<? super T> factory) {
+	private <T extends Entity> void registerEntity(Class<T> cls,
+		Function<? super RenderManager, ? extends ENIMRender<? super T>> factory) {
 
-		RenderingRegistry.registerEntityRenderingHandler(cls, factory);
+		RenderingRegistry.registerEntityRenderingHandler(cls, manager -> {
+
+			ENIMRender<? super T> r = factory.apply(manager);
+			renders.add(r);
+			return r;
+		});
 	}
 
 	private <T extends TileEntity> void registerTile(Class<T> cls, ENIMTileEntityRender<? super T> render) {
 
 		ClientRegistry.bindTileEntitySpecialRenderer(cls, render);
+		renders.add(render);
 	}
 }

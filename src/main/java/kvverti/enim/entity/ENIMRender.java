@@ -63,7 +63,6 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 		this.entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateFile + Keys.JSON);
 		states = new HashMap<>();
 		for(String s : stateNames) { states.put(s, new EntityState(s)); }
-		ReloadableRender.renders.add(this);
 	}
 
 	public abstract EntityState getStateFromEntity(T entity);

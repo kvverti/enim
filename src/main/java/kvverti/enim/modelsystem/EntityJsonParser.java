@@ -23,6 +23,8 @@ import kvverti.enim.Util.*;
 
 public final class EntityJsonParser {
 
+	private static final JsonObject EMPTY_JSON_OBJ = new JsonObject();
+
 	private final IResource file;
 	JsonObject json = null;
 
@@ -36,12 +38,15 @@ public final class EntityJsonParser {
 		try {
 			initJson();
 			JsonObject obj = json.getAsJsonObject(Keys.STATES_TAG);
+			JsonObject defaults = json.has(Keys.STATES_DEFAULTS) ?
+				json.getAsJsonObject(Keys.STATES_DEFAULTS)
+				: EMPTY_JSON_OBJ;
 			for(Map.Entry<String, JsonElement> key : obj.entrySet()) {
 
 				if(states.contains(key.getKey())) {
 
 					EntityState state = parseEntityState(
-						key.getKey(), key.getValue().getAsJsonObject());
+						key.getKey(), key.getValue().getAsJsonObject(), defaults);
 					locs.put(key.getKey(), state);
 				}
 			}
@@ -52,21 +57,38 @@ public final class EntityJsonParser {
 		}
 	}
 
-	public EntityState parseEntityState(String name, JsonObject obj) throws ParserException {
+	private EntityState parseEntityState(String name, JsonObject obj, JsonObject defaults) throws ParserException {
 
 		try {
-			ResourceLocation model;
-			ResourceLocation texture;
+			ResourceLocation model = null;
+			ResourceLocation texture = null;
 			float rotation;
 			float scale;
 			int[] texSize;
 
-			model = getResourceLocation(obj.get(Keys.STATE_MODEL_NAME).getAsString(), Keys.MODELS_DIR, Keys.JSON);
-			texture = getResourceLocation(obj.get(Keys.STATE_TEXTURE).getAsString(), Keys.TEXTURES_DIR, Keys.PNG);
-			rotation = getFloat(obj, Keys.STATE_ROTATION);
-			scale = getScaleOptional(obj, Keys.STATE_SCALE);
-			texSize = getDims(obj);
+			//fill default properties
+			if(defaults.has(Keys.STATE_TEXTURE))
+				texture = getResourceLocation(
+					defaults.get(Keys.STATE_TEXTURE).getAsString(), Keys.TEXTURES_DIR, Keys.PNG);
+			rotation = getFloat(defaults, Keys.STATE_ROTATION);
+			scale = getScaleOptional(defaults, Keys.STATE_SCALE);
+			texSize = getDims(defaults);
 
+			//fill specific properties
+			if(obj.has(Keys.STATE_MODEL_NAME))
+				model = getResourceLocation(
+					obj.get(Keys.STATE_MODEL_NAME).getAsString(), Keys.MODELS_DIR, Keys.JSON);
+			if(obj.has(Keys.STATE_TEXTURE))
+				texture = getResourceLocation(
+					obj.get(Keys.STATE_TEXTURE).getAsString(), Keys.TEXTURES_DIR, Keys.PNG);
+			if(obj.has(Keys.STATE_ROTATION))
+				rotation = getFloat(obj, Keys.STATE_ROTATION);
+			if(obj.has(Keys.STATE_SCALE))
+				scale = getScaleOptional(obj, Keys.STATE_SCALE);
+			if(obj.has(Keys.STATE_TEX_SIZE))
+				texSize = getDims(obj);
+
+			if(model == null || texture == null) throw new ParserException("Model or texture not found");
 			return new EntityState(name, model, rotation, scale, texture, texSize[0], texSize[1]);
 
 		} catch(JsonParseException|SyntaxException e) {

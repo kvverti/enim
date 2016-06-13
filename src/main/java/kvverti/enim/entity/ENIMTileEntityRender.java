@@ -27,7 +27,6 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 		this.entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateFile + Keys.JSON);
 		states = new HashMap<>();
 		for(String s : stateNames) { states.put(s, new EntityState(s)); }
-		ReloadableRender.renders.add(this);
 	}
 
 	public abstract EntityState getStateFromTile(T tile);

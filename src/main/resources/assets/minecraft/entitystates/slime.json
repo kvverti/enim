@@ -1,8 +1,12 @@
 {
+	"defaults": {
+		"texture": "entity/slime/slime",
+		"size": [64,32]
+	},
 	"states": {
-		"size_0": { "model": "slime", "texture": "entity/slime/slime", "size": [64,32], "scale": 1.0 },
-		"size_1": { "model": "slime", "texture": "entity/slime/slime", "size": [64,32], "scale": 2.0 },
-		"size_2": { "model": "slime", "texture": "entity/slime/slime", "size": [64,32], "scale": 3.0 },
-		"size_3": { "model": "slime", "texture": "entity/slime/slime", "size": [64,32], "scale": 4.0 }
+		"size_0": { "model": "slime" },
+		"size_1": { "model": "slime", "scale": 2.0 },
+		"size_2": { "model": "slime", "scale": 3.0 },
+		"size_3": { "model": "slime", "scale": 4.0 }
 	}
 }

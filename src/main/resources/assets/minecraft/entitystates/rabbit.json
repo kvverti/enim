@@ -1,22 +1,25 @@
 {
+	"defaults": {
+		"size": [64,32]
+	},
 	"states": {
-		"brown":          { "model": "rabbit", "texture": "entity/rabbit/brown",           "size": [64,32] },
-		"white":          { "model": "rabbit", "texture": "entity/rabbit/white",           "size": [64,32] },
-		"black":          { "model": "rabbit", "texture": "entity/rabbit/black",           "size": [64,32] },
-		"gold":           { "model": "rabbit", "texture": "entity/rabbit/gold",            "size": [64,32] },
-		"salt":           { "model": "rabbit", "texture": "entity/rabbit/salt",            "size": [64,32] },
-		"splotched":      { "model": "rabbit", "texture": "entity/rabbit/white_splotched", "size": [64,32] },
-		"caerbannog":     { "model": "rabbit", "texture": "entity/rabbit/caerbannog",      "size": [64,32] },
-		"toast":          { "model": "rabbit", "texture": "entity/rabbit/toast",           "size": [64,32] },
-		"eclipse":        { "model": "rabbit", "texture": "entity/rabbit/eclipse",         "size": [64,32] },
-		"baby_brown":     { "model": "baby_rabbit", "texture": "entity/rabbit/brown",           "size": [64,32], "scale": 0.5 },
-		"baby_white":     { "model": "baby_rabbit", "texture": "entity/rabbit/white",           "size": [64,32], "scale": 0.5 },
-		"baby_black":     { "model": "baby_rabbit", "texture": "entity/rabbit/black",           "size": [64,32], "scale": 0.5 },
-		"baby_gold":      { "model": "baby_rabbit", "texture": "entity/rabbit/gold",            "size": [64,32], "scale": 0.5 },
-		"baby_salt":      { "model": "baby_rabbit", "texture": "entity/rabbit/salt",            "size": [64,32], "scale": 0.5 },
-		"baby_splotched": { "model": "baby_rabbit", "texture": "entity/rabbit/white_splotched", "size": [64,32], "scale": 0.5 },
-		"baby_caerbannog":{ "model": "baby_rabbit", "texture": "entity/rabbit/caerbannog",      "size": [64,32], "scale": 0.5 },
-		"baby_toast":     { "model": "baby_rabbit", "texture": "entity/rabbit/toast",           "size": [64,32], "scale": 0.5 },
-		"baby_eclipse":   { "model": "baby_rabbit", "texture": "entity/rabbit/eclipse",         "size": [64,32], "scale": 0.5 }
+		"brown":          { "model": "rabbit", "texture": "entity/rabbit/brown" },
+		"white":          { "model": "rabbit", "texture": "entity/rabbit/white" },
+		"black":          { "model": "rabbit", "texture": "entity/rabbit/black" },
+		"gold":           { "model": "rabbit", "texture": "entity/rabbit/gold" },
+		"salt":           { "model": "rabbit", "texture": "entity/rabbit/salt" },
+		"splotched":      { "model": "rabbit", "texture": "entity/rabbit/white_splotched" },
+		"caerbannog":     { "model": "rabbit", "texture": "entity/rabbit/caerbannog" },
+		"toast":          { "model": "rabbit", "texture": "entity/rabbit/toast" },
+		"eclipse":        { "model": "rabbit", "texture": "entity/rabbit/eclipse" },
+		"baby_brown":     { "model": "baby_rabbit", "texture": "entity/rabbit/brown",           "scale": 0.5 },
+		"baby_white":     { "model": "baby_rabbit", "texture": "entity/rabbit/white",           "scale": 0.5 },
+		"baby_black":     { "model": "baby_rabbit", "texture": "entity/rabbit/black",           "scale": 0.5 },
+		"baby_gold":      { "model": "baby_rabbit", "texture": "entity/rabbit/gold",            "scale": 0.5 },
+		"baby_salt":      { "model": "baby_rabbit", "texture": "entity/rabbit/salt",            "scale": 0.5 },
+		"baby_splotched": { "model": "baby_rabbit", "texture": "entity/rabbit/white_splotched", "scale": 0.5 },
+		"baby_caerbannog":{ "model": "baby_rabbit", "texture": "entity/rabbit/caerbannog",      "scale": 0.5 },
+		"baby_toast":     { "model": "baby_rabbit", "texture": "entity/rabbit/toast",           "scale": 0.5 },
+		"baby_eclipse":   { "model": "baby_rabbit", "texture": "entity/rabbit/eclipse",         "scale": 0.5 }
 	}
 }

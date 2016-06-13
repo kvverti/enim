@@ -22,6 +22,11 @@ public final class ENIMModelRenderer extends ModelRenderer {
 	private final boolean translucent;
 	private final boolean head;
 	private boolean compiled = false;
+	public float headYaw;
+	public float pitch;
+	public float shiftDistanceX;
+	public float shiftDistanceY;
+	public float shiftDistanceZ;
 
 	static {
 
@@ -47,7 +52,7 @@ public final class ENIMModelRenderer extends ModelRenderer {
 	public ENIMModelRenderer(ModelBase model, ModelElement features) {
 
 		super(model, features.name());
-		defaultRotations = features.defaultRotation().clone();
+		defaultRotations = features.defaultRotation();
 		defaultScale = features.scale();
 		translucent = features.isTranslucent();
 		head = features.isHead();
@@ -64,15 +69,7 @@ public final class ENIMModelRenderer extends ModelRenderer {
 	}
 
 	@Override
-	@Deprecated
 	public void render(float scale) {
-
-		kvverti.enim.Logger.warn("Calling ModelRenderer#render(float) is deprecated!");
-		kvverti.enim.Logger.warn("Use ENIMModelRenderer#render(float, float, float) instead");
-		super.render(scale);
-	}
-
-	public void render(float scale, float headYaw, float pitch) {
 
 		if(!isHidden && showModel) {
 
@@ -97,8 +94,7 @@ public final class ENIMModelRenderer extends ModelRenderer {
 			GlStateManager.scale(defaultScale, defaultScale, defaultScale);
 			GlStateManager.translate(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
 			GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
-			if(childModels != null) childModels.forEach(
-				box -> ((ENIMModelRenderer) box).render(scale, headYaw, pitch));
+			if(childModels != null) childModels.forEach(box -> box.render(scale));
 			GlStateManager.popMatrix();
 		}
 	}

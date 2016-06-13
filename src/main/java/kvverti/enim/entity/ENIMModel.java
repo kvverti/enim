@@ -43,8 +43,8 @@ public class ENIMModel extends ModelBase {
 
 	private void renderHelper(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale) {
 
-		opaques.forEach(box -> box.render(scale, headYaw, pitch));
-		lucents.forEach(box -> box.render(scale, headYaw, pitch));
+		opaques.forEach(box -> box.render(scale));
+		lucents.forEach(box -> box.render(scale));
 	}
 
 	private void setAnglesHelper(Animation anim, int frame) {
@@ -85,6 +85,8 @@ public class ENIMModel extends ModelBase {
 			box.rotateAngleX = 0.0f;
 			box.rotateAngleY = 0.0f;
 			box.rotateAngleZ = 0.0f;
+			box.headYaw = headYaw;
+			box.pitch = pitch;
 		});
 
 		animateLooping(entity, AnimationType.IDLE, true);
