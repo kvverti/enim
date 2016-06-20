@@ -1,0 +1,124 @@
+{
+	"elements": [
+		{
+			"name": "body",
+			"from": [5,2.1,0.45],
+			"to": [11,7.1,10.45],
+			"uv": [0,0],
+			"origin": [8,1,0],
+			"rotation": [20,0,0]
+		},
+		{
+			"name": "right_foot",
+			"parent": "right_hindleg",
+			"from": [4,0,0],
+			"to": [6,1,7],
+			"uv": [8,24],
+			"origin": [5,1,0],
+			"rotation": [-20,0,0]
+		},
+		{
+			"name": "left_foot",
+			"parent": "left_hindleg",
+			"from": [10,0,0],
+			"to": [12,1,7],
+			"uv": [26,24],
+			"origin": [11,1,0],
+			"rotation": [-20,0,0]
+		},
+		{
+			"name": "right_hindleg",
+			"parent": "body",
+			"from": [4,1,0],
+			"to": [6,5,5],
+			"uv": [16,15],
+			"origin": [5,5,5]
+		},
+		{
+			"name": "left_hindleg",
+			"parent": "body",
+			"from": [10,1,0],
+			"to": [12,5,5],
+			"uv": [30,15],
+			"origin": [11,5,5]
+		},
+		{
+			"name": "right_foreleg",
+			"parent": "body",
+			"from": [4,-3,8.45],
+			"to": [6,4,10.45],
+			"uv": [0,15],
+			"origin": [5,3,9.45],
+			"rotation": [-10,0,0]
+		},
+		{
+			"name": "left_foreleg",
+			"parent": "body",
+			"from": [10,-3,8.45],
+			"to": [12,4,10.45],
+			"uv": [8,15],
+			"origin": [11,3,9.45],
+			"rotation": [-10,0,0]
+		},
+		{
+			"name": "tail",
+			"parent": "body",
+			"from": [6.5,2.3,-1],
+			"to": [9.5,5.3,1],
+			"uv": [52,6]
+		},
+		{
+			"name": "head",
+			"from": [5.5,8,8],
+			"to": [10.5,12,13],
+			"uv": [32,0],
+			"origin": [8,9,8],
+			"head": true
+		},
+		{
+			"name": "nose",
+			"parent": "head",
+			"from": [7.5,9.5,12.5],
+			"to": [8.5,10.5,13.5],
+			"uv": [32,9]
+		},
+		{
+			"name": "right_ear",
+			"parent": "head",
+			"from": [5.5,12,8],
+			"to": [7.5,17,9],
+			"uv": [52,0],
+			"origin": [8,12,8],
+			"rotation": [0,-15,0]
+		},
+		{
+			"name": "left_ear",
+			"parent": "head",
+			"from": [8.5,12,8],
+			"to": [10.5,17,9],
+			"uv": [58,0],
+			"origin": [8,12,8],
+			"rotation": [0,15,0]
+		},
+		{
+			"name": "antennae",
+			"parent": "head",
+			"from": [5.5,12,12],
+			"to": [10.5,17,12],
+			"uv": [37,9],
+			"origin": [8,12,12],
+			"rotation": [15,0,0]
+		}
+	],
+	"animations": {
+		"jump": {
+			"script": "rabbit_jump",
+			"with": {
+				"left_fore": "left_foreleg",
+				"right_fore": "right_foreleg",
+				"left_hind": "left_hindleg",
+				"right_hind": "right_hindleg"
+			}
+		}
+	}
+}

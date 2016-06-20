@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import net.minecraft.client.Minecraft;
@@ -22,6 +23,8 @@ import kvverti.enim.Util.*;
 
 public final class EntityJsonParser {
 
+	private static final JsonObject EMPTY_JSON_OBJ = new JsonObject();
+
 	private final IResource file;
 	JsonObject json = null;
 
@@ -35,12 +38,15 @@ public final class EntityJsonParser {
 		try {
 			initJson();
 			JsonObject obj = json.getAsJsonObject(Keys.STATES_TAG);
+			JsonObject defaults = json.has(Keys.STATES_DEFAULTS) ?
+				json.getAsJsonObject(Keys.STATES_DEFAULTS)
+				: EMPTY_JSON_OBJ;
 			for(Map.Entry<String, JsonElement> key : obj.entrySet()) {
 
 				if(states.contains(key.getKey())) {
 
 					EntityState state = parseEntityState(
-						key.getKey(), key.getValue().getAsJsonObject());
+						key.getKey(), key.getValue().getAsJsonObject(), defaults);
 					locs.put(key.getKey(), state);
 				}
 			}
@@ -51,21 +57,38 @@ public final class EntityJsonParser {
 		}
 	}
 
-	public EntityState parseEntityState(String name, JsonObject obj) throws ParserException {
+	private EntityState parseEntityState(String name, JsonObject obj, JsonObject defaults) throws ParserException {
 
 		try {
-			ResourceLocation model;
-			ResourceLocation texture;
+			ResourceLocation model = null;
+			ResourceLocation texture = null;
 			float rotation;
 			float scale;
 			int[] texSize;
 
-			model = getResourceLocation(obj.get(Keys.STATE_MODEL_NAME).getAsString(), Keys.MODELS_DIR, Keys.JSON);
-			texture = getResourceLocation(obj.get(Keys.STATE_TEXTURE).getAsString(), Keys.TEXTURES_DIR, Keys.PNG);
-			rotation = getFloat(obj, Keys.STATE_ROTATION);
-			scale = getScaleOptional(obj, Keys.STATE_SCALE);
-			texSize = getDims(obj);
+			//fill default properties
+			if(defaults.has(Keys.STATE_TEXTURE))
+				texture = getResourceLocation(
+					defaults.get(Keys.STATE_TEXTURE).getAsString(), Keys.TEXTURES_DIR, Keys.PNG);
+			rotation = getFloat(defaults, Keys.STATE_ROTATION);
+			scale = getScaleOptional(defaults, Keys.STATE_SCALE);
+			texSize = getDims(defaults);
 
+			//fill specific properties
+			if(obj.has(Keys.STATE_MODEL_NAME))
+				model = getResourceLocation(
+					obj.get(Keys.STATE_MODEL_NAME).getAsString(), Keys.MODELS_DIR, Keys.JSON);
+			if(obj.has(Keys.STATE_TEXTURE))
+				texture = getResourceLocation(
+					obj.get(Keys.STATE_TEXTURE).getAsString(), Keys.TEXTURES_DIR, Keys.PNG);
+			if(obj.has(Keys.STATE_ROTATION))
+				rotation = getFloat(obj, Keys.STATE_ROTATION);
+			if(obj.has(Keys.STATE_SCALE))
+				scale = getScaleOptional(obj, Keys.STATE_SCALE);
+			if(obj.has(Keys.STATE_TEX_SIZE))
+				texSize = getDims(obj);
+
+			if(model == null || texture == null) throw new ParserException("Model or texture not found");
 			return new EntityState(name, model, rotation, scale, texture, texSize[0], texSize[1]);
 
 		} catch(JsonParseException|SyntaxException e) {
@@ -93,7 +116,7 @@ public final class EntityJsonParser {
 				.filter(obj -> getString(obj, Keys.ELEM_NAME).equals(name))
 				.map(ThrowingFunction.of(this::buildElement))
 				.findFirst()
-				.orElse(null);
+				.orElseThrow(() -> new ElementNotFoundException(name));
 
 		} catch(JsonParseException e) {
 
@@ -127,7 +150,42 @@ public final class EntityJsonParser {
 		}
 	}
 
-	public void getElementImports(Set<? super ModelElement> set) throws ParserException {
+	public void applyOverrides(Set<ModelElement> set) throws ParserException {
+
+		try {
+			initJson();
+			if(!json.has(Keys.OVERRIDES_TAG)) return;
+			JsonObject overrides = json.getAsJsonObject(Keys.OVERRIDES_TAG);
+			Set<ModelElement> rides = set.stream()
+				.filter(elem -> overrides.has(elem.name()))
+				.map(elem -> replaceOverride(overrides, elem))
+				.collect(Collectors.toSet());
+			rides.addAll(set);
+			set.clear();
+			set.addAll(rides);
+
+		} catch(JsonParseException e) {
+
+			throw new ParserException(e);
+		}
+	}
+
+	private ModelElement replaceOverride(JsonObject overrides, ModelElement elem) {
+
+		ModelElement.Builder b = new ModelElement.Builder(elem);
+		JsonObject obj = overrides.getAsJsonObject(elem.name());
+		if(obj.has(Keys.ELEM_SCALE))
+			b.setScale(getScaleOptional(obj, Keys.ELEM_SCALE));
+		if(obj.has(Keys.ELEM_DEFROT))
+			b.setDefaultRotation(getFloat(obj, Keys.ELEM_DEFROT, 0),
+				getFloat(obj, Keys.ELEM_DEFROT, 1),
+				getFloat(obj, Keys.ELEM_DEFROT, 2));
+		try { return b.build(); }
+		catch(SyntaxException e) { throw new AssertionError("Invalid element format here?!?!?"); }
+		//No exception should be thrown, as the name and coords are already validated
+	}
+
+	public void getImports(Set<? super ModelElement> set, Map<AnimationType, Animation> map) throws ParserException {
 
 		try {
 			initJson();
@@ -136,16 +194,24 @@ public final class EntityJsonParser {
 			for(Map.Entry<String, JsonElement> entry : imports.entrySet()) {
 
 				EntityJsonParser parser = getParserFor(entry.getKey());
-				JsonArray arr = entry.getValue().getAsJsonArray();
-				if(contains(arr, new JsonPrimitive(Keys.WILDCARD))) {
+				for(JsonElement elem : entry.getValue().getAsJsonArray()) {
 
-					parser.parseElements(set);
+					String str = elem.getAsString();
+					if(str.startsWith(Keys.ANIMS_TAG + ":")) {
 
-				} else for(JsonElement elem : arr) {
+						str = str.substring(Keys.ANIMS_TAG.length() + 1);
+						if(Keys.WILDCARD.equals(str))
+							parser.parseAnimations(map);
+						else {
+							Animation a = parser.getAnimation(str);
+							if(a != Animation.NO_OP) map.put(AnimationType.from(str), a);
+						}
+					} else {
 
-					ModelElement mdl = parser.parseElement(elem.getAsString());
-					if(mdl != null) addSafely(set, mdl);
-					else throw new ElementNotFoundException(elem.getAsString());
+						if(Keys.WILDCARD.equals(str))
+							parser.parseElements(set);
+						else addSafely(set, parser.parseElement(str));
+					}
 				}
 			}
 
@@ -161,12 +227,10 @@ public final class EntityJsonParser {
 		if(json.has(Keys.ANIMS_TAG)) {
 
 			try {
-				JsonObject obj = json.getAsJsonObject(Keys.ANIMS_TAG);
 				for(AnimationType type : AnimationType.values()) {
 
-					JsonObject anim = obj.getAsJsonObject(type.key());
-					Animation a = anim == null ? Animation.NO_OP : getAnimation(anim);
-					map.put(type, a);
+					Animation a = getAnimation(type.key());
+					if(a != Animation.NO_OP) map.put(type, a);
 				}
 
 			} catch(JsonParseException|IOException e) {
@@ -176,19 +240,26 @@ public final class EntityJsonParser {
 
 		} else for(AnimationType type : AnimationType.values()) {
 
-			map.put(type, Animation.NO_OP);
+			map.putIfAbsent(type, Animation.NO_OP);
 		}
 	}
 
-	private Animation getAnimation(JsonObject anim) throws IOException {
+	private Animation getAnimation(String str) throws IOException, ParserException {
 
-		ResourceLocation loc = getResourceLocation(
-			anim.get(Keys.ANIM_SCRIPT).getAsString(), Keys.ANIMS_DIR, Keys.ENIM);
-		IResource animFile = Entities.resourceManager().getResource(loc);
-		JsonObject defines = anim.getAsJsonObject(Keys.ANIM_DEFINES);
-		Map<String, String> defineMap = new HashMap<>();
-		defines.entrySet().forEach(entry -> defineMap.put(entry.getKey(), getString(defines, entry.getKey())));
-		return Animation.compile(animFile, defineMap);
+		initJson();
+		if(json.has(Keys.ANIMS_TAG)) {
+
+			JsonObject anim = json.getAsJsonObject(Keys.ANIMS_TAG).getAsJsonObject(str);
+			if(anim == null) return Animation.NO_OP;
+			ResourceLocation loc = getResourceLocation(
+				anim.get(Keys.ANIM_SCRIPT).getAsString(), Keys.ANIMS_DIR, Keys.ENIM);
+			IResource animFile = Entities.resourceManager().getResource(loc);
+			JsonObject defines = anim.getAsJsonObject(Keys.ANIM_DEFINES);
+			Map<String, String> defineMap = new HashMap<>();
+			defines.entrySet().forEach(entry -> defineMap.put(entry.getKey(), getString(defines, entry.getKey())));
+			return Animation.compile(animFile, defineMap);
+
+		} else return Animation.NO_OP;
 	}
 
 	private void addSafely(Set<? super ModelElement> set, ModelElement elem) throws DuplicateElementException {
@@ -232,7 +303,15 @@ public final class EntityJsonParser {
 				getFloat(obj, Keys.ELEM_DEFROT, 1),
 				getFloat(obj, Keys.ELEM_DEFROT, 2))
 			.setScale(getScaleOptional(obj, Keys.ELEM_SCALE))
+			.setTranslucent(getBoolean(obj, Keys.ELEM_TRANSLUCENT))
+			.setHead(getBoolean(obj, Keys.ELEM_HEAD))
 			.build();
+	}
+
+	private boolean getBoolean(JsonObject obj, String key) {
+
+		JsonElement elem = obj.get(key);
+		return elem == null || elem.isJsonNull() ? false : elem.getAsBoolean();
 	}
 
 	private float getScaleOptional(JsonObject obj, String key) {

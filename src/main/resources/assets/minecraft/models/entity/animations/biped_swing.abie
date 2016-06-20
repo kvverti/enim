@@ -1,0 +1,18 @@
+define left
+define right
+
+freq 6
+
+{
+rotate left  +30 -0 -0
+rotate right -30 -0 -0
+}
+over 2
+{
+rotate left  -60 -0 -0
+rotate right +60 -0 -0
+}
+{
+rotate left  +30 -0 -0
+rotate right -30 -0 -0
+}

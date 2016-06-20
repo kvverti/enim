@@ -56,7 +56,7 @@ public class BannerRender extends SignLikeRender<TileEntityBanner> {
 	public EntityState getStateFromTile(TileEntityBanner tile) {
 
 		//until we implement item rendering
-		return tile.hasWorldObj() ? super.getStateFromTile(tile) : states.get("floor_00");
+		return tile.hasWorldObj() ? super.getStateFromTile(tile) : getState("floor_00");
 	}
 
 	private ResourceLocation bindBannerTexture(TileEntityBanner banner) {

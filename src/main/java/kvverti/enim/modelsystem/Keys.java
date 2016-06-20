@@ -16,12 +16,15 @@ public final class Keys {
 	public static final String ELEM_ROTPOINT = "origin";
 	public static final String ELEM_DEFROT = "rotation";
 	public static final String ELEM_SCALE = "scale";
+	public static final String ELEM_TRANSLUCENT = "translucent";
+	public static final String ELEM_HEAD = "head";
 
 	public static final String ANIMS_TAG = "animations";
 	public static final String ANIM_SCRIPT = "script";
 	public static final String ANIM_DEFINES = "with";
 
 	public static final String STATES_TAG = "states";
+	public static final String STATES_DEFAULTS = "defaults";
 	public static final String STATE_NORMAL = "normal";
 	public static final String STATE_MODEL_NAME = "model";
 	public static final String STATE_MODEL_WEIGHT = "weight";
@@ -29,6 +32,8 @@ public final class Keys {
 	public static final String STATE_TEX_SIZE = "size";
 	public static final String STATE_ROTATION = "y";
 	public static final String STATE_SCALE = "scale";
+
+	public static final String OVERRIDES_TAG = "overrides";
 
 	public static final String STATES_DIR = "entitystates/";
 	public static final String MODELS_DIR = "models/entity/";

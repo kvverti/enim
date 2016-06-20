@@ -1,0 +1,9 @@
+define elem
+
+freq 20
+
+shift  elem -0 +16 +16
+{
+shift  elem -0 -16 -16
+rotate elem -0 +360 -0
+}

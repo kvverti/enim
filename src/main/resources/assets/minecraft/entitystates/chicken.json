@@ -1,0 +1,10 @@
+{
+	"defaults": {
+		"texture": "entity/chicken",
+		"size": [64,32]
+	},
+	"states": {
+		"chicken":      { "model": "chicken" },
+		"baby_chicken": { "model": "baby_chicken", "scale": 0.5 }
+	}
+}

@@ -1,5 +1,7 @@
 package kvverti.enim.entity;
 
+import java.lang.reflect.Method;
+
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
@@ -10,31 +12,64 @@ import java.util.HashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 
 import kvverti.enim.modelsystem.ModelElement;
 import kvverti.enim.modelsystem.EntityState;
 import kvverti.enim.modelsystem.Keys;
 import kvverti.enim.Logger;
+import kvverti.enim.Util;
 
-public class ENIMRender<T extends Entity> extends Render<T> implements ReloadableRender {
+public abstract class ENIMRender<T extends Entity> extends Render<T> implements ReloadableRender {
 
 //	protected final RenderManager renderManager;
 
-	protected final Map<String, EntityState> states;
+	private static final Method renderLeash;
+	private static final RenderLiving<EntityLiving> proxy =
+		new RenderLiving<EntityLiving>(Minecraft.getMinecraft().getRenderManager(), new ENIMModel(), 1.0f) {
+
+			@Override
+			public ResourceLocation getEntityTexture(EntityLiving entity) {
+
+				return Util.MISSING_LOCATION;
+			}
+		};
+
+	static {
+
+		renderLeash = Util.findMethod(RenderLiving.class,
+			void.class,
+			new String[] { "func_110827_b", "renderLeash" },
+			EntityLiving.class,
+			double.class,
+			double.class,
+			double.class,
+			float.class,
+			float.class);
+	}
+
+	private final Map<String, EntityState> states;
 	private final ResourceLocation entityStateFile;
 
-	public ENIMRender(RenderManager manager, String modDomain, String entityStateName) {
+	protected ENIMRender(RenderManager manager, String modDomain, String entityStateFile, String... stateNames) {
 
 		super(manager);
-		entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateName + Keys.JSON);
+		this.entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateFile + Keys.JSON);
 		states = new HashMap<>();
-		getEntityStateNames().forEach(s -> states.put(s, new EntityState(s)));
-		ReloadableRender.renders.add(this);
+		for(String s : stateNames) { states.put(s, new EntityState(s)); }
+	}
+
+	public abstract EntityState getStateFromEntity(T entity);
+
+	protected EntityState getState(String name) {
+
+		return states.get(name);
 	}
 
 	@Override
@@ -44,39 +79,43 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 	}
 
 	@Override
-	public Set<String> getEntityStateNames() {
+	public final Set<String> getEntityStateNames() {
 
-		Set<String> s = new HashSet<>();
-		s.add(Keys.STATE_NORMAL);
-		return s;
+		return new HashSet<>(states.keySet());
 	}
 
 	@Override
 	public final void doRender(T entity, double x, double y, double z, float yaw, float partialTicks) {
 
-		GlStateManager.pushMatrix();
-		GlStateManager.translate((float) x, (float) y, (float) z);
-		GlStateManager.rotate(180.0f, 1.0f, 0.0f, 0.0f);
-		GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
-
-		EntityState state = getStateFromEntity(entity);
-		ENIMModel model = state.model();
-		bindEntityTexture(entity);
-		GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
 		if(shouldRender(entity)) {
 
+			final float VIEW_LOCK = 60.0f;
+			GlStateManager.pushMatrix();
+			GlStateManager.translate((float) x, (float) y, (float) z);
+			GlStateManager.rotate(180.0f, 1.0f, 0.0f, 0.0f);
+			float diff = headYaw(entity, yaw);
+			if     (diff >  VIEW_LOCK) entity.rotationYaw = yaw += diff - VIEW_LOCK;
+			else if(diff < -VIEW_LOCK) entity.rotationYaw = yaw += diff + VIEW_LOCK;
+			GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
+
+			EntityState state = getStateFromEntity(entity);
+			ENIMModel model = state.model();
+			bindEntityTexture(entity);
+			GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
 			preRender(entity, state, yaw);
 			model.render(entity,
 				speed(entity),
 				yaw,
 				entity.ticksExisted + partialTicks,
-				headYaw(entity),
+				headYaw(entity, yaw),
 				entity.rotationPitch,
 				0.0625f * state.scale());
 			postRender(entity);
+			GlStateManager.popMatrix();
 		}
-		GlStateManager.popMatrix();
 		super.doRender(entity, x, y, z, yaw, partialTicks);
+		if(entity instanceof EntityLiving)
+			Util.invokeUnchecked(proxy, renderLeash, entity, x, y, z, yaw, partialTicks);
 	}
 
 	private float speed(Entity entity) {
@@ -86,9 +125,9 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 		return (float) Math.sqrt(dx * dx + dz * dz);
 	}
 
-	private float headYaw(Entity entity) {
+	private float headYaw(Entity entity, float bodyYaw) {
 
-		return entity instanceof EntityLivingBase ? ((EntityLivingBase) entity).rotationYawHead : 0.0f;
+		return entity instanceof EntityLivingBase ? ((EntityLivingBase) entity).rotationYawHead - bodyYaw : 0.0f;
 	}
 
 	public boolean shouldRender(T entity) { return true; }
@@ -96,11 +135,6 @@ public class ENIMRender<T extends Entity> extends Render<T> implements Reloadabl
 	public void preRender(T entity, EntityState state, float yaw) { }
 
 	public void postRender(T entity) { }
-
-	public EntityState getStateFromEntity(T entity) {
-
-		return states.get(Keys.STATE_NORMAL);
-	}
 
 	@Override
 	protected final ResourceLocation getEntityTexture(T entity) {

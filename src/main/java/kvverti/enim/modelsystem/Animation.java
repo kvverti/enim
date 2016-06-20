@@ -17,7 +17,7 @@ import kvverti.enim.Util;
 
 public final class Animation {
 
-	public static final Animation NO_OP = new Animation(Collections.emptyList(), Collections.emptySet());
+	public static final Animation NO_OP = new Animation(Arrays.asList(Collections.emptyMap()), Collections.emptySet());
 
 	      //defineName - elementName
 	private final Map<String, String> definesElements;
@@ -84,7 +84,7 @@ public final class Animation {
 		assert freq > 0 : "Non-positive frequency";
 		List<Map<String, float[]>> frameList = new ArrayList<>();
 		Map<String, float[]> frameMap = new HashMap<>();
-		defines.forEach(define -> frameMap.put(define, new float[3]));
+		defines.forEach(define -> frameMap.put(define, new float[6]));
 		for(AnimationFrame frame : frames) {
 
 			Util.validate(frame.anemes(),
@@ -109,12 +109,10 @@ public final class Animation {
 				case REPEAT:
 					fillRepeat(frames, animFrame, trueFrame, iValue, freq);
 					break;
-
 				case OVER:
 					fillOver(frames, animFrame, trueFrame, iValue, freq);
 					break;
-
-				default: assert false : "Switch error";
+				default: Util.assertFalse("Invalid statement type");
 			}
 
 		} else {
@@ -149,19 +147,26 @@ public final class Animation {
 
 				float[] start = prevFrame.get(aneme.getSpecifiedElement());
 				float[] stCopy = prevCopy.get(aneme.getSpecifiedElement());
+				float[] angles = start.clone();
 				float[] end = aneme.getAngles();
-				float[] angles = new float[3];
-				for(int i = 0; i < 3; i++) {
+				float[] shift = aneme.getShifts();
+				switch(aneme.getStatementType()) {
 
-					if(aneme.getStatementType() == StatementType.ROTATE) {
+					case ROTATE:
+						for(int i = 0; i < 3; i++) {
 
-						end[i] += stCopy[i];
+							end[i] += stCopy[i];
+							angles[i] = interpolate(start[i], end[i], 1.0f / duration);
+						}
+						break;
+					case SHIFT:
+						for(int i = 0; i < 3; i++) {
 
-					} else if(Float.valueOf(end[i]).equals(Float.valueOf(-0.0f))) {
-
-						end[i] = start[i];
-					}
-					angles[i] = interpolate(start[i], end[i], 1.0f / duration);
+							shift[i] += stCopy[i + 3];
+							angles[i + 3] = interpolate(start[i + 3], shift[i], 1.0f / duration);
+						}
+						break;
+					default: Util.assertFalse("Invalid statement type");
 				}
 				prevFrame.put(aneme.getSpecifiedElement(), angles);
 			}
