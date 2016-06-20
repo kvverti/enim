@@ -49,12 +49,15 @@ public class ENIMModel extends ModelBase {
 
 	private void setAnglesHelper(Animation anim, int frame) {
 
-		anim.frame(frame).forEach((define, angles) -> {
+		anim.frame(frame).forEach((define, forms) -> {
 
 			ENIMModelRenderer box = boxes.get(anim.toElementName(define));
-			box.rotateAngleX = toRadians(angles[0]);
-			box.rotateAngleY = toRadians(angles[1]);
-			box.rotateAngleZ = toRadians(angles[2]);
+			box.rotateAngleX = toRadians(forms[0]);
+			box.rotateAngleY = toRadians(forms[1]);
+			box.rotateAngleZ = toRadians(forms[2]);
+			box.shiftDistanceX = forms[3] / 16.0f;
+			box.shiftDistanceY = forms[4] / 16.0f;
+			box.shiftDistanceZ = forms[5] / 16.0f;
 		});
 	}
 

@@ -111,6 +111,11 @@ public final class Util {
 		if(!condition) throw new AssertionError(message);
 	}
 
+	public static void assertFalse(Object message) {
+
+		assertThat(false, message);
+	}
+
 	public static class WrappedCheckedException extends RuntimeException {
 
 		private final Class<? extends Throwable> wrapType;

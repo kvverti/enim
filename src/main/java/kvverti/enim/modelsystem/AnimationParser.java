@@ -135,16 +135,13 @@ final class AnimationParser {
 				case DEFINITION:
 					i = addDefine(statements, i, defines);
 					break;
-
 				case FREQUENCY:
 					if(freq != 1) throw new ParserException("Duplicate freq statement");
 					freq = ((StateFreq) statements.get(i++)).getFreq();
 					break;
-
 				case PAUSE:
 					i = addPause(statements, i, frames);
 					break;
-
 				default:
 					i = addFrame(statements, i, frames);
 					break;

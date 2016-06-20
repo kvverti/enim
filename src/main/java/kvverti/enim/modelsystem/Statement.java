@@ -2,29 +2,16 @@ package kvverti.enim.modelsystem;
 
 public abstract class Statement {
 
-	private final Token[] args;
 	private final StatementType type;
 
-	Statement(StatementType t, Token... ts) {
+	Statement(StatementType t) {
 
-		args = ts;
 		type = t;
-	}
-
-	/* Guaranteed to be syntactically correct */
-	public final Token[] getTokens() {
-
-		return args;
 	}
 
 	public final StatementType getStatementType() {
 
 		return type;
-	}
-
-	public final int tokenCount() {
-
-		return args.length;
 	}
 
 	public static Statement compile(StatementType type, Token... args) throws SyntaxException {
@@ -34,13 +21,13 @@ public abstract class Statement {
 
 			case DEFINITION: return new StateDefine(args);
 			case FREQUENCY: return new StateFreq(args);
-			case SET: return new StateSet(args);
 			case ROTATE: return new StateRotate(args);
+			case SHIFT: return new StateShift(args);
 			case PAUSE: return new StatePause(args);
 			case REPEAT: return new StateRepeat(args);
 			case OVER: return new StateOver(args);
-			case START_FRAME: return new StateStart(args);
-			case END_FRAME: return new StateEnd(args);
+			case START_FRAME: return StateStart.INSTANCE;
+			case END_FRAME: return StateEnd.INSTANCE;
 
 			default: throw new IllegalArgumentException("Unknown StatementType: " + type);
 		}
@@ -60,14 +47,9 @@ public abstract class Statement {
 	}
 
 	@Override
-	public final String toString() {
+	public String toString() {
 
-		StringBuilder sb = new StringBuilder().append(type.getName());
-		for(Token t : args) {
-
-			sb.append(' ').append(t.getValue());
-		}
-		return sb.toString();
+		return type.getName();
 	}
 
 	public boolean isAneme() {

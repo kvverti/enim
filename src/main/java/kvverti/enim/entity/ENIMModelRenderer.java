@@ -85,6 +85,7 @@ public final class ENIMModelRenderer extends ModelRenderer {
 				GlStateManager.rotate(headYaw, 0.0f, 1.0f, 0.0f);
 				GlStateManager.rotate(pitch, 1.0f, 0.0f, 0.0f);
 			}
+			GlStateManager.translate(shiftDistanceX, -shiftDistanceY, -shiftDistanceZ);
 			GlStateManager.rotate(+toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
 			GlStateManager.rotate(+toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
 			GlStateManager.rotate(-toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);

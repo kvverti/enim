@@ -1,14 +1,16 @@
 package kvverti.enim.modelsystem;
 
+import static kvverti.enim.modelsystem.TokenType.*;
+
 public enum StatementType {
 
-	DEFINITION	("define", TokenType.IDENTIFIER),
-	FREQUENCY	("freq", TokenType.UNSIGNED_INTEGER),
-	SET		("set", TokenType.IDENTIFIER, TokenType.FLOATING_POINT, TokenType.FLOATING_POINT, TokenType.FLOATING_POINT),
-	ROTATE		("rotate", TokenType.IDENTIFIER, TokenType.FLOATING_POINT, TokenType.FLOATING_POINT, TokenType.FLOATING_POINT),
-	PAUSE		("pause", TokenType.UNSIGNED_INTEGER),
-	REPEAT		("repeat", TokenType.UNSIGNED_INTEGER),
-	OVER		("over", TokenType.UNSIGNED_INTEGER),
+	DEFINITION	("define", IDENTIFIER),
+	FREQUENCY	("freq", UNSIGNED_INTEGER),
+	ROTATE		("rotate", IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+	SHIFT		("shift", IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+	PAUSE		("pause", UNSIGNED_INTEGER),
+	REPEAT		("repeat", UNSIGNED_INTEGER),
+	OVER		("over", UNSIGNED_INTEGER),
 	START_FRAME	("{"),
 	END_FRAME	("}");
 
@@ -28,7 +30,7 @@ public enum StatementType {
 
 	public TokenType[] getTokenTypes() {
 
-		return args;
+		return args.clone();
 	}
 
 	public int tokenCount() {

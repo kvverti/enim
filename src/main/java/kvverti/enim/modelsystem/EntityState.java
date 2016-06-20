@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 
@@ -64,7 +64,7 @@ public final class EntityState {
 	private final void parseModel(ResourceLocation loc) {
 
 		Set<ModelElement> elements = new HashSet<>();
-		Map<AnimationType, Animation> animations = new HashMap<>();
+		Map<AnimationType, Animation> animations = new EnumMap<>(AnimationType.class);
 		for(AnimationType type : AnimationType.values())
 			animations.put(type, Animation.NO_OP);
 		try {
