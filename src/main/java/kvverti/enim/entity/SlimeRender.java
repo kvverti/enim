@@ -3,28 +3,32 @@ package kvverti.enim.entity;
 import java.util.Set;
 import java.util.HashSet;
 
+import net.minecraft.block.properties.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.EntitySlime;
 
 import org.lwjgl.opengl.GL11;
 
+import kvverti.enim.entity.state.RenderState;
 import kvverti.enim.modelsystem.EntityState;
 
 public class SlimeRender extends LivingRender<EntitySlime> {
 
+	public static final IProperty<Integer> SLIME_SIZE = PropertyInteger.create("size", 0, 3);
 
 	public SlimeRender(RenderManager manager, String modDomain, String entityStateFile) {
 
-		super(manager, modDomain, entityStateFile, "size_0", "size_1", "size_2", "size_3");
+		super(manager, modDomain, entityStateFile, SLIME_SIZE);
 	}
 
 	@Override
-	public EntityState getStateFromEntity(EntitySlime entity) {
+	public RenderState getStateFromEntity(EntitySlime entity) {
 
-		EntityState state = getState("size_" + (entity.getSlimeSize() - 1));
-		if(state == null) state = getState("size_3");
-		return state;
+		int size = entity.getSlimeSize() - 1;
+		if     (size > 3) size = 3;
+		else if(size < 0) size = 0;
+		return getStateManager().getDefaultState().withProperty(SLIME_SIZE, size);
 	}
 
 	@Override

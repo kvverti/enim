@@ -1,46 +1,73 @@
 package kvverti.enim.entity;
 
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 
+import net.minecraft.block.properties.*;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.util.EnumChatFormatting;
 
-public class RabbitRender extends LivingBabyRender<EntityRabbit> {
+import kvverti.enim.entity.state.EnumStringSerializable;
+import kvverti.enim.entity.state.RenderState;
+
+public class RabbitRender extends LivingRender<EntityRabbit> {
+
+	public static final IProperty<RabbitType> RABBIT_TYPE = PropertyEnum.create("type", RabbitType.class);
 
 	public RabbitRender(RenderManager manager, String modDomain, String entityStateFile) {
 
-		super(manager, modDomain, entityStateFile,
-			"brown",
-			"white",
-			"black",
-			"gold",
-			"salt",
-			"splotched",
-			"caerbannog",
-			"toast",
-			"eclipse");
+		super(manager, modDomain, entityStateFile, RABBIT_TYPE, BABY);
 	}
 
 	@Override
-	public String getAdultStateFromEntity(EntityRabbit entity) {
+	public RenderState getStateFromEntity(EntityRabbit entity) {
 
 		String name = EnumChatFormatting.getTextWithoutFormattingCodes(entity.getName());
-		if("Toast".equals(name))
-			return "toast";
-		else if("Eclipse".equals(name))
-			return "eclipse";
-		else switch(entity.getRabbitType()) {
+		RabbitType type = "Toast".equals(name) ? RabbitType.TOAST
+			: "Eclipse".equals(name) ? RabbitType.ECLIPSE
+			: RabbitType.fromNbt(entity.getRabbitType());
+		return getStateManager().getDefaultState()
+			.withProperty(RABBIT_TYPE, type)
+			.withProperty(BABY, entity.isChild());
+	}
 
-			case 0: return "brown";
-			case 1: return "white";
-			case 2: return "black";
-			case 3: return "splotched";
-			case 4: return "gold";
-			case 5: return "salt";
-			case 99: return "caerbannog";
-			default: return "brown";
+	public enum RabbitType implements EnumStringSerializable {
+
+		BROWN		(0),
+		WHITE		(1),
+		BLACK		(2),
+		GOLD		(3),
+		SALT		(4),
+		SPLOTCHED	(5),
+		CAERBANNOG	(99),
+		TOAST		(-1),
+		ECLIPSE		(-2);
+
+		private static final Map<Integer, RabbitType> intToType = new HashMap<>();
+		static {
+
+			for(RabbitType type : values())
+				intToType.put(type.meta, type);
+		}
+
+		private final int meta;
+
+		private RabbitType(int i) {
+
+			meta = i;
+		}
+
+		public int nbtValue() {
+
+			return meta;
+		}
+
+		public static RabbitType fromNbt(int value) {
+
+			return intToType.getOrDefault(value, BROWN);
 		}
 	}
 }

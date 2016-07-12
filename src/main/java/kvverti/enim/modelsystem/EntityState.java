@@ -59,6 +59,8 @@ public final class EntityState {
 		this.xSize = state.xSize;
 		this.ySize = state.ySize;
 		parseModel(modelFile);
+		this.model().textureWidth = state.xSize;
+		this.model().textureHeight = state.ySize;
 	}
 
 	private final void parseModel(ResourceLocation loc) {

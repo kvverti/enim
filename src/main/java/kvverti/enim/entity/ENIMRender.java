@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -20,6 +21,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 
+import kvverti.enim.entity.state.RenderState;
+import kvverti.enim.entity.state.StateManager;
 import kvverti.enim.modelsystem.ModelElement;
 import kvverti.enim.modelsystem.EntityState;
 import kvverti.enim.modelsystem.Keys;
@@ -54,22 +57,21 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 			float.class);
 	}
 
-	private final Map<String, EntityState> states;
 	private final ResourceLocation entityStateFile;
+	private final StateManager stateManager;
 
-	protected ENIMRender(RenderManager manager, String modDomain, String entityStateFile, String... stateNames) {
+	protected ENIMRender(RenderManager manager, String modDomain, String entityStateFile, IProperty<?>... properties) {
 
 		super(manager);
 		this.entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateFile + Keys.JSON);
-		states = new HashMap<>();
-		for(String s : stateNames) { states.put(s, new EntityState(s)); }
+		this.stateManager = new StateManager(properties);
 	}
 
-	public abstract EntityState getStateFromEntity(T entity);
+	public abstract RenderState getStateFromEntity(T entity);
 
-	protected EntityState getState(String name) {
+	protected final StateManager getStateManager() {
 
-		return states.get(name);
+		return stateManager;
 	}
 
 	@Override
@@ -81,7 +83,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 	@Override
 	public final Set<String> getEntityStateNames() {
 
-		return new HashSet<>(states.keySet());
+		return stateManager.stateStringNames();
 	}
 
 	@Override
@@ -98,7 +100,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 			else if(diff < -VIEW_LOCK) entity.rotationYaw = yaw += diff + VIEW_LOCK;
 			GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
 
-			EntityState state = getStateFromEntity(entity);
+			EntityState state = stateManager.getState(getStateFromEntity(entity));
 			ENIMModel model = state.model();
 			bindEntityTexture(entity);
 			GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
@@ -139,24 +141,18 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 	@Override
 	protected final ResourceLocation getEntityTexture(T entity) {
 
-		return getStateFromEntity(entity).texture();
+		return stateManager.getState(getStateFromEntity(entity)).texture();
 	}
 
 	@Override
 	public final void reloadRender(EntityState state) {
 
-		if(getEntityStateNames().contains(state.name())) {
-
-			EntityState realState = states.get(state.name());
-			realState.reloadState(state);
-			realState.model().textureWidth = state.xSize();
-			realState.model().textureHeight = state.ySize();
-		}
+		stateManager.setState(state);
 	}
 
 	@Override
 	public final void setMissingno() {
 
-		states.values().forEach(state -> state.model().setMissingno());
+		stateManager.setAllInvalid();
 	}
 }

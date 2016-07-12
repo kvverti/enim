@@ -6,19 +6,18 @@ import java.util.HashSet;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.EntityCreeper;
 
-import kvverti.enim.modelsystem.EntityState;
-import kvverti.enim.modelsystem.Keys;
+import kvverti.enim.entity.state.RenderState;
 
 public class CreeperRender extends LivingRender<EntityCreeper> {
 
 	public CreeperRender(RenderManager manager, String modDomain, String entityStateFile) {
 
-		super(manager, modDomain, entityStateFile, Keys.STATE_NORMAL);
+		super(manager, modDomain, entityStateFile);
 	}
 
 	@Override
-	public EntityState getStateFromEntity(EntityCreeper entity) {
+	public RenderState getStateFromEntity(EntityCreeper entity) {
 
-		return getState(Keys.STATE_NORMAL);
+		return getStateManager().getDefaultState();
 	}
 }

@@ -1,5 +1,8 @@
 package kvverti.enim.modelsystem;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import static kvverti.enim.modelsystem.TokenType.*;
 
 public enum StatementType {
@@ -13,6 +16,13 @@ public enum StatementType {
 	OVER		("over", UNSIGNED_INTEGER),
 	START_FRAME	("{"),
 	END_FRAME	("}");
+
+	private static final Map<String, StatementType> nameToType = new HashMap<>();
+	static {
+
+		for(StatementType type : values())
+			nameToType.put(type.getName(), type);
+	}
 
 	private final String name;
 	private final TokenType[] args;
@@ -40,10 +50,6 @@ public enum StatementType {
 
 	public static StatementType byName(String name) {
 
-		for(StatementType type : values()) {
-
-			if(type.name.equals(name)) return type;
-		}
-		return null;
+		return nameToType.get(name);
 	}
 }

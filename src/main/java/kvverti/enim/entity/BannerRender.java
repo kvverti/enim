@@ -12,6 +12,7 @@ import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.util.ResourceLocation;
 
 import kvverti.enim.Util;
+import kvverti.enim.entity.state.RenderState;
 import kvverti.enim.modelsystem.EntityState;
 
 public class BannerRender extends SignLikeRender<TileEntityBanner> {
@@ -53,10 +54,10 @@ public class BannerRender extends SignLikeRender<TileEntityBanner> {
 	}
 
 	@Override
-	public EntityState getStateFromTile(TileEntityBanner tile) {
+	public RenderState getStateFromTile(TileEntityBanner tile) {
 
 		//until we implement item rendering
-		return tile.hasWorldObj() ? super.getStateFromTile(tile) : getState("floor_00");
+		return tile.hasWorldObj() ? super.getStateFromTile(tile) : getStateManager().getDefaultState();
 	}
 
 	private ResourceLocation bindBannerTexture(TileEntityBanner banner) {

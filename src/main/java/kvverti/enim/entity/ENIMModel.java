@@ -47,6 +47,23 @@ public class ENIMModel extends ModelBase {
 		lucents.forEach(box -> box.render(scale));
 	}
 
+	@Override
+	public void setRotationAngles(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, Entity entity) {
+
+		resetAngles(headYaw, pitch);
+		animateLooping(entity, AnimationType.IDLE, true);
+		animateLooping(entity, AnimationType.MOVE, speed > 0.05f);
+		animateLooping(entity, AnimationType.AIR, !entity.isInWater() && !entity.onGround);
+		animateLooping(entity, AnimationType.SWIM, entity.isInWater() && !entity.onGround);
+		animateNoLooping(AnimationType.JUMP, jumpTime(entity));
+	}
+
+	public void setRotationAngles(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, TileEntity tile) {
+
+		resetAngles(headYaw, pitch);
+		animateLooping(tile, AnimationType.IDLE, true);
+	}
+
 	private void setAnglesHelper(Animation anim, int frame) {
 
 		anim.frame(frame).forEach((define, forms) -> {
@@ -72,6 +89,17 @@ public class ENIMModel extends ModelBase {
 		}
 	}
 
+	private void animateLooping(TileEntity tile, AnimationType type, boolean predicate) {
+
+		if(predicate) {
+
+			Animation anim = animations.get(type);
+			int frame = randomCounterFor(tile) % anim.frameCount();
+			if(frame < 0) frame += anim.frameCount();
+			setAnglesHelper(anim, frame);
+		}
+	}
+
 	private void animateNoLooping(AnimationType type, int frame) {
 
 		Animation anim = animations.get(type);
@@ -79,10 +107,8 @@ public class ENIMModel extends ModelBase {
 			setAnglesHelper(anim, frame);
 	}
 
-	@Override
-	public void setRotationAngles(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, Entity entity) {
+	private void resetAngles(float headYaw, float pitch) {
 
-		//reset
 		boxes.values().forEach(box -> {
 
 			box.rotateAngleX = 0.0f;
@@ -91,20 +117,6 @@ public class ENIMModel extends ModelBase {
 			box.headYaw = headYaw;
 			box.pitch = pitch;
 		});
-
-		animateLooping(entity, AnimationType.IDLE, true);
-		animateLooping(entity, AnimationType.MOVE, speed > 0.05f);
-		animateLooping(entity, AnimationType.AIR, !entity.isInWater() && !entity.onGround);
-		animateLooping(entity, AnimationType.SWIM, entity.isInWater() && !entity.onGround);
-		animateNoLooping(AnimationType.JUMP, jumpTime(entity));
-	}
-
-	public void setRotationAngles(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, TileEntity tile) {
-
-		Animation idle = animations.get(AnimationType.IDLE);
-		int frame = randomCounterFor(tile) % idle.frameCount();
-		if(frame < 0) frame += idle.frameCount();
-		setAnglesHelper(idle, frame);
 	}
 
 	public final void reloadModel(Set<ModelElement> elements, Map<AnimationType, Animation> animations) {

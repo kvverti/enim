@@ -1,5 +1,6 @@
 package kvverti.enim.entity;
 
+import net.minecraft.block.properties.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -10,10 +11,11 @@ import kvverti.enim.modelsystem.EntityState;
 public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 
 	public static final float NAMETAG_VISIBILITY_RANGE_SQ = 64.0f * 64.0f;
+	public static final IProperty<Boolean> BABY = PropertyBool.create("baby");
 
-	protected LivingRender(RenderManager manager, String modDomain, String entityStateFile, String... stateNames) {
+	protected LivingRender(RenderManager manager, String modDomain, String entityStateFile, IProperty<?>... properties) {
 
-		super(manager, modDomain, entityStateFile, stateNames);
+		super(manager, modDomain, entityStateFile, properties);
 	}
 
 	@Override

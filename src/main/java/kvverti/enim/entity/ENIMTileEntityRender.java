@@ -7,29 +7,36 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 
+import kvverti.enim.entity.state.RenderState;
+import kvverti.enim.entity.state.StateManager;
 import kvverti.enim.modelsystem.ModelElement;
 import kvverti.enim.modelsystem.EntityState;
 import kvverti.enim.modelsystem.Keys;
 
 public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecialRenderer<T> implements ReloadableRender {
 
-	private final Map<String, EntityState> states;
 	private final ResourceLocation entityStateFile;
+	private final StateManager stateManager;
 
-	protected ENIMTileEntityRender(String modDomain, String entityStateFile, String... stateNames) {
+	protected ENIMTileEntityRender(String modDomain, String entityStateFile, IProperty<?>... properties) {
 
 		this.entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateFile + Keys.JSON);
-		states = new HashMap<>();
-		for(String s : stateNames) { states.put(s, new EntityState(s)); }
+		this.stateManager = new StateManager(properties);
 	}
 
-	public abstract EntityState getStateFromTile(T tile);
+	public abstract RenderState getStateFromTile(T tile);
+
+	protected final StateManager getStateManager() {
+
+		return stateManager;
+	}
 
 	@Override
 	public final ResourceLocation getEntityStateFile() {
@@ -37,15 +44,10 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 		return entityStateFile;
 	}
 
-	protected EntityState getState(String name) {
-
-		return states.get(name);
-	}
-
 	@Override
 	public final Set<String> getEntityStateNames() {
 
-		return new HashSet<>(states.keySet());
+		return stateManager.stateStringNames();
 	}
 
 	@Override
@@ -55,7 +57,7 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 		GlStateManager.translate((float) x + 0.5f, (float) y, (float) z + 0.5f);
 		GlStateManager.rotate(180.0f, 1.0f, 0.0f, 0.0f);
 
-		EntityState state = getStateFromTile(tileEntity);
+		EntityState state = stateManager.getState(getStateFromTile(tileEntity));
 		ENIMModel model = state.model();
 		bindTexture(state.texture());
 		GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
@@ -72,18 +74,12 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 	@Override
 	public final void reloadRender(EntityState state) {
 
-		if(getEntityStateNames().contains(state.name())) {
-
-			EntityState realState = states.get(state.name());
-			realState.reloadState(state);
-			realState.model().textureWidth = state.xSize();
-			realState.model().textureHeight = state.ySize();
-		}
+		stateManager.setState(state);
 	}
 
 	@Override
 	public final void setMissingno() {
 
-		states.values().forEach(state -> state.model().setMissingno());
+		stateManager.setAllInvalid();
 	}
 }

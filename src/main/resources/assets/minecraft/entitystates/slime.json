@@ -4,9 +4,9 @@
 		"size": [64,32]
 	},
 	"states": {
-		"size_0": { "model": "slime" },
-		"size_1": { "model": "slime", "scale": 2.0 },
-		"size_2": { "model": "slime", "scale": 3.0 },
-		"size_3": { "model": "slime", "scale": 4.0 }
+		"size=0": { "model": "slime" },
+		"size=1": { "model": "slime", "scale": 2.0 },
+		"size=2": { "model": "slime", "scale": 3.0 },
+		"size=3": { "model": "slime", "scale": 4.0 }
 	}
 }

@@ -1,104 +1,101 @@
 package kvverti.enim.entity;
 
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
-import java.util.HashSet;
+import java.util.EnumSet;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.properties.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-import kvverti.enim.modelsystem.EntityState;
+import kvverti.enim.entity.state.RenderState;
+import kvverti.enim.entity.state.EnumStringSerializable;
 
 public class SignLikeRender<T extends TileEntity> extends ENIMTileEntityRender<T> {
+
+	public static final IProperty<SignFacing> ROTATION = PropertyEnum.create("rotation", SignFacing.class);
 
 	private final Block floorBlock;
 
 	public SignLikeRender(String modDomain, String entityStateFile, Block floor) {
 
-		super(modDomain, entityStateFile,
-			"wall_north",
-			"wall_south",
-			"wall_east",
-			"wall_west",
-			"floor_00",
-			"floor_01",
-			"floor_02",
-			"floor_03",
-			"floor_04",
-			"floor_05",
-			"floor_06",
-			"floor_07",
-			"floor_08",
-			"floor_09",
-			"floor_10",
-			"floor_11",
-			"floor_12",
-			"floor_13",
-			"floor_14",
-			"floor_15");
+		super(modDomain, entityStateFile, ROTATION);
 		floorBlock = floor;
 	}
 
 	@Override
-	public EntityState getStateFromTile(T tile) {
+	public RenderState getStateFromTile(T tile) {
 
-		Block block = tile.getBlockType();
-		EntityState entityState = null;
+		int meta = tile.getBlockMetadata();
+		SignFacing facing = tile.getBlockType() == floorBlock ?
+			SignFacing.fromFloor(meta)
+			: SignFacing.fromWall(meta);
+		return getStateManager().getDefaultState().withProperty(ROTATION, facing);
+	}
 
-		if(block == floorBlock) {
+	public enum SignFacing implements EnumStringSerializable {
 
-			switch(tile.getBlockMetadata()) {
+		N	(0),
+		NNE	(1),
+		NE	(2),
+		ENE	(3),
+		E	(4),
+		ESE	(5),
+		SE	(6),
+		SSE	(7),
+		S	(8),
+		SSW	(9),
+		SW	(10),
+		WSW	(11),
+		W	(12),
+		WNW	(13),
+		NW	(14),
+		NNW	(15),
+		NORTH	(2),
+		SOUTH	(3),
+		EAST	(4),
+		WEST	(5);
 
-				case 0: entityState = getState("floor_00");
-					break;
-				case 1: entityState = getState("floor_01");
-					break;
-				case 2: entityState = getState("floor_02");
-					break;
-				case 3: entityState = getState("floor_03");
-					break;
-				case 4: entityState = getState("floor_04");
-					break;
-				case 5: entityState = getState("floor_05");
-					break;
-				case 6: entityState = getState("floor_06");
-					break;
-				case 7: entityState = getState("floor_07");
-					break;
-				case 8: entityState = getState("floor_08");
-					break;
-				case 9: entityState = getState("floor_09");
-					break;
-				case 10: entityState = getState("floor_10");
-					break;
-				case 11: entityState = getState("floor_11");
-					break;
-				case 12: entityState = getState("floor_12");
-					break;
-				case 13: entityState = getState("floor_13");
-					break;
-				case 14: entityState = getState("floor_14");
-					break;
-				case 15: entityState = getState("floor_15");
-					break;
-			}
+		private static final Map<Integer, SignFacing> wallToFacing = new HashMap<>();
+		private static final Map<Integer, SignFacing> floorToFacing = new HashMap<>();
+		static {
 
-		} else {
-
-			switch(tile.getBlockMetadata()) {
-
-				case 3: entityState = getState("wall_south");
-					break;
-				case 2: entityState = getState("wall_north");
-					break;
-				case 4: entityState = getState("wall_east");
-					break;
-				case 5: entityState = getState("wall_west");
-					break;
-				default: entityState = getState("floor_00");
-					break;
-			}
+			wall().forEach(value -> wallToFacing.put(value.meta, value));
+			floor().forEach(value -> floorToFacing.put(value.meta, value));
 		}
-		return entityState;
+
+		private final int meta;
+
+		private SignFacing(int i) {
+
+			meta = i;
+		}
+
+		public int nbtValue() {
+
+			return meta;
+		}
+
+		public static Set<SignFacing> wall() {
+
+			return EnumSet.range(NORTH, WEST);
+		}
+
+		public static Set<SignFacing> floor() {
+
+			return EnumSet.range(N, NNW);
+		}
+
+		public static SignFacing fromFloor(int rotation) {
+
+			return floorToFacing.getOrDefault(rotation, N);
+		}
+
+		public static SignFacing fromWall(int facing) {
+
+			return wallToFacing.getOrDefault(facing, NORTH);
+		}
 	}
 }
