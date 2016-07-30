@@ -4,6 +4,7 @@ freq 20
 
 shift  elem -0 +16 +16
 {
-shift  elem -0 -16 -16
+shift  elem -0 -16 -0
+shift  elem -0 -0  -16
 rotate elem -0 +360 -0
 }

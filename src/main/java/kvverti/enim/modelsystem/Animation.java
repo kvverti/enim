@@ -148,20 +148,22 @@ public final class Animation {
 				float[] start = prevFrame.get(aneme.getSpecifiedElement());
 				float[] stCopy = prevCopy.get(aneme.getSpecifiedElement());
 				float[] angles = start.clone();
-				float[] end = aneme.getAngles();
+				float[] rotate = aneme.getAngles();
 				float[] shift = aneme.getShifts();
 				switch(aneme.getStatementType()) {
 
 					case ROTATE:
 						for(int i = 0; i < 3; i++) {
 
-							end[i] += stCopy[i];
-							angles[i] = interpolate(start[i], end[i], 1.0f / duration);
+							if(rotate[i] == 0.0f) continue;
+							rotate[i] += stCopy[i];
+							angles[i] = interpolate(start[i], rotate[i], 1.0f / duration);
 						}
 						break;
 					case SHIFT:
 						for(int i = 0; i < 3; i++) {
 
+							if(shift[i] == 0.0f) continue;
 							shift[i] += stCopy[i + 3];
 							angles[i + 3] = interpolate(start[i + 3], shift[i], 1.0f / duration);
 						}
