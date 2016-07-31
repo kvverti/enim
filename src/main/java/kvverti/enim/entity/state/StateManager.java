@@ -33,11 +33,8 @@ public class StateManager {
 		else fillRecursiveImpl(new MutableRenderState(properties), properties, 0);
 	}
 
-	private int __fillCounter = 0;
-
 	private final void fillRecursiveImpl(RenderState state, IProperty<?>[] properties, int index) {
 
-		Logger.info("Iteration: " + __fillCounter++);
 		if(index >= properties.length) return;
 		int length = properties[index].getAllowedValues().size();
 		for(int i = 0; i < length; i++) {

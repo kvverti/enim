@@ -56,16 +56,15 @@ final class AnimationParser {
 	List<Statement> parseTokens(List<Token> tokens) throws ParserException {
 
 		List<Statement> statements = new ArrayList<>();
-		StatementType current;
 		for(int i = 0; i < tokens.size(); ) {
 
-			current = StatementType.byName(tokens.get(i).getValue());
-			if(current != null) {
+			if(tokens.get(i).getTokenType() == TokenType.COMMAND) {
 
+				String cmdName = tokens.get(i).getValue();
 				try {
-					Token[] arr = tokens.subList(++i, i += current.tokenCount())
-						.toArray(new Token[current.tokenCount()]);
-					statements.add(Statement.compile(current, arr));
+					Token[] arr = tokens.subList(++i, i += tillNextCmd(tokens, i))
+						.toArray(new Token[0]);
+					statements.add(Statement.compile(cmdName, arr));
 
 				} catch(SyntaxException e) {
 
@@ -73,12 +72,21 @@ final class AnimationParser {
 
 				} catch(IndexOutOfBoundsException e) {
 
-					throw new ParserException("Reached end of file while parsing");
+					throw new ParserException("Reached end of file while parsing", e);
 				}
 
 			} else throw new ParserException("Expected command at token " + i + ": " + tokens.get(i));
 		}
 		return statements;
+	}
+
+	/* length from start until the next COMMAND token */
+	private int tillNextCmd(List<Token> tokens, int start) {
+
+		int res = 0;
+		while(start + res < tokens.size() && tokens.get(start + res).getTokenType() != TokenType.COMMAND)
+			res++;
+		return res;
 	}
 
 	private int addPause(List<Statement> statements, int index, List<AnimationFrame> frames) {

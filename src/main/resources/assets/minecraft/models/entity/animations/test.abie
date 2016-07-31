@@ -1,9 +1,9 @@
 define elem
 
-freq 20
+freq 40
 
-shift  elem -0 +16 +16
 {
-shift  elem -0 -16 -16
-rotate elem -0 +360 -0
+shift sine 2 elem -0 +8 -0
+shift sine elem -0 -0 +16
 }
+#shift linear elem -0 -16 -0

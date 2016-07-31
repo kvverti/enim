@@ -1,5 +1,7 @@
 package kvverti.enim.modelsystem;
 
+import kvverti.enim.Logger;
+
 final class StateDefine extends Statement {
 
 	private final String define;
@@ -36,11 +38,11 @@ final class StateRotate extends StateAneme {
 
 	private final float[] angles = new float[3];
 
-	StateRotate(Token... tokens) {
+	StateRotate(Token elem, Token atype, Token time, int angleStartIndex, Token[] tokens) {
 
-		super(StatementType.ROTATE, tokens[0]);
+		super(StatementType.ROTATE, elem, atype, time);
 		for(int i = 0; i < angles.length; i++)
-			angles[i] = Float.parseFloat(tokens[i + 1].getValue());
+			angles[i] = Float.parseFloat(tokens[i + angleStartIndex].getValue());
 	}
 
 	@Override
@@ -60,11 +62,11 @@ final class StateShift extends StateAneme {
 
 	private final float[] shifts = new float[3];
 
-	StateShift(Token... tokens) {
+	StateShift(Token elem, Token atype, Token time, int shiftStartIndex, Token[] tokens) {
 
-		super(StatementType.SHIFT, tokens[0]);
+		super(StatementType.SHIFT, elem, atype, time);
 		for(int i = 0; i < shifts.length; i++)
-			shifts[i] = Float.parseFloat(tokens[i + 1].getValue());
+			shifts[i] = Float.parseFloat(tokens[i + shiftStartIndex].getValue());
 	}
 
 	@Override
@@ -134,12 +136,25 @@ final class StateEnd extends Statement {
 
 abstract class StateAneme extends Statement {
 
+	private final int angleType;
+	private final int period;
 	private final String element;
 
-	StateAneme(StatementType type, Token elem) {
+	StateAneme(StatementType type, Token elem, Token aType, Token time) {
 
 		super(type);
+		period = Integer.parseInt(time.getValue());
 		element = elem.getValue();
+		switch(aType.getValue()) {
+
+			case "sine": angleType = 1;
+				break;
+			case "cosine": angleType = 2;
+				break;
+			default: Logger.warn("Aneme angleType not valid, assuming linear");
+			case "linear": angleType = 0;
+				break;
+		}
 	}
 
 	@Override
@@ -151,6 +166,16 @@ abstract class StateAneme extends Statement {
 	public String getSpecifiedElement() {
 
 		return element;
+	}
+
+	public int getAngleType() {
+
+		return angleType;
+	}
+
+	public int getRelativePeriod() {
+
+		return period;
 	}
 
 	public abstract float[] getAngles();
