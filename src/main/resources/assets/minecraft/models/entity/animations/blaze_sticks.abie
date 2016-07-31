@@ -1,0 +1,63 @@
+define lower1
+define lower2
+define lower3
+define lower4
+define middle1
+define middle2
+define middle3
+define middle4
+define upper1
+define upper2
+define upper3
+define upper4
+
+over 64
+{
+shift sine   5 lower1  -0  +1 -0
+shift sine   2 lower1  -5  -0 -0
+shift cosine 2 lower1  -0  -0 -10
+
+shift sine   5 lower2  -0  +1 -0
+shift sine   2 lower2  -0  -0 -5
+shift cosine 2 lower2  +10 -0 -0
+
+shift sine   5 lower3  -0  +1 -0
+shift sine   2 lower3  +5  -0 -0
+shift cosine 2 lower3  -0  -0 +10
+
+shift sine   5 lower4  -0  +1 -0
+shift sine   2 lower4  -0  -0 +5
+shift cosine 2 lower4  -10 -0 -0
+
+shift sine   3 middle1 -0  +1 -0
+shift sine   1 middle1 +7  -0 -0
+shift cosine 1 middle1 -0  -0 -14
+
+shift sine   3 middle2 -0  +1 -0
+shift sine   1 middle2 -0  -0 +7
+shift cosine 1 middle2 +14 -0 -0
+
+shift sine   3 middle3 -0  +1 -0
+shift sine   1 middle3 -7  -0 -0
+shift cosine 1 middle3 -0  -0 +14
+
+shift sine   3 middle4 -0  +1 -0
+shift sine   1 middle4 -0  -0 -7
+shift cosine 1 middle4 -14 -0 -0
+
+shift sine   2 upper1  -0  +1 -0
+shift sine   4 upper1  -9  -0 -0
+shift cosine 4 upper1  -0  -0 -18
+
+shift sine   2 upper2  -0  +1 -0
+shift sine   4 upper2  -0  -0 -9
+shift cosine 4 upper2  +18 -0 -0
+
+shift sine   2 upper3  -0  +1 -0
+shift sine   4 upper3  +9  -0 -0
+shift cosine 4 upper3  -0  -0 +18
+
+shift sine   2 upper4  -0  +1 -0
+shift sine   4 upper4  -0  -0 +9
+shift cosine 4 upper4  -18 -0 -0
+}

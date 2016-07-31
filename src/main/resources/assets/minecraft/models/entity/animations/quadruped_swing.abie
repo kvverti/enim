@@ -3,24 +3,11 @@ define front_right
 define rear_left
 define rear_right
 
-freq 6
 
+over 20
 {
-rotate front_left  +30 -0 -0
-rotate rear_left   -30 -0 -0
-rotate front_right -30 -0 -0
-rotate rear_right  +30 -0 -0
-}
-over 2
-{
-rotate front_left  -60 -0 -0
-rotate rear_left   +60 -0 -0
-rotate front_right +60 -0 -0
-rotate rear_right  -60 -0 -0
-}
-{
-rotate front_left  +30 -0 -0
-rotate rear_left   -30 -0 -0
-rotate front_right -30 -0 -0
-rotate rear_right  +30 -0 -0
+rotate sine front_left  +30 -0 -0
+rotate sine rear_left   -30 -0 -0
+rotate sine front_right -30 -0 -0
+rotate sine rear_right  +30 -0 -0
 }

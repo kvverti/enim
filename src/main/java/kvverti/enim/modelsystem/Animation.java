@@ -197,9 +197,7 @@ public final class Animation {
 
 	public static float interpolateSine(float start, float end, float percent) {
 
-		float res = start + (float) Math.sin(percent * 2.0 * Math.PI) * (end - start);
-		Logger.info(res);
-		return res;
+		return start + (float) Math.sin(percent * 2.0 * Math.PI) * (end - start);
 	}
 
 	public static float interpolateCosine(float start, float end, float percent) {
