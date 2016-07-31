@@ -25,7 +25,7 @@ public final class AnimationFrame {
 
 		try {
 			StateRepeat repeat = (StateRepeat)
-				Statement.compile(StatementType.REPEAT, Token.compile(Integer.toString(duration)));
+				Statement.compile("repeat", Token.compile(Integer.toString(duration)));
 			return new AnimationFrame(repeat, new StateAneme[0]);
 
 		  //duration was negative

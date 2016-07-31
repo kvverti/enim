@@ -1,7 +1,7 @@
 package kvverti.enim.modelsystem;
 
-import java.util.Map;
-import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 import static kvverti.enim.modelsystem.TokenType.*;
 
@@ -9,20 +9,17 @@ public enum StatementType {
 
 	DEFINITION	("define", IDENTIFIER),
 	FREQUENCY	("freq", UNSIGNED_INTEGER),
-	ROTATE		("rotate", IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
-	SHIFT		("shift", IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+	ROTATE		("rotate", IDENTIFIER, UNSIGNED_INTEGER, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+	ROTATE_LINEAR	("rotate", IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+	ROTATE_NOTIME	("rotate", IDENTIFIER, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+	SHIFT		("shift", IDENTIFIER, UNSIGNED_INTEGER, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+	SHIFT_LINEAR	("shift", IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+	SHIFT_NOTIME	("shift", IDENTIFIER, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
 	PAUSE		("pause", UNSIGNED_INTEGER),
 	REPEAT		("repeat", UNSIGNED_INTEGER),
 	OVER		("over", UNSIGNED_INTEGER),
 	START_FRAME	("{"),
 	END_FRAME	("}");
-
-	private static final Map<String, StatementType> nameToType = new HashMap<>();
-	static {
-
-		for(StatementType type : values())
-			nameToType.put(type.getName(), type);
-	}
 
 	private final String name;
 	private final TokenType[] args;
@@ -48,8 +45,14 @@ public enum StatementType {
 		return args.length;
 	}
 
-	public static StatementType byName(String name) {
+	public static StatementType[] byName(String name) {
 
-		return nameToType.get(name);
+		List<StatementType> types = new ArrayList<>();
+		for(StatementType type : values()) {
+
+			if(type.name.equals(name))
+				types.add(type);
+		}
+		return types.toArray(new StatementType[types.size()]);
 	}
 }

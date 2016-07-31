@@ -141,7 +141,7 @@ public final class Animation {
 
 		duration *= freq;
 		Map<String, float[]> prevCopy = new HashMap<>(prevFrame);
-		while(duration > 0) {
+		for(int n = 1; n <= duration; n++) {
 
 			for(StateAneme aneme : animFrame.anemes()) {
 
@@ -150,6 +150,8 @@ public final class Animation {
 				float[] angles = start.clone();
 				float[] rotate = aneme.getAngles();
 				float[] shift = aneme.getShifts();
+				int atype = aneme.getAngleType();
+				int time = aneme.getRelativePeriod();
 				switch(aneme.getStatementType()) {
 
 					case ROTATE:
@@ -157,7 +159,7 @@ public final class Animation {
 
 							if(rotate[i] == 0.0f) continue;
 							rotate[i] += stCopy[i];
-							angles[i] = interpolate(start[i], rotate[i], 1.0f / duration);
+							angles[i] = selectHelper(atype, stCopy[i], rotate[i], (float) n * time / duration);
 						}
 						break;
 					case SHIFT:
@@ -165,7 +167,7 @@ public final class Animation {
 
 							if(shift[i] == 0.0f) continue;
 							shift[i] += stCopy[i + 3];
-							angles[i + 3] = interpolate(start[i + 3], shift[i], 1.0f / duration);
+							angles[i + 3] = selectHelper(atype, stCopy[i + 3], shift[i], (float) n * time / duration);
 						}
 						break;
 					default: Util.assertFalse("Invalid statement type");
@@ -173,16 +175,36 @@ public final class Animation {
 				prevFrame.put(aneme.getSpecifiedElement(), angles);
 			}
 			frames.add(new HashMap<>(prevFrame));
-			duration--;
+		}
+	}
+
+	private static float selectHelper(int type, float start, float end, float percent) {
+
+		switch(type) {
+
+			case 0: return interpolate(start, end, percent);
+			case 1: return interpolateSine(start, end, percent);
+			case 2: return interpolateCosine(start, end, percent);
+			default: Util.assertFalse("Unknown angle type");
+				return 0; //never reached
 		}
 	}
 
 	public static float interpolate(float start, float end, float percent) {
 
-		float result = start + percent * (end - start);
-	//	if(result > 180.0f) result -= 360.0f;
-	//	else if(result <= -180.0f) result += 360.0f;
-		return result;
+		return start + percent * (end - start);
+	}
+
+	public static float interpolateSine(float start, float end, float percent) {
+
+		float res = start + (float) Math.sin(percent * 2.0 * Math.PI) * (end - start);
+		Logger.info(res);
+		return res;
+	}
+
+	public static float interpolateCosine(float start, float end, float percent) {
+
+		return start + (float) (1.0 - Math.cos(percent * 2.0 * Math.PI)) * 0.5f * (end - start);
 	}
 
 	@Override
