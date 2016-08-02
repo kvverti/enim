@@ -24,10 +24,10 @@ public abstract class Statement {
 			case DEFINITION: return new StateDefine(args);
 			case FREQUENCY: return new StateFreq(args);
 			case ROTATE: return new StateRotate(args[2], args[0], args[1], 3, args);
-			case ROTATE_LINEAR: return new StateRotate(args[0], Token.compile("linear"), Token.compile("1"), 1, args);
+			case ROTATE_LINEAR: return new StateRotate(args[0], Token.compile(Keys.ABIE_KEY_LINEAR), Token.compile("1"), 1, args);
 			case ROTATE_NOTIME: return new StateRotate(args[1], args[0], Token.compile("1"), 2, args);
 			case SHIFT: return new StateShift(args[2], args[0], args[1], 3, args);
-			case SHIFT_LINEAR: return new StateShift(args[0], Token.compile("linear"), Token.compile("1"), 1, args);
+			case SHIFT_LINEAR: return new StateShift(args[0], Token.compile(Keys.ABIE_KEY_LINEAR), Token.compile("1"), 1, args);
 			case SHIFT_NOTIME: return new StateShift(args[1], args[0], Token.compile("1"), 2, args);
 			case PAUSE: return new StatePause(args);
 			case REPEAT: return new StateRepeat(args);

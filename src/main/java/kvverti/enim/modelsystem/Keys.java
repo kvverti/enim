@@ -23,6 +23,17 @@ public final class Keys {
 	public static final String ANIM_SCRIPT = "script";
 	public static final String ANIM_DEFINES = "with";
 
+	public static final String ABIE_KEY_DEFINE = "define";
+	public static final String ABIE_KEY_FREQ = "freq";
+	public static final String ABIE_KEY_REPEAT = "repeat";
+	public static final String ABIE_KEY_OVER = "over";
+	public static final String ABIE_KEY_SHIFT = "shift";
+	public static final String ABIE_KEY_ROTATE = "rotate";
+	public static final String ABIE_KEY_PAUSE = "pause";
+	public static final String ABIE_KEY_LINEAR = "linear";
+	public static final String ABIE_KEY_SINE = "sine";
+	public static final String ABIE_KEY_COSINE = "cosine";
+
 	public static final String STATES_TAG = "states";
 	public static final String STATES_DEFAULTS = "defaults";
 	public static final String STATE_NORMAL = "normal";
