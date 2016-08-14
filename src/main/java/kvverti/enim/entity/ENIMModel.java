@@ -29,26 +29,26 @@ public class ENIMModel extends ModelBase {
 	private final Map<AnimationType, Animation> animations = new EnumMap<>(AnimationType.class);
 
 	@Override
-	public void render(Entity entity, float speed, float dir, float timeExisted, float headYaw, float pitch, float scale) {
+	public void render(Entity entity, float speed, float dir, float partialTicks, float headYaw, float pitch, float scale) {
 
-		setRotationAngles(speed, dir, timeExisted, headYaw, pitch, scale, entity);
-		renderHelper(speed, dir, timeExisted, headYaw, pitch, scale);
+		setRotationAngles(speed, dir, partialTicks, headYaw, pitch, scale, entity);
+		renderHelper(speed, dir, partialTicks, headYaw, pitch, scale);
 	}
 
-	public void render(TileEntity tile, float speed, float dir, float timeExisted, float headYaw, float pitch, float scale) {
+	public void render(TileEntity tile, float speed, float dir, float partialTicks, float headYaw, float pitch, float scale) {
 
-		setRotationAngles(speed, dir, timeExisted, headYaw, pitch, scale, tile);
-		renderHelper(speed, dir, timeExisted, headYaw, pitch, scale);
+		setRotationAngles(speed, dir, partialTicks, headYaw, pitch, scale, tile);
+		renderHelper(speed, dir, partialTicks, headYaw, pitch, scale);
 	}
 
-	private void renderHelper(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale) {
+	private void renderHelper(float speed, float dir, float partialTicks, float headYaw, float pitch, float scale) {
 
 		opaques.forEach(box -> box.render(scale));
 		lucents.forEach(box -> box.render(scale));
 	}
 
 	@Override
-	public void setRotationAngles(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, Entity entity) {
+	public void setRotationAngles(float speed, float dir, float partialTicks, float headYaw, float pitch, float scale, Entity entity) {
 
 		resetAngles(headYaw, pitch);
 		animateLooping(entity, AnimationType.IDLE, true);
@@ -58,7 +58,7 @@ public class ENIMModel extends ModelBase {
 		animateNoLooping(AnimationType.JUMP, jumpTime(entity));
 	}
 
-	public void setRotationAngles(float speed, float dir, float timeExisted, float headYaw, float pitch, float scale, TileEntity tile) {
+	public void setRotationAngles(float speed, float dir, float partialTicks, float headYaw, float pitch, float scale, TileEntity tile) {
 
 		resetAngles(headYaw, pitch);
 		animateLooping(tile, AnimationType.IDLE, true);

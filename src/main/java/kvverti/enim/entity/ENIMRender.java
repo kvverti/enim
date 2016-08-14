@@ -108,7 +108,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 			model.render(entity,
 				speed(entity),
 				yaw,
-				entity.ticksExisted + partialTicks,
+				partialTicks,
 				headYaw(entity, yaw),
 				entity.rotationPitch,
 				0.0625f * state.scale());

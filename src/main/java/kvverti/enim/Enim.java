@@ -67,6 +67,7 @@ public final class Enim implements IResourceManagerReloadListener {
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent e) {
 
+		//Entities.initTicker();
 	}
 
 	@Override

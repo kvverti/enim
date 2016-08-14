@@ -2,9 +2,11 @@ package kvverti.enim.entity;
 
 import java.util.WeakHashMap;
 import java.util.Objects;
+//import java.util.concurrent.atomic.AtomicInteger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.Entity;
@@ -17,6 +19,8 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 
 /** Utility class for working with Entitys and TileEntitys. */
 public final class Entities {
+
+	//private static volatile EnimTicker masterTicker;
 
 	private Entities() { }
 
@@ -32,14 +36,17 @@ public final class Entities {
 
 	public static int randomCounterFor(Entity entity) {
 
-		return TickEventHandler.INSTANCE.ticks(entity);
+		//return TickEventHandler.INSTANCE.ticks(entity);
+		return Objects.hash(entity.getUniqueID()) + (int) (theWorld().getTotalWorldTime() % Integer.MAX_VALUE);
 	}
 
 	public static int randomCounterFor(TileEntity tile) {
 
-		return TickEventHandler.INSTANCE.ticks(tile);
+		//return TickEventHandler.INSTANCE.ticks(tile);
+		return Objects.hash(tile.getPos()) + (int) (theWorld().getTotalWorldTime() % Integer.MAX_VALUE);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static int jumpTime(Entity entity) {
 
 		return TickEventHandler.INSTANCE.jumpTicks(entity);
@@ -65,6 +72,50 @@ public final class Entities {
 		return Minecraft.getMinecraft().thePlayer;
 	}
 
+	public static WorldClient theWorld() {
+
+		return Minecraft.getMinecraft().theWorld;
+	}
+
+	/*public static synchronized void initTicker() {
+
+		if(masterTicker == null) {
+
+			masterTicker = new EnimTicker();
+			new Thread(masterTicker, "Enim Ticker").start();
+		}
+	}
+
+	public static int currentTick() {
+
+		return masterTicker.currentTick();
+	}
+
+	private static final class EnimTicker implements Runnable {
+
+		private final AtomicInteger counter = new AtomicInteger();
+		private final Minecraft mc = Minecraft.getMinecraft();
+
+		/* count game ticks *//*
+		@Override
+		public void run() {
+
+			while(true) {
+
+				if(!mc.isGamePaused())
+					kvverti.enim.Logger.info(counter.incrementAndGet());
+				try { Thread.sleep(50); }
+				catch(InterruptedException e) { }
+			}
+		}
+
+		public int currentTick() {
+
+			return counter.get();
+		}
+	}*/
+
+	@Deprecated
 	public static class TickEventHandler {
 
 		public static final TickEventHandler INSTANCE = new TickEventHandler();
@@ -92,6 +143,7 @@ public final class Entities {
 		@SubscribeEvent
 		public void onLivingJump(LivingJumpEvent event) {
 
+			kvverti.enim.Logger.info("Jumped: " + event.entityLiving.motionY);
 			jumpCounters.computeIfAbsent(event.entityLiving, e -> new IntCounter()).reset();
 		}
 
@@ -128,6 +180,7 @@ public final class Entities {
 		}
 	}
 
+	@Deprecated
 	private static class IntCounter {
 
 		private int value;
