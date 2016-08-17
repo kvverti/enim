@@ -1,8 +1,9 @@
 package kvverti.enim.entity;
 
+import java.util.Iterator;
 import java.util.WeakHashMap;
 import java.util.Objects;
-//import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -14,6 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 
@@ -119,9 +121,9 @@ public final class Entities {
 	public static class TickEventHandler {
 
 		public static final TickEventHandler INSTANCE = new TickEventHandler();
-		private static final WeakHashMap<Entity, IntCounter> entityCounters = new WeakHashMap<>();
-		private static final WeakHashMap<TileEntity, IntCounter> tileCounters = new WeakHashMap<>();
-		private static final WeakHashMap<Entity, IntCounter> jumpCounters = new WeakHashMap<>();
+	//	private static final WeakHashMap<Entity, AtomicInteger> entityCounters = new WeakHashMap<>();
+	//	private static final WeakHashMap<TileEntity, AtomicInteger> tileCounters = new WeakHashMap<>();
+		private static final WeakHashMap<Entity, AtomicInteger> jumpCounters = new WeakHashMap<>();
 
 		private byte slow = 0;
 
@@ -132,87 +134,52 @@ public final class Entities {
 
 			if(event.phase == Phase.START && ++slow % 3 == 0) {
 
-				entityCounters.values().forEach(IntCounter::preIncrement);
-				tileCounters.values().forEach(IntCounter::preIncrement);
-				jumpCounters.values().stream()
-					.filter(counter -> counter.get() >= 0)
-					.forEach(IntCounter::preIncrement);
+	//			entityCounters.values().forEach(AtomicInteger::incrementAndGet);
+	//			tileCounters.values().forEach(AtomicInteger::incrementAndGet);
+				for(Iterator<AtomicInteger> itr = jumpCounters.values().iterator(); itr.hasNext(); ) {
+
+					if(itr.next().getAndIncrement() < 0)
+						itr.remove();
+				}
 			}
 		}
 
 		@SubscribeEvent
 		public void onLivingJump(LivingJumpEvent event) {
 
-			kvverti.enim.Logger.info("Jumped: " + event.entityLiving.motionY);
-			jumpCounters.computeIfAbsent(event.entityLiving, e -> new IntCounter()).reset();
+			jumpCounters.computeIfAbsent(event.entityLiving, e -> new AtomicInteger()).set(0);
 		}
 
-		public int ticks(Entity entity) {
+	//	public int ticks(Entity entity) {
 
-			return entityCounters.computeIfAbsent(entity, this::computeCounter).get();
-		}
+	//		return entityCounters.computeIfAbsent(entity, this::computeCounter).get();
+	//	}
 
-		public int ticks(TileEntity tile) {
+	//	public int ticks(TileEntity tile) {
 
-			return tileCounters.computeIfAbsent(tile, this::computeCounter).get();
-		}
+	//		return tileCounters.computeIfAbsent(tile, this::computeCounter).get();
+	//	}
 
 		public int jumpTicks(Entity entity) {
 
-			IntCounter c = jumpCounters.get(entity);
+			AtomicInteger c = jumpCounters.get(entity);
 			return c != null ? c.get() : -1;
 		}
 
-		private IntCounter computeCounter(Entity entity) {
+	//	private IntCounter computeCounter(Entity entity) {
 
-			int result = Objects.hash(entity.getUniqueID());
-			IntCounter counter = new IntCounter(result);
-			entityCounters.put(entity, counter);
-			return counter;
-		}
+	//		int result = Objects.hash(entity.getUniqueID());
+	//		IntCounter counter = new IntCounter(result);
+	//		entityCounters.put(entity, counter);
+	//		return counter;
+	//	}
 
-		private IntCounter computeCounter(TileEntity tile) {
+	//	private IntCounter computeCounter(TileEntity tile) {
 
-			int result = Objects.hash(tile.getPos());
-			IntCounter counter = new IntCounter(result);
-			tileCounters.put(tile, counter);
-			return counter;
-		}
-	}
-
-	@Deprecated
-	private static class IntCounter {
-
-		private int value;
-
-		public IntCounter() {
-
-			this(0);
-		}
-
-		public IntCounter(int initial) {
-
-			value = initial;
-		}
-
-		public int preIncrement() {
-
-			return ++value;
-		}
-
-		public int postIncrement() {
-
-			return value++;
-		}
-
-		public int get() {
-
-			return value;
-		}
-
-		public void reset() {
-
-			value = 0;
-		}
+	//		int result = Objects.hash(tile.getPos());
+	//		IntCounter counter = new IntCounter(result);
+	//		tileCounters.put(tile, counter);
+	//		return counter;
+	//	}
 	}
 }
