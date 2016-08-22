@@ -20,7 +20,9 @@ public final class Enim {
 
 	public static final String ID = "enim";
 	public static final String NAME = "ENIM";
-	public static final String VERSION = "dev-2016.02.16";
+	public static final String VERSION = "dev-2016.8.22.0";
+	//dev format: dev-year.month.day.edit
+	//release format: major.minor.fix
 
 	@Instance(ID)
 	public static Enim instance;
@@ -38,12 +40,11 @@ public final class Enim {
 		EnimRenderingRegistry.registerEntityRender(EntityBlaze.class, m -> new BasicLivingRender<>(m, "minecraft", "blaze"));
 	}
 
-	@SuppressWarnings("deprecation") //tick event handler
 	@EventHandler
 	public void init(FMLInitializationEvent e) {
 
     		EnimRenderingRegistry.init(e);
-		MinecraftForge.EVENT_BUS.register(Entities.TickEventHandler.INSTANCE);
+		MinecraftForge.EVENT_BUS.register(Ticker.INSTANCE);
 		EnimRenderingRegistry.registerTileEntityRender(TileEntitySign.class, new SignRender("minecraft", "sign"));
 		EnimRenderingRegistry.registerTileEntityRender(TileEntityBanner.class, new BannerRender("minecraft", "banner"));
 	}
