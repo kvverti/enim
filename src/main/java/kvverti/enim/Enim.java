@@ -1,43 +1,28 @@
 package kvverti.enim;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.function.Function;
-
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.*;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.item.*;
 import net.minecraft.entity.monster.*;
 import net.minecraft.tileentity.*;
-import net.minecraft.util.ResourceLocation;
 
 import kvverti.enim.entity.*;
-import kvverti.enim.modelsystem.*;
 
 @Mod(modid = Enim.ID, name = Enim.NAME, version = Enim.VERSION, clientSideOnly = true)
-public final class Enim implements IResourceManagerReloadListener {
+public final class Enim {
 
 	public static final String ID = "enim";
 	public static final String NAME = "ENIM";
-	public static final String VERSION = "dev-2016.02.16";
-	private static final List<ReloadableRender> renders = new ArrayList<>(20);
+	public static final String VERSION = "dev-2016.8.22.0";
+	//dev format: dev-year.month.day.edit
+	//release format: major.minor.fix
 
 	@Instance(ID)
 	public static Enim instance;
@@ -45,72 +30,28 @@ public final class Enim implements IResourceManagerReloadListener {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
 
-		registerEntity(EntityBoat.class, m -> new BasicRender<>(m, "minecraft", "boat"));
-		registerEntity(EntityLeashKnot.class, m -> new BasicRender<>(m, "minecraft", "lead"));
-		registerEntity(EntityMinecartEmpty.class, m -> new MinecartRender(m, "minecraft", "minecart"));
-		registerEntity(EntitySlime.class, m -> new SlimeRender(m, "minecraft", "slime"));
-		registerEntity(EntityCreeper.class, m -> new CreeperRender(m, "minecraft", "creeper"));
-		registerEntity(EntityRabbit.class, m -> new RabbitRender(m, "minecraft", "rabbit"));
-		registerEntity(EntityChicken.class, m -> new ChickenRender(m, "minecraft", "chicken"));
+		EnimRenderingRegistry.registerEntityRender(EntityBoat.class, m -> new BasicRender<>(m, "minecraft", "boat"));
+		EnimRenderingRegistry.registerEntityRender(EntityLeashKnot.class, m -> new BasicRender<>(m, "minecraft", "lead"));
+		EnimRenderingRegistry.registerEntityRender(EntityMinecartEmpty.class, m -> new MinecartRender(m, "minecraft", "minecart"));
+		EnimRenderingRegistry.registerEntityRender(EntitySlime.class, m -> new SlimeRender(m, "minecraft", "slime"));
+		EnimRenderingRegistry.registerEntityRender(EntityCreeper.class, m -> new CreeperRender(m, "minecraft", "creeper"));
+		EnimRenderingRegistry.registerEntityRender(EntityRabbit.class, m -> new RabbitRender(m, "minecraft", "rabbit"));
+		EnimRenderingRegistry.registerEntityRender(EntityChicken.class, m -> new ChickenRender(m, "minecraft", "chicken"));
+		EnimRenderingRegistry.registerEntityRender(EntityBlaze.class, m -> new BasicLivingRender<>(m, "minecraft", "blaze"));
 	}
 
 	@EventHandler
 	public void init(FMLInitializationEvent e) {
 
-    		Entities.resourceManager().registerReloadListener(Enim.instance);
-		MinecraftForge.EVENT_BUS.register(Entities.TickEventHandler.INSTANCE);
-
-		registerTile(TileEntitySign.class, new SignRender("minecraft", "sign"));
-		registerTile(TileEntityBanner.class, new BannerRender("minecraft", "banner"));
+    		EnimRenderingRegistry.init(e);
+		MinecraftForge.EVENT_BUS.register(Ticker.INSTANCE);
+		EnimRenderingRegistry.registerTileEntityRender(TileEntitySign.class, new SignRender("minecraft", "sign"));
+		EnimRenderingRegistry.registerTileEntityRender(TileEntityBanner.class, new BannerRender("minecraft", "banner"));
 	}
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent e) {
 
-	}
-
-	@Override
-	public void onResourceManagerReload(IResourceManager manager) {
-
-		Logger.info("Reloading resources...");
-
-		Map<String, EntityState> models = new HashMap<>();
-		for(ReloadableRender r : renders) {
-
-			try {
-				ResourceLocation estateLoc = r.getEntityStateFile();
-				EntityJsonParser parser = new EntityJsonParser(manager.getResource(estateLoc));
-				parser.parseModelLocations(r.getEntityStateNames(), models);
-				models.values().forEach(r::reloadRender);
-
-			} catch(ENIMException|IOException e) {
-
-				Logger.error(e);
-				r.setMissingno();
-
-			} finally {
-
-				models.clear();
-			}
-		}
-
-		Logger.info("Reload complete");
-	}
-
-	private <T extends Entity> void registerEntity(Class<T> cls,
-		Function<? super RenderManager, ? extends ENIMRender<? super T>> factory) {
-
-		RenderingRegistry.registerEntityRenderingHandler(cls, manager -> {
-
-			ENIMRender<? super T> r = factory.apply(manager);
-			renders.add(r);
-			return r;
-		});
-	}
-
-	private <T extends TileEntity> void registerTile(Class<T> cls, ENIMTileEntityRender<? super T> render) {
-
-		ClientRegistry.bindTileEntitySpecialRenderer(cls, render);
-		renders.add(render);
+		//Entities.initTicker();
 	}
 }

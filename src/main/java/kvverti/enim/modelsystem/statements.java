@@ -1,6 +1,7 @@
 package kvverti.enim.modelsystem;
 
 import kvverti.enim.Logger;
+import kvverti.enim.Util;
 
 final class StateDefine extends Statement {
 
@@ -147,12 +148,12 @@ abstract class StateAneme extends Statement {
 		element = elem.getValue();
 		switch(aType.getValue()) {
 
-			case "sine": angleType = 1;
+			case Keys.ABIE_KEY_SINE: angleType = 1;
 				break;
-			case "cosine": angleType = 2;
+			case Keys.ABIE_KEY_COSINE: angleType = 2;
 				break;
-			default: Logger.warn("Aneme angleType not valid, assuming linear");
-			case "linear": angleType = 0;
+			default: Util.assertFalse("Unexpected angle type: " + aType.getValue());
+			case Keys.ABIE_KEY_LINEAR: angleType = 0;
 				break;
 		}
 	}

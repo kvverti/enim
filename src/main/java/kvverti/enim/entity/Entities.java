@@ -1,23 +1,24 @@
 package kvverti.enim.entity;
 
-import java.util.WeakHashMap;
-import java.util.Objects;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
+import kvverti.enim.Ticker;
 
-/** Utility class for working with Entitys and TileEntitys. */
+/** 
+ * Utility class for working with {@link Entity}s and {@link TileEntity}s. Also contains convenience methods for common objects
+ * found in the {@link Minecraft} class.
+ */
 public final class Entities {
 
+	//private static volatile EnimTicker masterTicker;
+
+	/** Construction disallowed */
 	private Entities() { }
 
 	public static float toRadians(float degrees) {
@@ -32,17 +33,17 @@ public final class Entities {
 
 	public static int randomCounterFor(Entity entity) {
 
-		return TickEventHandler.INSTANCE.ticks(entity);
+		return Ticker.INSTANCE.ticks(entity);
 	}
 
 	public static int randomCounterFor(TileEntity tile) {
 
-		return TickEventHandler.INSTANCE.ticks(tile);
+		return Ticker.INSTANCE.ticks(tile);
 	}
 
 	public static int jumpTime(Entity entity) {
 
-		return TickEventHandler.INSTANCE.jumpTicks(entity);
+		return Ticker.INSTANCE.jumpTicks(entity);
 	}
 
 	public static float interpolate(float start, float end, float percent) {
@@ -65,101 +66,46 @@ public final class Entities {
 		return Minecraft.getMinecraft().thePlayer;
 	}
 
-	public static class TickEventHandler {
+	public static WorldClient theWorld() {
 
-		public static final TickEventHandler INSTANCE = new TickEventHandler();
-		private static final WeakHashMap<Entity, IntCounter> entityCounters = new WeakHashMap<>();
-		private static final WeakHashMap<TileEntity, IntCounter> tileCounters = new WeakHashMap<>();
-		private static final WeakHashMap<Entity, IntCounter> jumpCounters = new WeakHashMap<>();
+		return Minecraft.getMinecraft().theWorld;
+	}
 
-		private byte slow = 0;
+	/*public static synchronized void initTicker() {
 
-		private TickEventHandler() { }
+		if(masterTicker == null) {
 
-		@SubscribeEvent
-		public void onWorldTick(WorldTickEvent event) {
+			masterTicker = new EnimTicker();
+			new Thread(masterTicker, "Enim Ticker").start();
+		}
+	}
 
-			if(event.phase == Phase.START && ++slow % 3 == 0) {
+	public static int currentTick() {
 
-				entityCounters.values().forEach(IntCounter::preIncrement);
-				tileCounters.values().forEach(IntCounter::preIncrement);
-				jumpCounters.values().stream()
-					.filter(counter -> counter.get() >= 0)
-					.forEach(IntCounter::preIncrement);
+		return masterTicker.currentTick();
+	}
+
+	private static final class EnimTicker implements Runnable {
+
+		private final AtomicInteger counter = new AtomicInteger();
+		private final Minecraft mc = Minecraft.getMinecraft();
+
+		/* count game ticks *//*
+		@Override
+		public void run() {
+
+			while(true) {
+
+				if(!mc.isGamePaused())
+					kvverti.enim.Logger.info(counter.incrementAndGet());
+				try { Thread.sleep(50); }
+				catch(InterruptedException e) { }
 			}
 		}
 
-		@SubscribeEvent
-		public void onLivingJump(LivingJumpEvent event) {
+		public int currentTick() {
 
-			jumpCounters.computeIfAbsent(event.entityLiving, e -> new IntCounter()).reset();
+			return counter.get();
 		}
-
-		public int ticks(Entity entity) {
-
-			return entityCounters.computeIfAbsent(entity, this::computeCounter).get();
-		}
-
-		public int ticks(TileEntity tile) {
-
-			return tileCounters.computeIfAbsent(tile, this::computeCounter).get();
-		}
-
-		public int jumpTicks(Entity entity) {
-
-			IntCounter c = jumpCounters.get(entity);
-			return c != null ? c.get() : -1;
-		}
-
-		private IntCounter computeCounter(Entity entity) {
-
-			int result = Objects.hash(entity.getUniqueID());
-			IntCounter counter = new IntCounter(result);
-			entityCounters.put(entity, counter);
-			return counter;
-		}
-
-		private IntCounter computeCounter(TileEntity tile) {
-
-			int result = Objects.hash(tile.getPos());
-			IntCounter counter = new IntCounter(result);
-			tileCounters.put(tile, counter);
-			return counter;
-		}
-	}
-
-	private static class IntCounter {
-
-		private int value;
-
-		public IntCounter() {
-
-			this(0);
-		}
-
-		public IntCounter(int initial) {
-
-			value = initial;
-		}
-
-		public int preIncrement() {
-
-			return ++value;
-		}
-
-		public int postIncrement() {
-
-			return value++;
-		}
-
-		public int get() {
-
-			return value;
-		}
-
-		public void reset() {
-
-			value = 0;
-		}
-	}
+	}*/
 }
