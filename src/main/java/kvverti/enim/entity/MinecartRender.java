@@ -14,17 +14,16 @@ public class MinecartRender extends BasicRender<EntityMinecart> {
 	}
 
 	@Override
-	public void preRender(EntityMinecart entity, EntityState state, float yaw) {
+	public void preRender(EntityMinecart entity, EntityState state, EntityInfo info) {
 
-		GlStateManager.rotate(-yaw, 0.0f, 1.0f, 0.0f);
-		double dx = entity.posX - entity.lastTickPosX;
-		double dy = entity.posY - entity.lastTickPosY;
-		double dz = entity.posZ - entity.lastTickPosZ;
+		GlStateManager.rotate(-info.entityYaw, 0.0f, 1.0f, 0.0f);
+		double dx = entity.motionX;
+		double dy = entity.motionY;
+		double dz = entity.motionZ;
 
 		double newYaw = Math.atan2(dz, dx) * 180.0 / Math.PI;
-		yaw = newYaw == 0.0 ? entity.prevRotationYaw : (float) newYaw;
-		entity.rotationYaw = yaw;
-		GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
+		entity.rotationYaw = newYaw == 0.0 ? entity.prevRotationYaw : (float) newYaw;
+		GlStateManager.rotate(entity.rotationYaw, 0.0f, 1.0f, 0.0f);
 
 		double dydx = +Math.abs(dy / dx);
 		double dydz = -Math.abs(dy / dz);

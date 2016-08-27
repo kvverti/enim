@@ -104,15 +104,16 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 			ENIMModel model = state.model();
 			bindEntityTexture(entity);
 			GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
-			preRender(entity, state, yaw);
-			model.render(entity,
-				speed(entity),
-				yaw,
-				partialTicks,
-				headYaw(entity, yaw),
-				entity.rotationPitch,
-				0.0625f * state.scale());
-			postRender(entity);
+			EntityInfo info = new EntityInfo();
+			info.speedSq = speedSq(entity);
+			info.partialTicks = partialTicks;
+			info.entityYaw = yaw;
+			info.headYaw = headYaw(entity, yaw);
+			info.entityPitch = entity.rotationPitch;
+			info.scale = 0.0625f * state.scale();
+			preRender(entity, state, info);
+			model.render(entity, info);
+			postRender(entity, info);
 			GlStateManager.popMatrix();
 		}
 		super.doRender(entity, x, y, z, yaw, partialTicks);
@@ -120,11 +121,11 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 			Util.invokeUnchecked(proxy, renderLeash, entity, x, y, z, yaw, partialTicks);
 	}
 
-	private float speed(Entity entity) {
+	private float speedSq(Entity entity) {
 
-		double dx = entity.posX - entity.lastTickPosX;
-		double dz = entity.posZ - entity.lastTickPosZ;
-		return (float) Math.sqrt(dx * dx + dz * dz);
+		double dx = entity.motionX;
+		double dz = entity.motionZ;
+		return (float) (dx * dx + dz * dz);
 	}
 
 	private float headYaw(Entity entity, float bodyYaw) {
@@ -134,9 +135,9 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 
 	public boolean shouldRender(T entity) { return true; }
 
-	public void preRender(T entity, EntityState state, float yaw) { }
+	public void preRender(T entity, EntityState state, EntityInfo info) { }
 
-	public void postRender(T entity) { }
+	public void postRender(T entity, EntityInfo info) { }
 
 	@Override
 	protected final ResourceLocation getEntityTexture(T entity) {

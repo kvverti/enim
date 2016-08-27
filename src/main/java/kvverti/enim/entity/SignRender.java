@@ -22,7 +22,7 @@ public class SignRender extends SignLikeRender<TileEntitySign> {
 	}
 
 	@Override
-	public void postRender(TileEntitySign tile) {
+	public void postRender(TileEntitySign tile, EntityInfo info) {
 
 		//BEGIN MAGIC
 		FontRenderer render = this.getFontRenderer();

@@ -30,7 +30,7 @@ public final class Util {
 		try { return (T) field.get(instance); }
 		catch(IllegalAccessException e) {
 
-			throw new AssertionError("Field was not accessible!");
+			throw unchecked(e);
 		}
 	}
 
@@ -39,7 +39,7 @@ public final class Util {
 		try { return field.getInt(instance); }
 		catch(IllegalAccessException e) {
 
-			throw new AssertionError("Field was not accessible!");
+			throw unchecked(e);
 		}
 	}
 
@@ -48,7 +48,7 @@ public final class Util {
 		try { field.set(instance, value); }
 		catch(IllegalAccessException e) {
 
-			throw new AssertionError("Field was not accessible!");
+			throw unchecked(e);
 		}
 	}
 
@@ -66,7 +66,7 @@ public final class Util {
 		try { return (T) method.invoke(instance, args); }
 		catch(IllegalAccessException e) {
 
-			throw new AssertionError("Method was not accessible!");
+			throw unchecked(e);
 		}
 	}
 

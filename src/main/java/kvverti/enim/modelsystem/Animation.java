@@ -152,7 +152,7 @@ public final class Animation {
 				float[] shift = aneme.getShifts();
 				int atype = aneme.getAngleType();
 				int time = aneme.getRelativePeriod();
-				switch(aneme.getStatementType()) {
+				/*switch(aneme.getStatementType()) {
 
 					case ROTATE:
 						for(int i = 0; i < 3; i++) {
@@ -171,6 +171,19 @@ public final class Animation {
 						}
 						break;
 					default: Util.assertFalse("Invalid statement type");
+				}*/
+				for(int i = 0; i < 3; i++) {
+
+					if(rotate[i] != 0.0f)
+						angles[i] = selectHelper(atype,
+							stCopy[i],
+							stCopy[i] + rotate[i],
+							(float) n * time / duration);
+					if(shift[i] != 0.0f)
+						angles[i + 3] = selectHelper(atype,
+							stCopy[i + 3],
+							stCopy[i + 3] + shift[i],
+							(float) n * time / duration);
 				}
 				prevFrame.put(aneme.getSpecifiedElement(), angles);
 			}

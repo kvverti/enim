@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 
-import net.minecraft.client.model.*;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -20,47 +20,44 @@ import static kvverti.enim.entity.Entities.*;
 
 public class ENIMModel extends ModelBase {
 
-//	public int textureWidth = 64;
-//	public int textureHeight = 32;
-
+//	public int textureWidth;
+//	public int textureHeight;
 	private final Map<String, ENIMModelRenderer> boxes = new HashMap<>();
 	private final List<ENIMModelRenderer> opaques = new ArrayList<>();
 	private final List<ENIMModelRenderer> lucents = new ArrayList<>();
 	private final Map<AnimationType, Animation> animations = new EnumMap<>(AnimationType.class);
 
-	@Override
-	public void render(Entity entity, float speed, float dir, float partialTicks, float headYaw, float pitch, float scale) {
+	public void render(Entity entity, EntityInfo info) {
 
-		setRotationAngles(speed, dir, partialTicks, headYaw, pitch, scale, entity);
-		renderHelper(speed, dir, partialTicks, headYaw, pitch, scale);
+		setRotationAngles(entity, info);
+		renderHelper(info);
 	}
 
-	public void render(TileEntity tile, float speed, float dir, float partialTicks, float headYaw, float pitch, float scale) {
+	public void render(TileEntity tile, EntityInfo info) {
 
-		setRotationAngles(speed, dir, partialTicks, headYaw, pitch, scale, tile);
-		renderHelper(speed, dir, partialTicks, headYaw, pitch, scale);
+		setRotationAngles(tile, info);
+		renderHelper(info);
 	}
 
-	private void renderHelper(float speed, float dir, float partialTicks, float headYaw, float pitch, float scale) {
+	private void renderHelper(EntityInfo info) {
 
-		opaques.forEach(box -> box.render(scale));
-		lucents.forEach(box -> box.render(scale));
+		opaques.forEach(box -> box.render(info.scale));
+		lucents.forEach(box -> box.render(info.scale));
 	}
 
-	@Override
-	public void setRotationAngles(float speed, float dir, float partialTicks, float headYaw, float pitch, float scale, Entity entity) {
+	public void setRotationAngles(Entity entity, EntityInfo info) {
 
-		resetAngles(headYaw, pitch);
+		resetAngles(info.headYaw, info.entityPitch);
 		animateLooping(entity, AnimationType.IDLE, true);
-		animateLooping(entity, AnimationType.MOVE, speed > 0.05f);
+		animateLooping(entity, AnimationType.MOVE, info.speedSq > 0.0025f);
 		animateLooping(entity, AnimationType.AIR, !entity.isInWater() && !entity.onGround);
 		animateLooping(entity, AnimationType.SWIM, entity.isInWater() && !entity.onGround);
 		animateNoLooping(AnimationType.JUMP, jumpTime(entity));
 	}
 
-	public void setRotationAngles(float speed, float dir, float partialTicks, float headYaw, float pitch, float scale, TileEntity tile) {
+	public void setRotationAngles(TileEntity tile, EntityInfo info) {
 
-		resetAngles(headYaw, pitch);
+		resetAngles(info.headYaw, info.entityPitch);
 		animateLooping(tile, AnimationType.IDLE, true);
 	}
 
@@ -114,6 +111,9 @@ public class ENIMModel extends ModelBase {
 			box.rotateAngleX = 0.0f;
 			box.rotateAngleY = 0.0f;
 			box.rotateAngleZ = 0.0f;
+			box.shiftDistanceX = 0.0f;
+			box.shiftDistanceY = 0.0f;
+			box.shiftDistanceZ = 0.0f;
 			box.headYaw = headYaw;
 			box.pitch = pitch;
 		});
@@ -158,4 +158,19 @@ public class ENIMModel extends ModelBase {
 		lucents.clear();
 		animations.replaceAll((type, anim) -> Animation.NO_OP);
 	}
+
+	/** @deprecated Replaced by {@link #render(Entity, EntityInfo)} */
+	@Override
+	@Deprecated
+	public void render(Entity entity, float f1, float f2, float f3, float f4, float f5, float f6) { }
+
+	/** @deprecated Replaced by {@link #setRotationAngles(Entity, EntityInfo)} */
+	@Override
+	@Deprecated
+	public void setRotationAngles(float f1, float f2, float f3, float f4, float f5, float f6, Entity entity) { }
+
+	/** @deprecated Replaced by {@link #setRotationAngles(Entity, EntityInfo)} */
+	@Override
+	@Deprecated
+	public void setLivingAnimations(net.minecraft.entity.EntityLivingBase entity, float f1, float f2, float f3) { }
 }

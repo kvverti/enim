@@ -24,9 +24,9 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 		return !entity.isInvisible() || !entity.isInvisibleToPlayer(Entities.thePlayer());
 	}
 
-	/* Must call super.preRender(entity, state, yaw); in subclasses!! */
+	/* Must call super.preRender(entity, state, info); in subclasses!! */
 	@Override
-	public void preRender(T entity, EntityState state, float yaw) {
+	public void preRender(T entity, EntityState state, EntityInfo info) {
 
 		if(entity.deathTime > 0)
 			rotateCorpse(entity);

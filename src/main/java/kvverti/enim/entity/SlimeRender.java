@@ -32,9 +32,9 @@ public class SlimeRender extends LivingRender<EntitySlime> {
 	}
 
 	@Override
-	public void preRender(EntitySlime entity, EntityState state, float yaw) {
+	public void preRender(EntitySlime entity, EntityState state, EntityInfo info) {
 
-		super.preRender(entity, state, yaw);
+		super.preRender(entity, state, info);
 		float squish = 2.0f / (2.0f + entity.squishFactor);
 		GlStateManager.scale(squish, 1.0f / squish, squish);
 	}
