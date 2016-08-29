@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.EnumChatFormatting;
 
 import kvverti.enim.modelsystem.EntityState;
 
@@ -28,16 +29,26 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 	@Override
 	public void preRender(T entity, EntityState state, EntityInfo info) {
 
+		//fall over when dead
 		if(entity.deathTime > 0)
 			rotateCorpse(entity);
+		//tint red when damaged
 		if(entity.hurtTime > 0 || entity.deathTime > 0)
 			GlStateManager.color(1.0f, 0.5f, 0.5f);
+		//invisible mobs as translucent to players in creative/spectator
 		if(entity.isInvisible() && !entity.isInvisibleToPlayer(Entities.thePlayer())) {
 
 			GlStateManager.enableBlend();
 			GlStateManager.blendFunc(770, 771);
 			GlStateManager.color(1.0f, 1.0f, 1.0f, 0.25f);
 		}
+		//"Dinnerbone" or "Grumm" mobs render upside down
+		/*if(entity.hasCustomName()) {
+
+			String name = EnumChatFormatting.getTextWithoutFormattingCodes(entity.getName());
+			if("Grumm".equals(name) || "Dinnerbone".equals(name))
+				GlStateManager.rotate(180.0f, 0.0f, 0.0f, 1.0f);
+		}*/
 	}
 
 	protected void rotateCorpse(T entity) {

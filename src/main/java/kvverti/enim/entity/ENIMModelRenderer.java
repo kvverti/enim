@@ -7,17 +7,18 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 
+import kvverti.enim.Vec3f;
 import kvverti.enim.Util;
 import kvverti.enim.modelsystem.ModelElement;
 
 import static kvverti.enim.entity.Entities.*;
 
-public final class ENIMModelRenderer extends ModelRenderer {
+public class ENIMModelRenderer extends ModelRenderer {
 
 	private static final Method compileDisplayList;
 	private static final Field displayList;
 
-	private final float[] defaultRotations;
+	private final Vec3f defaultRotations;
 	private final float defaultScale;
 	private final boolean translucent;
 	private final boolean head;
@@ -42,7 +43,7 @@ public final class ENIMModelRenderer extends ModelRenderer {
 	ENIMModelRenderer(ModelBase model) {
 
 		super(model, "#missingno");
-		defaultRotations = new float[3];
+		defaultRotations = Vec3f.ORIGIN;
 		defaultScale = 1.0f;
 		translucent = false;
 		head = false;
@@ -51,21 +52,21 @@ public final class ENIMModelRenderer extends ModelRenderer {
 
 	public ENIMModelRenderer(ModelBase model, ModelElement features) {
 
-		super(model, features.name());
-		defaultRotations = features.defaultRotation();
-		defaultScale = features.scale();
-		translucent = features.isTranslucent();
-		head = features.isHead();
-		float[] rotpnt = features.rotationPoint(), from = features.from(), to = features.to();
-		int[] texcrds = features.texCoords();
-		setTextureOffset(texcrds[0], texcrds[1]);
-		setRotationPoint(rotpnt[0] - 8.0f, -rotpnt[1], 8.0f - rotpnt[2]);
-		addBox(from[0] - rotpnt[0],
-			rotpnt[1] - to[1],
-			rotpnt[2] - to[2],
-		(int)	(to[0] - from[0]),
-		(int)	(to[1] - from[1]),
-		(int)	(to[2] - from[2]));
+		super(model, features.name);
+		defaultRotations = features.rotation;
+		defaultScale = features.scale;
+		translucent = features.translucent;
+		head = features.head;
+		Vec3f origin = features.origin, from = features.from, to = features.to;
+		int[] uv = features.uv;
+		setTextureOffset(uv[0], uv[1]);
+		setRotationPoint(origin.x - 8.0f, -origin.y, 8.0f - origin.z);
+		addBox(from.x - origin.x,
+			origin.y - to.y,
+			origin.z - to.z,
+		(int)	(to.x - from.x),
+		(int)	(to.y - from.y),
+		(int)	(to.z - from.z));
 	}
 
 	@Override
@@ -77,9 +78,9 @@ public final class ENIMModelRenderer extends ModelRenderer {
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(offsetX, offsetY, offsetZ);
 			GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-			GlStateManager.rotate(+defaultRotations[2], 0.0f, 0.0f, 1.0f);
-			GlStateManager.rotate(+defaultRotations[1], 0.0f, 1.0f, 0.0f);
-			GlStateManager.rotate(-defaultRotations[0], 1.0f, 0.0f, 0.0f);
+			GlStateManager.rotate(+defaultRotations.z, 0.0f, 0.0f, 1.0f);
+			GlStateManager.rotate(+defaultRotations.y, 0.0f, 1.0f, 0.0f);
+			GlStateManager.rotate(-defaultRotations.x, 1.0f, 0.0f, 0.0f);
 			if(head) {
 
 				GlStateManager.rotate(headYaw, 0.0f, 1.0f, 0.0f);
@@ -109,9 +110,9 @@ public final class ENIMModelRenderer extends ModelRenderer {
 			if(!compiled) compileDisplayList(scale * defaultScale);
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-			GlStateManager.rotate(+defaultRotations[2], 0.0f, 0.0f, 1.0f);
-			GlStateManager.rotate(+defaultRotations[1], 0.0f, 1.0f, 0.0f);
-			GlStateManager.rotate(-defaultRotations[0], 1.0f, 0.0f, 0.0f);
+			GlStateManager.rotate(+defaultRotations.z, 0.0f, 0.0f, 1.0f);
+			GlStateManager.rotate(+defaultRotations.y, 0.0f, 1.0f, 0.0f);
+			GlStateManager.rotate(-defaultRotations.x, 1.0f, 0.0f, 0.0f);
 			GlStateManager.rotate(+toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
 			GlStateManager.rotate(+toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
 			GlStateManager.rotate(-toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);

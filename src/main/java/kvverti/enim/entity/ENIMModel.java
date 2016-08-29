@@ -126,14 +126,14 @@ public class ENIMModel extends ModelBase {
 		for(ModelElement m : elements) {
 
 			ENIMModelRenderer box = new ENIMModelRenderer(this, m);
-			boxes.put(m.name(), box);
-			if(m.isTranslucent()) lucents.add(box);
+			boxes.put(m.name, box);
+			if(m.translucent) lucents.add(box);
 			else opaques.add(box);
 		}
 		for(ModelElement m : elements) {
 
-			ENIMModelRenderer current = boxes.get(m.name());
-			String parent = m.parent();
+			ENIMModelRenderer current = boxes.get(m.name);
+			String parent = m.parent;
 			if(boxes.containsKey(parent)) {
 
 				boxes.get(parent).addChild(current);

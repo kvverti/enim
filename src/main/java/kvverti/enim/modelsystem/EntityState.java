@@ -76,7 +76,7 @@ public final class EntityState {
 			parser.applyOverrides(elements);
 			parser.parseAnimations(animations);
 			Set<String> elementNames = elements.stream()
-				.map(ModelElement::name)
+				.map(elem -> elem.name)
 				.collect(Collectors.toSet());
 			Util.validate(animations.values(), anim -> anim.validate(elementNames));
 			model.reloadModel(elements, animations);

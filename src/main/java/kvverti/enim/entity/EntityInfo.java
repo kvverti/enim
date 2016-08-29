@@ -1,6 +1,6 @@
 package kvverti.enim.entity;
 
-public class EntityInfo {
+public final class EntityInfo {
 
 	public float speedSq;
 	public float partialTicks;

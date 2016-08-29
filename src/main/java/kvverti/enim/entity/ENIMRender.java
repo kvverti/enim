@@ -123,8 +123,8 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 
 	private float speedSq(Entity entity) {
 
-		double dx = entity.motionX;
-		double dz = entity.motionZ;
+		double dx = entity.posX - entity.lastTickPosX;
+		double dz = entity.posZ - entity.lastTickPosZ;
 		return (float) (dx * dx + dz * dz);
 	}
 

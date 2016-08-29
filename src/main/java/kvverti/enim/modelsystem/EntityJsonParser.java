@@ -17,6 +17,7 @@ import net.minecraft.util.ResourceLocation;
 import com.google.gson.*;
 
 import kvverti.enim.Logger;
+import kvverti.enim.Vec3f;
 import kvverti.enim.entity.Entities;
 import kvverti.enim.Util;
 import kvverti.enim.Util.*;
@@ -156,13 +157,9 @@ public final class EntityJsonParser {
 			initJson();
 			if(!json.has(Keys.OVERRIDES_TAG)) return;
 			JsonObject overrides = json.getAsJsonObject(Keys.OVERRIDES_TAG);
-			Set<ModelElement> rides = set.stream()
-				.filter(elem -> overrides.has(elem.name()))
-				.map(elem -> replaceOverride(overrides, elem))
-				.collect(Collectors.toSet());
-			rides.addAll(set);
-			set.clear();
-			set.addAll(rides);
+			set.stream()
+				.filter(elem -> overrides.has(elem.name))
+				.forEach(elem -> replaceOverride(overrides, elem));
 
 		} catch(JsonParseException e) {
 
@@ -172,17 +169,12 @@ public final class EntityJsonParser {
 
 	private ModelElement replaceOverride(JsonObject overrides, ModelElement elem) {
 
-		ModelElement.Builder b = new ModelElement.Builder(elem);
-		JsonObject obj = overrides.getAsJsonObject(elem.name());
+		JsonObject obj = overrides.getAsJsonObject(elem.name);
 		if(obj.has(Keys.ELEM_SCALE))
-			b.setScale(getScaleOptional(obj, Keys.ELEM_SCALE));
+			elem.scale = getScaleOptional(obj, Keys.ELEM_SCALE);
 		if(obj.has(Keys.ELEM_DEFROT))
-			b.setDefaultRotation(getFloat(obj, Keys.ELEM_DEFROT, 0),
-				getFloat(obj, Keys.ELEM_DEFROT, 1),
-				getFloat(obj, Keys.ELEM_DEFROT, 2));
-		try { return b.build(); }
-		catch(SyntaxException e) { throw new AssertionError("Invalid element format here?!?!?"); }
-		//No exception should be thrown, as the name and coords are already validated
+			elem.rotation = getVec3f(obj, Keys.ELEM_DEFROT);
+		return elem;
 	}
 
 	public void getImports(Set<? super ModelElement> set, Map<AnimationType, Animation> map) throws ParserException {
@@ -265,7 +257,7 @@ public final class EntityJsonParser {
 	private void addSafely(Set<? super ModelElement> set, ModelElement elem) throws DuplicateElementException {
 
 		if(!set.add(elem))
-			throw new DuplicateElementException(elem.name() + " in file " + file.getResourceLocation());
+			throw new DuplicateElementException(elem.name + " in file " + file.getResourceLocation());
 	}
 
 	private ResourceLocation getResourceLocation(String loc, String relative, String ext) {
@@ -285,27 +277,27 @@ public final class EntityJsonParser {
 
 	private ModelElement buildElement(JsonObject obj) throws SyntaxException {
 
-		return new ModelElement.Builder()
-			.setName(getString(obj, Keys.ELEM_NAME))
-			.setParent(getString(obj, Keys.ELEM_PARENT))
-			.setTexCoords(getInt(obj, Keys.ELEM_TEXCOORDS, 0),
-				getInt(obj, Keys.ELEM_TEXCOORDS, 1))
-			.setFrom(getFloat(obj, Keys.ELEM_FROM, 0),
-				getFloat(obj, Keys.ELEM_FROM, 1),
-				getFloat(obj, Keys.ELEM_FROM, 2))
-			.setTo(getFloat(obj, Keys.ELEM_TO, 0),
-				getFloat(obj, Keys.ELEM_TO, 1),
-				getFloat(obj, Keys.ELEM_TO, 2))
-			.setRotationPoint(getFloat(obj, Keys.ELEM_ROTPOINT, 0),
-				getFloat(obj, Keys.ELEM_ROTPOINT, 1),
-				getFloat(obj, Keys.ELEM_ROTPOINT, 2))
-			.setDefaultRotation(getFloat(obj, Keys.ELEM_DEFROT, 0),
-				getFloat(obj, Keys.ELEM_DEFROT, 1),
-				getFloat(obj, Keys.ELEM_DEFROT, 2))
-			.setScale(getScaleOptional(obj, Keys.ELEM_SCALE))
-			.setTranslucent(getBoolean(obj, Keys.ELEM_TRANSLUCENT))
-			.setHead(getBoolean(obj, Keys.ELEM_HEAD))
-			.build();
+		ModelElement element = new ModelElement(getString(obj, Keys.ELEM_NAME));
+		element.parent = getString(obj, Keys.ELEM_PARENT);
+		element.uv[0] = getInt(obj, Keys.ELEM_TEXCOORDS, 0);
+		element.uv[1] = getInt(obj, Keys.ELEM_TEXCOORDS, 1);
+		element.from = getVec3f(obj, Keys.ELEM_FROM);
+		element.to = getVec3f(obj, Keys.ELEM_TO);
+		element.origin = getVec3f(obj, Keys.ELEM_ROTPOINT);
+		element.rotation = getVec3f(obj, Keys.ELEM_DEFROT);
+		element.scale = getScaleOptional(obj, Keys.ELEM_SCALE);
+		element.translucent = getBoolean(obj, Keys.ELEM_TRANSLUCENT);
+		element.head = getBoolean(obj, Keys.ELEM_HEAD);
+		element.verify();
+		return element;
+	}
+
+	private Vec3f getVec3f(JsonObject obj, String key) {
+
+		float x = getFloat(obj, key, 0);
+		float y = getFloat(obj, key, 1);
+		float z = getFloat(obj, key, 2);
+		return Vec3f.of(x, y, z);
 	}
 
 	private boolean getBoolean(JsonObject obj, String key) {
