@@ -1,4 +1,4 @@
-package kvverti.enim.modelsystem;
+package kvverti.enim;
 
 import java.util.regex.*;
 
@@ -16,6 +16,7 @@ public final class Keys {
 	public static final String WILDCARD = "*";
 
 	public static final String ELEMENTS_TAG = "elements";
+	public static final String ELEMENTS_OVERRIDES = "overrides";
 	public static final String ELEM_NAME = "name";
 	public static final String ELEM_PARENT = "parent";
 	public static final String ELEM_TEXCOORDS = "uv";
@@ -52,8 +53,6 @@ public final class Keys {
 	public static final String STATE_ROTATION = "y";
 	public static final String STATE_SCALE = "scale";
 
-	public static final String OVERRIDES_TAG = "overrides";
-
 	public static final String STATES_DIR = "entitystates/";
 	public static final String MODELS_DIR = "models/entity/";
 	public static final String ANIMS_DIR = "models/entity/animations/";
@@ -61,7 +60,7 @@ public final class Keys {
 
 	public static final String JSON = ".json";
 	public static final String PNG = ".png";
-	public static final String ENIM = ".abie";
+	public static final String ABIESCRIPT = ".abie";
 
 	public static final Pattern IDENTIFIER_REGEX = Pattern.compile("[A-Za-z_][A-Za-z_0-9]*");
 	public static final Pattern RESOURCE_LOCATION_REGEX =

@@ -105,6 +105,9 @@ public final class EnimRenderingRegistry {
 				models.clear();
 			}
 		}
+		try { kvverti.enim.model.EntityModel model = kvverti.enim.model.EntityModel.GSON.fromJson(Util.getReaderFor(new ResourceLocation("minecraft:models/entity/rabbit.json")), kvverti.enim.model.EntityModel.class);
+			Logger.info(model); }
+		catch(Exception e) { Logger.error(e); }
 		Logger.info("Reload complete");
 	}
 }

@@ -1,15 +1,18 @@
 package kvverti.enim;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.io.IOException;
+
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 /**
  * An immutable vector of three {@code float} values. Three related {@code float} values are used so often in rendering code
  * that it makes sense for this logical grouping of them to exist. This is not a mathematical vector, it is literally
  * three {@code float}s.
  */
-public final class Vec3f implements Iterable<Float> {
+public final class Vec3f {
 
 	public static final Vec3f ORIGIN = new Vec3f(0.0f, 0.0f, 0.0f);
 	public static final Vec3f UNIT_X = new Vec3f(1.0f, 0.0f, 0.0f);
@@ -23,6 +26,7 @@ public final class Vec3f implements Iterable<Float> {
 	public final float y;
 	public final float z;
 
+	/** Private constructor */
 	private Vec3f(float x, float y, float z) {
 
 		this.x = x;
@@ -48,33 +52,9 @@ public final class Vec3f implements Iterable<Float> {
 	}
 
 	@Override
-	public Iterator<Float> iterator() {
-
-		return new Iterator<Float>() {
-
-			private byte index = 0;
-
-			@Override
-			public boolean hasNext() { return index < 3; }
-
-			@Override
-			public Float next() {
-
-				switch(index++) {
-
-					case 0: return x;
-					case 1: return y;
-					case 2: return z;
-					default: throw new NoSuchElementException();
-				}
-			}
-		};
-	}
-
-	@Override
 	public String toString() {
 
-		return String.format("[%d, %d, %d]", x, y, z);
+		return String.format("[%f, %f, %f]", x, y, z);
 	}
 
 	@Override
@@ -86,6 +66,30 @@ public final class Vec3f implements Iterable<Float> {
 	@Override
 	public boolean equals(Object obj) {
 
-		return obj instanceof Vec3f && equals((Vec3f) obj, x, y, z);
+		return (this == obj) || (obj instanceof Vec3f && equals((Vec3f) obj, x, y, z));
+	}
+
+	/** Json adapter for the {@link Vec3f} class. Vec3fs are serialized to a JsonArray. */
+	public static class Adapter extends TypeAdapter<Vec3f> {
+
+		@Override
+		public Vec3f read(JsonReader in) throws IOException {
+
+			in.beginArray();
+			float[] coords = new float[3];
+			for(int i = 0; in.hasNext(); i++)
+				if(i < 3) coords[i] = (float) in.nextDouble();
+				else in.skipValue();
+			in.endArray();
+			return Vec3f.of(coords[0], coords[1], coords[2]);
+		}
+
+		@Override
+		public void write(JsonWriter out, Vec3f value) throws IOException {
+
+			out.beginArray();
+			out.value(value.x).value(value.y).value(value.z);
+			out.endArray();
+		}
 	}
 }

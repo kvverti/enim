@@ -1,13 +1,18 @@
 package kvverti.enim;
 
+import java.io.*;
+import java.util.regex.Matcher;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.*;
 
+import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+
+import kvverti.enim.entity.Entities;
 
 /** Utility class */
 public final class Util {
@@ -114,6 +119,21 @@ public final class Util {
 	public static void assertFalse(Object message) {
 
 		assertThat(false, message);
+	}
+
+	public static ResourceLocation getResourceLocation(String location, String prefix, String postfix) {
+
+		Matcher m = Keys.RESOURCE_LOCATION_REGEX.matcher(location);
+		return location != null && m.matches() ?
+			new ResourceLocation(m.group("domain"), prefix + m.group("filepath") + postfix)
+			: Util.MISSING_LOCATION;
+	}
+
+	public static Reader getReaderFor(ResourceLocation location) throws IOException {
+
+		IResource resource = Entities.resourceManager().getResource(location);
+		InputStream istream = resource.getInputStream();
+		return new InputStreamReader(istream);
 	}
 
 	public static class WrappedCheckedException extends RuntimeException {

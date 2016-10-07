@@ -124,7 +124,6 @@ public final class Ticker {
 
 	private boolean isClientIntegrated() {
 
-		boolean res = Minecraft.getMinecraft().isSingleplayer();
-		return res;
+		return Minecraft.getMinecraft().isSingleplayer();
 	}
 }

@@ -1,12 +1,15 @@
-package kvverti.enim.modelsystem;
+package kvverti.enim.model;
 
 import java.util.Arrays;
 import java.io.IOException;
 
+import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
 
+import kvverti.enim.Keys;
 import kvverti.enim.Vec3f;
 
+/** Class representing a model element in the "elements" tag */
 public final class ModelElement {
 
 	@SerializedName(Keys.ELEM_NAME)
@@ -40,14 +43,16 @@ public final class ModelElement {
 	public boolean head = false;
 
 	/** For Json deserialization */
-	private ModelElement() { this(""); }
+	private ModelElement() { name = ""; }
 
-	public ModelElement(String name) {
+	public void applyOverride(Override value) {
 
-		this.name = name;
+		if(value == null) return;
+		rotation = value.rotation;
+		scale = value.scale;
 	}
 
-	@Override
+	@java.lang.Override
 	public String toString() {
 
 		return String.format(
@@ -65,37 +70,48 @@ public final class ModelElement {
 			Keys.ELEM_HEAD, head);
 	}
 
-	@Override
+	@java.lang.Override
 	public boolean equals(Object o) {
 
 		return o != null && o.getClass() == ModelElement.class && ((ModelElement) o).name.equals(this.name);
 	}
 
-	@Override
+	@java.lang.Override
 	public int hashCode() {
 
 		return name.hashCode();
 	}
 
-	public void verify() throws SyntaxException {
+	public void verify() {
 
-		verify(name);
-		verify(uv);
+		verifyName(name);
+		verifyCoords(uv);
 	}
 
-	private void verify(String name) throws SyntaxException {
+	private void verifyName(String name) {
 
 		boolean flag;
 		flag = name != null && name.length() > 0 && Keys.IDENTIFIER_REGEX.matcher(name).matches();
-		if(!flag) throw new SyntaxException("Invalid name: " + name);
+		if(!flag) throw new JsonParseException("Invalid name: " + name);
 	}
 
-	private void verify(int[] coords) throws SyntaxException {
+	private void verifyCoords(int[] coords) {
 
-		if(coords.length != 2) throw new SyntaxException("UV length must be 2");
-		for(int n : coords) {
+		if(coords.length != 2) throw new JsonParseException("UV length must be 2");
+		for(int n : coords)
+			if(n < 0) throw new JsonParseException("Value must be non-negative: " + n);
+	}
 
-			if(n < 0) throw new SyntaxException("Value must be non-negative: " + n);
-		}
+	/** Class representing an entry in the "overrides" tag */
+	public static class Override {
+
+		@SerializedName(Keys.ELEM_DEFROT)
+		private Vec3f rotation = Vec3f.ORIGIN;
+
+		@SerializedName(Keys.ELEM_SCALE)
+		private float scale = 1.0f;
+
+		/** For Json deserialization */
+		private Override() { }
 	}
 }

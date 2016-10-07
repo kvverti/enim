@@ -25,6 +25,9 @@ import kvverti.enim.Util.*;
 public final class EntityJsonParser {
 
 	private static final JsonObject EMPTY_JSON_OBJ = new JsonObject();
+	private static final Gson gson = new GsonBuilder()
+		.registerTypeAdapter(Vec3f.class, new Vec3f.Adapter().nullSafe())
+		.create();
 
 	private final IResource file;
 	JsonObject json = null;
@@ -277,7 +280,7 @@ public final class EntityJsonParser {
 
 	private ModelElement buildElement(JsonObject obj) throws SyntaxException {
 
-		ModelElement element = new ModelElement(getString(obj, Keys.ELEM_NAME));
+		/*ModelElement element = new ModelElement(getString(obj, Keys.ELEM_NAME));
 		element.parent = getString(obj, Keys.ELEM_PARENT);
 		element.uv[0] = getInt(obj, Keys.ELEM_TEXCOORDS, 0);
 		element.uv[1] = getInt(obj, Keys.ELEM_TEXCOORDS, 1);
@@ -287,7 +290,8 @@ public final class EntityJsonParser {
 		element.rotation = getVec3f(obj, Keys.ELEM_DEFROT);
 		element.scale = getScaleOptional(obj, Keys.ELEM_SCALE);
 		element.translucent = getBoolean(obj, Keys.ELEM_TRANSLUCENT);
-		element.head = getBoolean(obj, Keys.ELEM_HEAD);
+		element.head = getBoolean(obj, Keys.ELEM_HEAD);*/
+		ModelElement element = gson.fromJson(obj, ModelElement.class);
 		element.verify();
 		return element;
 	}
@@ -351,7 +355,7 @@ public final class EntityJsonParser {
 		try(InputStream istream = file.getInputStream();
 		BufferedReader breader = new BufferedReader(new InputStreamReader(istream))) {
 
-			json = new Gson().fromJson(breader, JsonElement.class).getAsJsonObject();
+			json = gson.fromJson(breader, JsonElement.class).getAsJsonObject();
 
 		} catch(IOException e) {
 
