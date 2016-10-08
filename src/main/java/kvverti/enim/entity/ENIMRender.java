@@ -2,8 +2,6 @@ package kvverti.enim.entity;
 
 import java.lang.reflect.Method;
 
-import java.util.Set;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -21,11 +19,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 
+import com.google.common.collect.ImmutableSet;
+
 import kvverti.enim.entity.state.RenderState;
 import kvverti.enim.entity.state.StateManager;
-import kvverti.enim.modelsystem.ModelElement;
-import kvverti.enim.modelsystem.EntityState;
-import kvverti.enim.modelsystem.Keys;
+import kvverti.enim.model.EntityState;
+import kvverti.enim.model.EntityStateMap;
+import kvverti.enim.Keys;
 import kvverti.enim.Logger;
 import kvverti.enim.Util;
 
@@ -59,6 +59,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 
 	private final ResourceLocation entityStateFile;
 	private final StateManager stateManager;
+	private EntityState currentState;
 
 	protected ENIMRender(RenderManager manager, String modDomain, String entityStateFile, IProperty<?>... properties) {
 
@@ -74,6 +75,11 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 		return stateManager;
 	}
 
+	protected final EntityState getCurrentEntityState() {
+
+		return currentState;
+	}
+
 	@Override
 	public final ResourceLocation getEntityStateFile() {
 
@@ -81,7 +87,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 	}
 
 	@Override
-	public final Set<String> getEntityStateNames() {
+	public final ImmutableSet<String> getEntityStateNames() {
 
 		return stateManager.stateStringNames();
 	}
@@ -100,18 +106,19 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 			else if(diff < -VIEW_LOCK) entity.rotationYaw = yaw += diff + VIEW_LOCK;
 			GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
 
-			EntityState state = stateManager.getState(getStateFromEntity(entity));
-			ENIMModel model = state.model();
+			RenderState renderState = getStateFromEntity(entity);
+			currentState = stateManager.getState(renderState);
+			ENIMModel model = stateManager.getModel(renderState);
 			bindEntityTexture(entity);
-			GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
+			GlStateManager.rotate(currentState.y, 0.0f, 1.0f, 0.0f);
 			EntityInfo info = new EntityInfo();
 			info.speedSq = speedSq(entity);
 			info.partialTicks = partialTicks;
 			info.entityYaw = yaw;
 			info.headYaw = headYaw(entity, yaw);
 			info.entityPitch = entity.rotationPitch;
-			info.scale = 0.0625f * state.scale();
-			preRender(entity, state, info);
+			info.scale = 0.0625f * currentState.scale;
+			preRender(entity, info);
 			model.render(entity, info);
 			postRender(entity, info);
 			GlStateManager.popMatrix();
@@ -135,20 +142,20 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 
 	public boolean shouldRender(T entity) { return true; }
 
-	public void preRender(T entity, EntityState state, EntityInfo info) { }
+	public void preRender(T entity, EntityInfo info) { }
 
 	public void postRender(T entity, EntityInfo info) { }
 
 	@Override
 	protected final ResourceLocation getEntityTexture(T entity) {
 
-		return stateManager.getState(getStateFromEntity(entity)).texture();
+		return stateManager.getState(getStateFromEntity(entity)).texture;
 	}
 
 	@Override
-	public final void reloadRender(EntityState state) {
+	public final void reload(EntityStateMap states) {
 
-		stateManager.setState(state);
+		stateManager.reloadStates(states);
 	}
 
 	@Override

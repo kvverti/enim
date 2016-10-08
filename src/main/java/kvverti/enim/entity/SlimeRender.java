@@ -11,7 +11,7 @@ import net.minecraft.entity.monster.EntitySlime;
 import org.lwjgl.opengl.GL11;
 
 import kvverti.enim.entity.state.RenderState;
-import kvverti.enim.modelsystem.EntityState;
+import kvverti.enim.model.EntityState;
 
 public class SlimeRender extends LivingRender<EntitySlime> {
 
@@ -32,9 +32,9 @@ public class SlimeRender extends LivingRender<EntitySlime> {
 	}
 
 	@Override
-	public void preRender(EntitySlime entity, EntityState state, EntityInfo info) {
+	public void preRender(EntitySlime entity, EntityInfo info) {
 
-		super.preRender(entity, state, info);
+		super.preRender(entity, info);
 		float squish = 2.0f / (2.0f + entity.squishFactor);
 		GlStateManager.scale(squish, 1.0f / squish, squish);
 	}

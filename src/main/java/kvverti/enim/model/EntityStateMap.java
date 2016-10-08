@@ -13,14 +13,15 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import kvverti.enim.Keys;
+import kvverti.enim.Util;
 
 /** An immutable collection of EntityStates for use in deserializing entitystate files. */
 public class EntityStateMap extends ForwardingMap<String, EntityState> {
 
 	private final ImmutableMap<String, EntityState> states;
 
-	/** For JSON deserialization */
-	private EntityStateMap(Map<String, EntityState> states) { this.states = ImmutableMap.copyOf(states); }
+	/** For Json deserialization. */
+	public EntityStateMap(Map<String, EntityState> states) { this.states = ImmutableMap.copyOf(states); }
 
 	@Override
 	protected Map<String, EntityState> delegate() { return states; }
@@ -41,7 +42,7 @@ public class EntityStateMap extends ForwardingMap<String, EntityState> {
 			for(EntityState state : res.states.values()) {
 
 				if(state.texture == null)
-					state.texture = stateDefaults.texture;
+					state.texture = Util.getResourceLocation(stateDefaults.texture, Keys.TEXTURES_DIR, Keys.PNG);
 				if(state.size[0] == -1 && state.size[1] == -1) {
 
 					state.size[0] = stateDefaults.size[0];
@@ -59,7 +60,7 @@ public class EntityStateMap extends ForwardingMap<String, EntityState> {
 		private static class Defaults {
 
 			@SerializedName(Keys.STATE_TEXTURE)
-			ResourceLocation texture = null;
+			String texture = null;
 
 			@SerializedName(Keys.STATE_TEX_SIZE)
 			final int[] size = { 64, 32 };

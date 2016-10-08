@@ -5,20 +5,28 @@ import java.util.Set;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
+
 import kvverti.enim.Vec3f;
 
 import static java.util.stream.Collectors.joining;
 
 public class AbieScript {
 
-	private final Set<String> defines;
-	private final List<Frame> frames;
+	private final ImmutableSet<String> defines;
+	private final ImmutableList<Frame> frames;
 
 	/** For use by AnimationParser */
 	AbieScript(Set<String> defines, List<Frame> frames) {
 
-		this.defines = defines;
-		this.frames = frames;
+		this.defines = ImmutableSet.copyOf(defines);
+		this.frames = ImmutableList.copyOf(frames);
+	}
+
+	public ImmutableSet<String> defines() {
+
+		return defines;
 	}
 
 	public int frameCount() {
@@ -57,7 +65,6 @@ public class AbieScript {
 			return "[" + frame.entrySet().stream()
 				.map(entry -> entry.getKey() + "=" + Arrays.toString(entry.getValue()))
 				.collect(joining(", "))
-				.toString()
 				+ "]";
 		}
 	}

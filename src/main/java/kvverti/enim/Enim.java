@@ -20,7 +20,7 @@ public final class Enim {
 
 	public static final String ID = "enim";
 	public static final String NAME = "ENIM";
-	public static final String VERSION = "dev-2016.8.22.0";
+	public static final String VERSION = "dev-2016.10.6.0";
 	//dev format: dev-year.month.day.edit
 	//release format: major.minor.fix
 

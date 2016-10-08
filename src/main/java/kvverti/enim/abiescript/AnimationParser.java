@@ -228,13 +228,13 @@ public class AnimationParser {
 				int atype = aneme.getAngleType();
 				float time = (float) n * aneme.getRelativePeriod() / duration;
 				float x, y, z;
-				x = trans[0].x != 0.0f ? selectHelper(atype, original[0].x, original[0].x + trans[0].x, time) : start[0].x;
-				y = trans[0].y != 0.0f ? selectHelper(atype, original[0].y, original[0].y + trans[0].x, time) : start[0].y;
-				z = trans[0].z != 0.0f ? selectHelper(atype, original[0].z, original[0].z + trans[0].x, time) : start[0].z;
+				x = trans[0].x != 0.0f ? selectHelper(atype, original[0].x, original[0].x + trans[0].x, time) : angles[0].x;
+				y = trans[0].y != 0.0f ? selectHelper(atype, original[0].y, original[0].y + trans[0].y, time) : angles[0].y;
+				z = trans[0].z != 0.0f ? selectHelper(atype, original[0].z, original[0].z + trans[0].z, time) : angles[0].z;
 				angles[0] = Vec3f.of(x, y, z);
-				x = trans[1].x != 0.0f ? selectHelper(atype, original[1].x, original[1].x + trans[1].x, time) : start[1].x;
-				y = trans[1].y != 0.0f ? selectHelper(atype, original[1].y, original[1].y + trans[1].x, time) : start[1].y;
-				z = trans[1].z != 0.0f ? selectHelper(atype, original[1].z, original[1].z + trans[1].x, time) : start[1].z;
+				x = trans[1].x != 0.0f ? selectHelper(atype, original[1].x, original[1].x + trans[1].x, time) : angles[1].x;
+				y = trans[1].y != 0.0f ? selectHelper(atype, original[1].y, original[1].y + trans[1].y, time) : angles[1].y;
+				z = trans[1].z != 0.0f ? selectHelper(atype, original[1].z, original[1].z + trans[1].z, time) : angles[1].z;
 				angles[1] = Vec3f.of(x, y, z);
 				prevFrame.put(aneme.getSpecifiedElement(), angles);
 			}

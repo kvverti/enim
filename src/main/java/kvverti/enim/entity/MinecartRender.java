@@ -4,7 +4,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityMinecart;
 
-import kvverti.enim.modelsystem.EntityState;
+import kvverti.enim.model.EntityState;
 
 public class MinecartRender extends BasicRender<EntityMinecart> {
 
@@ -14,7 +14,7 @@ public class MinecartRender extends BasicRender<EntityMinecart> {
 	}
 
 	@Override
-	public void preRender(EntityMinecart entity, EntityState state, EntityInfo info) {
+	public void preRender(EntityMinecart entity, EntityInfo info) {
 
 		GlStateManager.rotate(-info.entityYaw, 0.0f, 1.0f, 0.0f);
 		double dx = entity.posX - entity.lastTickPosX;

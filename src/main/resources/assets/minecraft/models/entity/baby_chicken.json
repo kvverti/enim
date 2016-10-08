@@ -1,4 +1,7 @@
 {
+	"properties": {
+		"nameplate": 11
+	},
 	"imports": {
 		"chicken": ["*","animations:*"]
 	},

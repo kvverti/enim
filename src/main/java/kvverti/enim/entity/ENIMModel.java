@@ -12,9 +12,11 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
-import kvverti.enim.modelsystem.Animation;
-import kvverti.enim.modelsystem.AnimationType;
-import kvverti.enim.modelsystem.ModelElement;
+import kvverti.enim.abiescript.AbieScript;
+import kvverti.enim.model.EntityModel;
+import kvverti.enim.model.Animation;
+import kvverti.enim.model.ModelElement;
+import kvverti.enim.Vec3f;
 
 import static kvverti.enim.entity.Entities.*;
 
@@ -25,7 +27,7 @@ public class ENIMModel extends ModelBase {
 	private final Map<String, ENIMModelRenderer> boxes = new HashMap<>();
 	private final List<ENIMModelRenderer> opaques = new ArrayList<>();
 	private final List<ENIMModelRenderer> lucents = new ArrayList<>();
-	private final Map<AnimationType, Animation> animations = new EnumMap<>(AnimationType.class);
+	private final Map<Animation.Type, Animation> anims = new EnumMap<>(Animation.Type.class);
 
 	public void render(Entity entity, EntityInfo info) {
 
@@ -48,22 +50,22 @@ public class ENIMModel extends ModelBase {
 	public void setRotationAngles(Entity entity, EntityInfo info) {
 
 		resetAngles(info.headYaw, info.entityPitch);
-		animateLooping(entity, AnimationType.IDLE, true);
-		animateLooping(entity, AnimationType.MOVE, info.speedSq > 0.0025f);
-		animateLooping(entity, AnimationType.AIR, !entity.isInWater() && !entity.onGround);
-		animateLooping(entity, AnimationType.SWIM, entity.isInWater() && !entity.onGround);
-		animateNoLooping(AnimationType.JUMP, jumpTime(entity));
+		animateLooping(entity, Animation.Type.IDLE, true);
+		animateLooping(entity, Animation.Type.MOVE, info.speedSq > 0.0025f);
+		animateLooping(entity, Animation.Type.AIR, !entity.isInWater() && !entity.onGround);
+		animateLooping(entity, Animation.Type.SWIM, entity.isInWater() && !entity.onGround);
+		animateNoLooping(Animation.Type.JUMP, jumpTime(entity));
 	}
 
 	public void setRotationAngles(TileEntity tile, EntityInfo info) {
 
 		resetAngles(info.headYaw, info.entityPitch);
-		animateLooping(tile, AnimationType.IDLE, true);
+		animateLooping(tile, Animation.Type.IDLE, true);
 	}
 
 	private void setAnglesHelper(Animation anim, int frame) {
 
-		anim.frame(frame).forEach((define, forms) -> {
+	/*	anim.frame(frame).forEach((define, forms) -> {
 
 			ENIMModelRenderer box = boxes.get(anim.toElementName(define));
 			box.rotateAngleX = toRadians(forms[0]);
@@ -73,34 +75,47 @@ public class ENIMModel extends ModelBase {
 			box.shiftDistanceY = forms[4] / 16.0f;
 			box.shiftDistanceZ = forms[5] / 16.0f;
 		});
+	*/
+		AbieScript.Frame f = anim.frame(frame);
+		for(String define : anim.defines()) {
+
+			Vec3f[] forms = f.getTransforms(define);
+			ENIMModelRenderer box = boxes.get(anim.toElementName(define));
+			box.rotateAngleX = toRadians(forms[0].x);
+			box.rotateAngleY = toRadians(forms[0].y);
+			box.rotateAngleZ = toRadians(forms[0].z);
+			box.shiftDistanceX = forms[1].x / 16.0f;
+			box.shiftDistanceY = forms[1].y / 16.0f;
+			box.shiftDistanceZ = forms[1].z / 16.0f;
+		}
 	}
 
-	private void animateLooping(Entity entity, AnimationType type, boolean predicate) {
+	private void animateLooping(Entity entity, Animation.Type type, boolean predicate) {
 
-		if(predicate) {
+		if(anims.containsKey(type) && predicate) {
 
-			Animation anim = animations.get(type);
+			Animation anim = anims.get(type);
 			int frame = randomCounterFor(entity) % anim.frameCount();
 			if(frame < 0) frame += anim.frameCount();
 			setAnglesHelper(anim, frame);
 		}
 	}
 
-	private void animateLooping(TileEntity tile, AnimationType type, boolean predicate) {
+	private void animateLooping(TileEntity tile, Animation.Type type, boolean predicate) {
 
-		if(predicate) {
+		if(anims.containsKey(type) && predicate) {
 
-			Animation anim = animations.get(type);
+			Animation anim = anims.get(type);
 			int frame = randomCounterFor(tile) % anim.frameCount();
 			if(frame < 0) frame += anim.frameCount();
 			setAnglesHelper(anim, frame);
 		}
 	}
 
-	private void animateNoLooping(AnimationType type, int frame) {
+	private void animateNoLooping(Animation.Type type, int frame) {
 
-		Animation anim = animations.get(type);
-		if(frame >= 0 && frame < anim.frameCount())
+		Animation anim = anims.get(type);
+		if(anim != null && frame >= 0 && frame < anim.frameCount())
 			setAnglesHelper(anim, frame);
 	}
 
@@ -119,18 +134,20 @@ public class ENIMModel extends ModelBase {
 		});
 	}
 
-	public final void reloadModel(Set<ModelElement> elements, Map<AnimationType, Animation> animations) {
+	public final void reload(EntityModel model, int texSizeX, int texSizeY) {
 
 		clearMaps();
-		this.animations.putAll(animations);
-		for(ModelElement m : elements) {
+		textureWidth = texSizeX;
+		textureHeight = texSizeY;
+		anims.putAll(model.animations);
+		for(ModelElement m : model.elements) {
 
 			ENIMModelRenderer box = new ENIMModelRenderer(this, m);
 			boxes.put(m.name, box);
 			if(m.translucent) lucents.add(box);
 			else opaques.add(box);
 		}
-		for(ModelElement m : elements) {
+		for(ModelElement m : model.elements) {
 
 			ENIMModelRenderer current = boxes.get(m.name);
 			String parent = m.parent;
@@ -156,7 +173,7 @@ public class ENIMModel extends ModelBase {
 		boxes.clear();
 		opaques.clear();
 		lucents.clear();
-		animations.replaceAll((type, anim) -> Animation.NO_OP);
+		anims.clear();
 	}
 
 	/** @deprecated Replaced by {@link #render(Entity, EntityInfo)} */

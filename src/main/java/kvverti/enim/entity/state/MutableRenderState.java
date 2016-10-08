@@ -8,9 +8,12 @@ import java.util.HashSet;
 
 import net.minecraft.block.properties.IProperty;
 
+import com.google.common.collect.ImmutableSet;
+
 public class MutableRenderState extends AbstractRenderState {
 
 	private final Map<IProperty<?>, Comparable<?>> properties = new HashMap<>();
+	private final ImmutableSet<IProperty<?>> propertyNames;
 
 	public MutableRenderState(IProperty<?>... propertyNames) {
 
@@ -18,6 +21,7 @@ public class MutableRenderState extends AbstractRenderState {
 
 			properties.put(property, property.getAllowedValues().iterator().next());
 		}
+		this.propertyNames = ImmutableSet.copyOf(properties.keySet());
 	}
 
 	public MutableRenderState(Collection<IProperty<?>> propertyNames) {
@@ -26,12 +30,13 @@ public class MutableRenderState extends AbstractRenderState {
 
 			properties.put(property, property.getAllowedValues().iterator().next());
 		}
+		this.propertyNames = ImmutableSet.copyOf(properties.keySet());
 	}
 
 	@Override
 	public Collection<IProperty<?>> getPropertyNames() {
 
-		return Collections.unmodifiableSet(new HashSet<>(properties.keySet()));
+		return propertyNames;
 	}
 
 	@Override

@@ -9,27 +9,36 @@ import java.util.HashSet;
 
 import net.minecraft.block.properties.IProperty;
 
-import kvverti.enim.modelsystem.EntityState;
-import kvverti.enim.modelsystem.Keys;
+import com.google.common.collect.ImmutableSet;
+
+import kvverti.enim.entity.ENIMModel;
+import kvverti.enim.model.EntityStateMap;
+import kvverti.enim.model.EntityState;
+import kvverti.enim.Keys;
 import kvverti.enim.Logger;
 
 public class StateManager {
 
-	private final Map<String, EntityState> nameToModel = new HashMap<>();
+	private final Map<String, EntityState> stateMap = new HashMap<>();
+	private final Map<String, ENIMModel> modelMap = new HashMap<>();
 	private final Map<IProperty<?>, Comparable<?>> defaults = new HashMap<>();
+	private final ImmutableSet<String> stateNames;
 	private final Collection<IProperty<?>> properties;
 
 	public StateManager(IProperty<?>... properties) {
 
 		this.properties = Arrays.asList(properties.clone());
 		fillRecursive(properties);
-		Logger.info(nameToModel.keySet().toString());
+		this.stateNames = ImmutableSet.copyOf(stateMap.keySet());
 	}
 
 	private final void fillRecursive(IProperty<?>[] properties) {
 
-		if(properties.length == 0)
-			nameToModel.put(Keys.STATE_NORMAL, new EntityState(Keys.STATE_NORMAL));
+		if(properties.length == 0) {
+
+			modelMap.put(Keys.STATE_NORMAL, new ENIMModel());
+			stateMap.put(Keys.STATE_NORMAL, null);
+		}
 		else fillRecursiveImpl(new MutableRenderState(properties), properties, 0);
 	}
 
@@ -41,7 +50,8 @@ public class StateManager {
 
 			fillRecursiveImpl(state, properties, index + 1);
 			String str = state.cycleProperty(properties[index]).toString();
-			nameToModel.put(str, new EntityState(str));
+			modelMap.put(str, new ENIMModel());
+			stateMap.put(str, null);
 		}
 	}
 
@@ -67,29 +77,41 @@ public class StateManager {
 		defaults.putAll(state.getProperties());
 	}
 
-	public Set<String> stateStringNames() {
+	public ImmutableSet<String> stateStringNames() {
 
-		return new HashSet<>(nameToModel.keySet());
+		return stateNames;
 	}
 
-	public void setState(EntityState features) {
+	public void reloadStates(Map<String, EntityState> states) {
 
-		EntityState es = nameToModel.get(features.name());
-		if(es == null)
-			throw new IllegalArgumentException("State " + features.name() + " cannot be set for properties: " + properties);
-		es.reloadState(features);
+		if(!stateMap.keySet().containsAll(states.keySet()))
+			throw new IllegalArgumentException("Invalid states " + states.keySet() + "for properties " + properties);
+		stateMap.replaceAll((k, v) -> states.get(k));
+		modelMap.forEach((str, model) -> {
+
+			EntityState state = stateMap.get(str);
+			model.reload(state.model, state.size[0], state.size[1]);
+		});
 	}
 
 	public EntityState getState(RenderState state) {
 
-		EntityState es = nameToModel.get(state.toString());
+		EntityState es = stateMap.get(state.toString());
 		if(es == null)
 			throw new IllegalArgumentException("State " + state + " is invalid for properties: " + properties);
 		return es;
 	}
 
+	public ENIMModel getModel(RenderState state) {
+
+		ENIMModel model = modelMap.get(state.toString());
+		if(model == null)
+			throw new IllegalArgumentException("State " + state + " is invalid for properties: " + properties);
+		return model;
+	}
+
 	public void setAllInvalid() {
 
-		nameToModel.values().forEach(state -> state.model().setMissingno());
+		modelMap.values().forEach(ENIMModel::setMissingno);
 	}
 }

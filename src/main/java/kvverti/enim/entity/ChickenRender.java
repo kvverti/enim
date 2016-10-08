@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.passive.EntityChicken;
 
 import kvverti.enim.entity.state.RenderState;
-import kvverti.enim.modelsystem.Keys;
 
 public class ChickenRender extends LivingRender<EntityChicken> {
 

@@ -50,7 +50,7 @@ public class EntityState {
 	public String toString() {
 
 		return String.format("EntityState { \"%s\", %s, \"%s\": %s, \"%s\": [%d, %d], \"%s\": %f, \"%s\": %f }",
-			Keys.STATE_MODEL_NAME, model,
+			Keys.STATE_MODEL_NAME, "[elided]",
 			Keys.STATE_TEXTURE, texture,
 			Keys.STATE_TEX_SIZE, size[0], size[1],
 			Keys.STATE_SCALE, scale,

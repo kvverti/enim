@@ -15,16 +15,21 @@ public class ModelProperties {
 	public static final ModelProperties DEFAULT = new ModelProperties();
 
 	@SerializedName(Keys.PROP_NAMETAG_ORIGIN)
-	public final OriginPoint nameplateBase = OriginPoint.DEFAULT;
+	public final float nameplateBase;
 
 	@SerializedName(Keys.PROP_HELD_ITEM_ORIGIN_LEFT)
-	public final OriginPoint heldItemLeft = OriginPoint.DEFAULT;
+	public final OriginPoint heldItemLeft;
 
 	@SerializedName(Keys.PROP_HELD_ITEM_ORIGIN_RIGHT)
-	public final OriginPoint heldItemRight = OriginPoint.DEFAULT;
+	public final OriginPoint heldItemRight;
 
 	/** For Json deserialization */
-	private ModelProperties() { }
+	private ModelProperties() {
+
+		nameplateBase = 0.0f;
+		heldItemLeft = OriginPoint.DEFAULT;
+		heldItemRight = OriginPoint.DEFAULT;
+	}
 
 	@Override
 	public String toString() {

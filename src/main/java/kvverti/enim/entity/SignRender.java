@@ -12,8 +12,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.IChatComponent;
 
-import kvverti.enim.modelsystem.EntityState;
-
 public class SignRender extends SignLikeRender<TileEntitySign> {
 
 	public SignRender(String modDomain, String stateFile) {

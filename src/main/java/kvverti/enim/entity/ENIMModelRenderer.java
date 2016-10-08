@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.GlStateManager;
 
 import kvverti.enim.Vec3f;
 import kvverti.enim.Util;
-import kvverti.enim.modelsystem.ModelElement;
+import kvverti.enim.model.ModelElement;
 
 import static kvverti.enim.entity.Entities.*;
 

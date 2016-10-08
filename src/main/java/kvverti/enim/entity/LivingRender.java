@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumChatFormatting;
 
-import kvverti.enim.modelsystem.EntityState;
+import kvverti.enim.model.EntityState;
 
 public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 
@@ -27,7 +27,7 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 
 	/* Must call super.preRender(entity, state, info); in subclasses!! */
 	@Override
-	public void preRender(T entity, EntityState state, EntityInfo info) {
+	public void preRender(T entity, EntityInfo info) {
 
 		//fall over when dead
 		if(entity.deathTime > 0)
@@ -76,9 +76,10 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 			double distanceSq = entity.getDistanceSqToEntity(renderManager.livingPlayer);
 			if(distanceSq < NAMETAG_VISIBILITY_RANGE_SQ) {
 
+				float namePos = getCurrentEntityState().model.properties.nameplateBase;
 				renderOffsetLivingLabel(entity,
 					x,
-					y - (entity.isChild() ? entity.height / 2.0 : 0.0),
+					y - entity.height - (5.0f / 16.0f) + (namePos / 16.0f),
 					z,
 					entity.getDisplayName().getFormattedText(),
 					2.0f / 75.0f,

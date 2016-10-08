@@ -6,7 +6,9 @@ import java.util.List;
 
 import net.minecraft.block.properties.IProperty;
 
-import kvverti.enim.modelsystem.Keys;
+import kvverti.enim.Keys;
+
+import static java.util.stream.Collectors.joining;
 
 public abstract class AbstractRenderState implements RenderState {
 
@@ -34,18 +36,10 @@ public abstract class AbstractRenderState implements RenderState {
 	@Override
 	public String toString() {
 
-		if(getPropertyNames().isEmpty()) return Keys.STATE_NORMAL;
-
-		List<IProperty<?>> alphabetized = new ArrayList<>(getPropertyNames());
-		alphabetized.sort((left, right) -> left.getName().compareTo(right.getName()));
-		StringBuilder sb = new StringBuilder();
-		alphabetized.forEach(property ->
-			sb.append(property.getName())
-			.append('=')
-			.append(getNameHelper(property))
-			.append(','));
-		sb.deleteCharAt(sb.length() - 1); //trailing comma
-		return sb.toString();
+		return getPropertyNames().isEmpty() ? Keys.STATE_NORMAL : getPropertyNames().stream()
+			.map(prop -> prop.getName() + "=" + getNameHelper(prop))
+			.sorted()
+			.collect(joining(","));
 	}
 
 	private <T extends Comparable<T>> String getNameHelper(IProperty<T> property) {

@@ -19,11 +19,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
+import com.google.gson.JsonParseException;
+
+import kvverti.enim.abiescript.AbieParseException;
 import kvverti.enim.entity.ReloadableRender;
 import kvverti.enim.entity.Entities;
-import kvverti.enim.modelsystem.EntityJsonParser;
-import kvverti.enim.modelsystem.EntityState;
-import kvverti.enim.modelsystem.ENIMException;
+import kvverti.enim.model.EntityStateMap;
+import kvverti.enim.model.EntityModel;
 
 /**
  * Registry for ENIM related rendering features. This includes all entity and tile entity renders as well as armor items
@@ -86,28 +88,30 @@ public final class EnimRenderingRegistry {
 	private void reloadRenders(IResourceManager manager) {
 
 		Logger.info("Reloading resources...");
-		Map<String, EntityState> models = new HashMap<>();
 		for(ReloadableRender r : renders) {
 
 			try {
 				ResourceLocation estateLoc = r.getEntityStateFile();
-				EntityJsonParser parser = new EntityJsonParser(manager.getResource(estateLoc));
-				parser.parseModelLocations(r.getEntityStateNames(), models);
-				models.values().forEach(r::reloadRender);
+				EntityStateMap states = EntityModel.GSON.fromJson(Util.getReaderFor(estateLoc), EntityStateMap.class);
+				r.reload(states);
+			//	EntityJsonParser parser = new EntityJsonParser(manager.getResource(estateLoc));
+			//	parser.parseModelLocations(r.getEntityStateNames(), models);
+			//	models.values().forEach(r::reloadRender);
 
-			} catch(ENIMException|IOException e) {
+			} catch(JsonParseException|IOException|AbieParseException e) {
 
 				Logger.error(e);
 				r.setMissingno();
 
-			} finally {
-
-				models.clear();
 			}
 		}
-		try { kvverti.enim.model.EntityModel model = kvverti.enim.model.EntityModel.GSON.fromJson(Util.getReaderFor(new ResourceLocation("minecraft:models/entity/rabbit.json")), kvverti.enim.model.EntityModel.class);
-			Logger.info(model); }
-		catch(Exception e) { Logger.error(e); }
+		//try {
+		//	kvverti.enim.model.EntityModel model = kvverti.enim.model.EntityModel.GSON.fromJson(Util.getReaderFor(new ResourceLocation("minecraft:models/entity/baby_rabbit.json")), kvverti.enim.model.EntityModel.class);
+		//	Logger.info(model);
+		//	kvverti.enim.model.EntityStateMap states = kvverti.enim.model.EntityModel.GSON.fromJson(Util.getReaderFor(new ResourceLocation("minecraft:entitystates/rabbit.json")), kvverti.enim.model.EntityStateMap.class);
+		//	Logger.info(states);
+		//}
+		//catch(Exception e) { Logger.error(e); }
 		Logger.info("Reload complete");
 	}
 }
