@@ -6,10 +6,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.function.Function;
 
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableMap;
 
 import kvverti.enim.entity.ENIMModel;
 import kvverti.enim.model.EntityModel;
@@ -18,17 +23,29 @@ import kvverti.enim.model.EntityState;
 import kvverti.enim.Keys;
 import kvverti.enim.Logger;
 
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toMap;
+
 public class StateManager {
 
 	private final Map<String, EntityState> stateMap = new HashMap<>();
 	private final Map<String, ENIMModel> modelMap = new HashMap<>();
-	private final Map<IProperty<?>, Comparable<?>> defaults = new HashMap<>();
+//	private final Map<IProperty<?>, Comparable<?>> defaults = new HashMap<>();
 	private final ImmutableSet<String> stateNames;
 	private final Collection<IProperty<?>> properties;
+	private final BlockState stateDelegate;
+	private final Map<IBlockState, RenderState> renderStates;
+	private RenderState defaultState;
 
+	@SuppressWarnings("rawtypes")
 	public StateManager(IProperty<?>... properties) {
 
-		this.properties = Arrays.asList(properties.clone());
+	//	this.properties = Arrays.asList(properties.clone());
+		this.stateDelegate = new BlockState(Blocks.air, properties);
+		this.properties = (Collection) stateDelegate.getProperties();
+		this.renderStates = stateDelegate.getValidStates().stream()
+			.collect(toMap(Function.identity(), BlockForwardingRenderState::new));
+		this.defaultState = renderStates.get(stateDelegate.getBaseState());
 		fillRecursive(properties);
 		this.stateNames = ImmutableSet.copyOf(stateMap.keySet());
 	}
@@ -40,7 +57,7 @@ public class StateManager {
 			modelMap.put(Keys.STATE_NORMAL, new ENIMModel());
 			stateMap.put(Keys.STATE_NORMAL, EntityModel.MISSING_STATE);
 		}
-		else fillRecursiveImpl(new MutableRenderState(properties), properties, 0);
+		else fillRecursiveImpl(defaultState, properties, 0);
 	}
 
 	private final void fillRecursiveImpl(RenderState state, IProperty<?>[] properties, int index) {
@@ -50,32 +67,35 @@ public class StateManager {
 		for(int i = 0; i < length; i++) {
 
 			fillRecursiveImpl(state, properties, index + 1);
-			String str = state.cycleProperty(properties[index]).toString();
+			state = state.cycleProperty(properties[index]);
+			String str = state.toString();
 			modelMap.put(str, new ENIMModel());
-			stateMap.put(str, null);
+			stateMap.put(str, EntityModel.MISSING_STATE);
 		}
 	}
 
 	public RenderState getDefaultState() {
 
-		RenderState res = new MutableRenderState(properties);
-		defaults.forEach((property, value) -> defaultStateHelper(res, property, value));
-		return res;
+	//	RenderState res = new MutableRenderState(properties);
+	//	defaults.forEach((property, value) -> defaultStateHelper(res, property, value));
+	//	return res;
+		return defaultState;
 	}
 
-	private <T extends Comparable<T>>
+	/*private <T extends Comparable<T>>
 		void defaultStateHelper(RenderState state, IProperty<T> property, Comparable<?> value) {
 
 		state.withProperty(property, property.getValueClass().cast(value));
-	}
+	}*/
 
 	public void setDefaultState(RenderState state) {
 
 		Collection<IProperty<?>> cp = state.getPropertyNames();
 		if(!properties.containsAll(cp) || !cp.containsAll(properties))
 			throw new IllegalArgumentException("Cannot set default state, properties mismatch");
-		defaults.clear();
-		defaults.putAll(state.getProperties());
+	//	defaults.clear();
+	//	defaults.putAll(state.getProperties());
+		defaultState = state;
 	}
 
 	public ImmutableSet<String> stateStringNames() {
@@ -115,5 +135,61 @@ public class StateManager {
 
 		modelMap.values().forEach(ENIMModel::setMissingno);
 		stateMap.replaceAll((k, v) -> EntityModel.MISSING_STATE);
+	}
+
+	private class BlockForwardingRenderState implements RenderState {
+
+		private final IBlockState delegate;
+
+		public BlockForwardingRenderState(IBlockState state) {
+
+			delegate = state;
+		}
+
+		@Override
+		@SuppressWarnings("rawtypes")
+		public Collection<IProperty<?>> getPropertyNames() {
+
+			return (Collection) delegate.getPropertyNames();
+		}
+
+		@Override
+		@SuppressWarnings("rawtypes")
+		public ImmutableMap<IProperty<?>, Comparable<?>> getProperties() {
+
+			return (ImmutableMap) delegate.getProperties();
+		}
+
+		@Override
+		public <T extends Comparable<T>> T getValue(IProperty<T> property) {
+
+			return delegate.getValue(property);
+		}
+
+		@Override
+		public <T extends Comparable<T>> RenderState withProperty(IProperty<T> property, T value) {
+
+			return renderStates.get(delegate.withProperty(property, value));
+		}
+
+		@Override
+		public <T extends Comparable<T>> RenderState cycleProperty(IProperty<T> property) {
+
+			return renderStates.get(delegate.cycleProperty(property));
+		}
+
+		@Override
+		public String toString() {
+
+			return getPropertyNames().isEmpty() ? Keys.STATE_NORMAL : getPropertyNames().stream()
+				.map(prop -> prop.getName() + "=" + getNameHelper(prop))
+				.sorted()
+				.collect(joining(","));
+		}
+
+		private <T extends Comparable<T>> String getNameHelper(IProperty<T> property) {
+
+			return property.getName(getValue(property));
+		}
 	}
 }
