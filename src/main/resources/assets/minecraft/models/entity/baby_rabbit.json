@@ -1,6 +1,6 @@
 {
 	"properties": {
-		"nameplate": 14
+		"nameplate": 28
 	},
 	"imports": {
 		"rabbit": ["*","animations:*"]
