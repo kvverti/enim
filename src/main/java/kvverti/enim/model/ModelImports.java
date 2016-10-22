@@ -16,8 +16,8 @@ import com.google.gson.reflect.TypeToken;
 import kvverti.enim.Keys;
 import kvverti.enim.Util;
 
-/** Class corresponding to the "imports" tag of an entity model */
-public class ModelImports {
+/** Class corresponding to the {@value Keys#IMPORTS_TAG} tag of an entity model */
+class ModelImports {
 
 	public final Set<ModelElement> elements;
 	public final Map<Animation.Type, Animation> animations;

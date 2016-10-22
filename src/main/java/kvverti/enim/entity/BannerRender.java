@@ -49,7 +49,7 @@ public class BannerRender extends SignLikeRender<TileEntityBanner> {
 	@Override
 	public void preRender(TileEntityBanner tile, EntityInfo info) {
 
-		setBannerTextures(getCurrentEntityState().texture);
+		setBannerTextures(getCurrentEntityState().texture());
 		bindTexture(bindBannerTexture(tile));
 	}
 

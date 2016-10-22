@@ -12,6 +12,7 @@ import net.minecraft.block.properties.IProperty;
 import com.google.common.collect.ImmutableSet;
 
 import kvverti.enim.entity.ENIMModel;
+import kvverti.enim.model.EntityModel;
 import kvverti.enim.model.EntityStateMap;
 import kvverti.enim.model.EntityState;
 import kvverti.enim.Keys;
@@ -37,7 +38,7 @@ public class StateManager {
 		if(properties.length == 0) {
 
 			modelMap.put(Keys.STATE_NORMAL, new ENIMModel());
-			stateMap.put(Keys.STATE_NORMAL, null);
+			stateMap.put(Keys.STATE_NORMAL, EntityModel.MISSING_STATE);
 		}
 		else fillRecursiveImpl(new MutableRenderState(properties), properties, 0);
 	}
@@ -90,7 +91,7 @@ public class StateManager {
 		modelMap.forEach((str, model) -> {
 
 			EntityState state = stateMap.get(str);
-			model.reload(state.model, state.size[0], state.size[1]);
+			model.reload(state.model(), state.size()[0], state.size()[1]);
 		});
 	}
 
@@ -113,5 +114,6 @@ public class StateManager {
 	public void setAllInvalid() {
 
 		modelMap.values().forEach(ENIMModel::setMissingno);
+		stateMap.replaceAll((k, v) -> EntityModel.MISSING_STATE);
 	}
 }

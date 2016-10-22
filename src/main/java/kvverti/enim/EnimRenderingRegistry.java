@@ -90,28 +90,18 @@ public final class EnimRenderingRegistry {
 		Logger.info("Reloading resources...");
 		for(ReloadableRender r : renders) {
 
+			ResourceLocation estateLoc = r.getEntityStateFile();
 			try {
-				ResourceLocation estateLoc = r.getEntityStateFile();
 				EntityStateMap states = EntityModel.GSON.fromJson(Util.getReaderFor(estateLoc), EntityStateMap.class);
 				r.reload(states);
-			//	EntityJsonParser parser = new EntityJsonParser(manager.getResource(estateLoc));
-			//	parser.parseModelLocations(r.getEntityStateNames(), models);
-			//	models.values().forEach(r::reloadRender);
 
 			} catch(JsonParseException|IOException|AbieParseException e) {
 
+				Logger.error("Exception when parsing models for " + estateLoc);
 				Logger.error(e);
 				r.setMissingno();
-
 			}
 		}
-		//try {
-		//	kvverti.enim.model.EntityModel model = kvverti.enim.model.EntityModel.GSON.fromJson(Util.getReaderFor(new ResourceLocation("minecraft:models/entity/baby_rabbit.json")), kvverti.enim.model.EntityModel.class);
-		//	Logger.info(model);
-		//	kvverti.enim.model.EntityStateMap states = kvverti.enim.model.EntityModel.GSON.fromJson(Util.getReaderFor(new ResourceLocation("minecraft:entitystates/rabbit.json")), kvverti.enim.model.EntityStateMap.class);
-		//	Logger.info(states);
-		//}
-		//catch(Exception e) { Logger.error(e); }
 		Logger.info("Reload complete");
 	}
 }

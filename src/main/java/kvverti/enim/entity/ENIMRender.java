@@ -99,6 +99,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 
 			final float VIEW_LOCK = 60.0f;
 			GlStateManager.pushMatrix();
+			GlStateManager.disableCull();
 			GlStateManager.translate((float) x, (float) y, (float) z);
 			GlStateManager.rotate(180.0f, 1.0f, 0.0f, 0.0f);
 			float diff = headYaw(entity, yaw);
@@ -110,14 +111,14 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 			currentState = stateManager.getState(renderState);
 			ENIMModel model = stateManager.getModel(renderState);
 			bindEntityTexture(entity);
-			GlStateManager.rotate(currentState.y, 0.0f, 1.0f, 0.0f);
+			GlStateManager.rotate(currentState.y(), 0.0f, 1.0f, 0.0f);
 			EntityInfo info = new EntityInfo();
 			info.speedSq = speedSq(entity);
 			info.partialTicks = partialTicks;
 			info.entityYaw = yaw;
 			info.headYaw = headYaw(entity, yaw);
 			info.entityPitch = entity.rotationPitch;
-			info.scale = 0.0625f * currentState.scale;
+			info.scale = 0.0625f * currentState.scale();
 			preRender(entity, info);
 			model.render(entity, info);
 			postRender(entity, info);
@@ -149,7 +150,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 	@Override
 	protected final ResourceLocation getEntityTexture(T entity) {
 
-		return stateManager.getState(getStateFromEntity(entity)).texture;
+		return stateManager.getState(getStateFromEntity(entity)).texture();
 	}
 
 	@Override

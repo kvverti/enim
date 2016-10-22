@@ -33,39 +33,11 @@
 			"origin": [6.5,5,7]
 		},
 		{
-			"name": "right_leg_inside",
-			"parent": "right_leg_outside",
-			"from": [5,0,7],
-			"to": [8,5,7],
-			"uv": [35,3]
-		},
-		{
-			"name": "right_foot_inside",
-			"parent": "right_leg_outside",
-			"from": [5,0.005,7],
-			"to": [8,0.005,10],
-			"uv": [29,0]
-		},
-		{
 			"name": "left_leg_outside",
 			"from": [8,0,7],
 			"to": [11,5,10],
 			"uv": [26,0],
 			"origin": [9.5,5,7]
-		},
-		{
-			"name": "left_leg_inside",
-			"parent": "left_leg_outside",
-			"from": [8,0,7],
-			"to": [11,5,7],
-			"uv": [35,3]
-		},
-		{
-			"name": "left_foot_inside",
-			"parent": "left_leg_outside",
-			"from": [8,0.005,7],
-			"to": [11,0.005,10],
-			"uv": [29,0]
 		},
 		{
 			"name": "head",

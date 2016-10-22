@@ -105,12 +105,6 @@ public final class Util {
 		for(E e : arr) { if(!check.test(e)) throw exc.apply(e); }
 	}
 
-	public static <E, X extends Exception>
-		void validate(Iterable<E> coll, ThrowingConsumer<? super E, X> check) throws X {
-
-		for(E e : coll) { check.acceptThrowing(e); }
-	}
-
 	public static void assertThat(boolean condition, Object message) {
 
 		if(!condition) throw new AssertionError(message);
@@ -153,51 +147,9 @@ public final class Util {
 			return this;
 		}
 
-		public <X extends Throwable> X orElseWrap(Function<? super Throwable, X> cnstr) {
+		public <X extends Throwable> X orElseWrap(Function<? super Throwable, X> ctor) {
 
-			return cnstr.apply(getCause());
-		}
-	}
-
-	@FunctionalInterface
-	public interface ThrowingConsumer<T, X extends Exception> extends Consumer<T> {
-
-		void acceptThrowing(T t) throws X;
-
-		@Override
-		default void accept(T t) {
-
-			try { acceptThrowing(t); }
-			catch(Exception e) {
-
-				throw unchecked(e);
-			}
-		}
-
-		static <T> Consumer<T> of(ThrowingConsumer<T, ?> cons) {
-
-			return cons;
-		}
-	}
-
-	@FunctionalInterface
-	public interface ThrowingFunction<T, R, X extends Exception> extends Function<T, R> {
-
-		R applyThrowing(T t) throws X;
-
-		@Override
-		default R apply(T t) {
-
-			try { return applyThrowing(t); }
-			catch(Exception e) {
-
-				throw unchecked(e);
-			}
-		}
-
-		static <T, R> Function<T, R> of(ThrowingFunction<T, R, ?> func) {
-
-			return func;
+			return ctor.apply(getCause());
 		}
 	}
 }

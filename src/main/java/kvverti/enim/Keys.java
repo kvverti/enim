@@ -58,6 +58,8 @@ public final class Keys {
 	public static final String ANIMS_DIR = "models/entity/animations/";
 	public static final String TEXTURES_DIR = "textures/";
 
+	public static final String MISSING_DEFINITION = "builtin/missingno";
+
 	public static final String JSON = ".json";
 	public static final String PNG = ".png";
 	public static final String ABIESCRIPT = ".abie";

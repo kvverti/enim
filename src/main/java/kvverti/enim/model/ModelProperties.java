@@ -9,19 +9,19 @@ import com.google.gson.annotations.SerializedName;
 import kvverti.enim.Keys;
 import kvverti.enim.Vec3f;
 
-/** Class corresponding to the "properties" tag of an entity model */
+/** Class corresponding to the {@value Keys#PROPERTIES_TAG} tag of an entity model */
 public class ModelProperties {
 
 	public static final ModelProperties DEFAULT = new ModelProperties();
 
 	@SerializedName(Keys.PROP_NAMETAG_ORIGIN)
-	public final float nameplateBase;
+	private final float nameplateBase;
 
 	@SerializedName(Keys.PROP_HELD_ITEM_ORIGIN_LEFT)
-	public final OriginPoint heldItemLeft;
+	private final OriginPoint heldItemLeft;
 
 	@SerializedName(Keys.PROP_HELD_ITEM_ORIGIN_RIGHT)
-	public final OriginPoint heldItemRight;
+	private final OriginPoint heldItemRight;
 
 	/** For Json deserialization */
 	private ModelProperties() {
@@ -30,6 +30,24 @@ public class ModelProperties {
 		heldItemLeft = OriginPoint.DEFAULT;
 		heldItemRight = OriginPoint.DEFAULT;
 	}
+
+	/**
+	 * The height at which the entity's nameplate should render when using this model. This is the distance from the ground to the bottom
+	 * of the nameplate in pixel units.
+	 */
+	public float nameplate() { return nameplateBase; }
+
+	/**
+	 * The position of the entity's left hand. Items held in the left hand will be rendered at this position and will move with the
+	 * element specified as the parent.
+	 */
+	public OriginPoint leftHand() { return heldItemLeft; }
+
+	/**
+	 * The position of the entity's right hand. Items held in the right hand will be rendered at this position and will move with the
+	 * element specified as the parent.
+	 */
+	public OriginPoint rightHand() { return heldItemRight; }
 
 	@Override
 	public String toString() {

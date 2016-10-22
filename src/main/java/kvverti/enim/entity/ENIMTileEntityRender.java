@@ -66,11 +66,11 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 		RenderState renderState = getStateFromTile(tileEntity);
 		currentState = stateManager.getState(renderState);
 		ENIMModel model = stateManager.getModel(renderState);
-		bindTexture(currentState.texture);
-		GlStateManager.rotate(currentState.y, 0.0f, 1.0f, 0.0f);
+		bindTexture(currentState.texture());
+		GlStateManager.rotate(currentState.y(), 0.0f, 1.0f, 0.0f);
 		EntityInfo info = new EntityInfo();
 		info.partialTicks = partialTicks;
-		info.scale = 0.0625f * currentState.scale;
+		info.scale = 0.0625f * currentState.scale();
 		preRender(tileEntity, info);
 		model.render(tileEntity, info);
 		postRender(tileEntity, info);

@@ -65,17 +65,6 @@ public class ENIMModel extends ModelBase {
 
 	private void setAnglesHelper(Animation anim, int frame) {
 
-	/*	anim.frame(frame).forEach((define, forms) -> {
-
-			ENIMModelRenderer box = boxes.get(anim.toElementName(define));
-			box.rotateAngleX = toRadians(forms[0]);
-			box.rotateAngleY = toRadians(forms[1]);
-			box.rotateAngleZ = toRadians(forms[2]);
-			box.shiftDistanceX = forms[3] / 16.0f;
-			box.shiftDistanceY = forms[4] / 16.0f;
-			box.shiftDistanceZ = forms[5] / 16.0f;
-		});
-	*/
 		AbieScript.Frame f = anim.frame(frame);
 		for(String define : anim.defines()) {
 
@@ -139,18 +128,18 @@ public class ENIMModel extends ModelBase {
 		clearMaps();
 		textureWidth = texSizeX;
 		textureHeight = texSizeY;
-		anims.putAll(model.animations);
-		for(ModelElement m : model.elements) {
+		anims.putAll(model.animations());
+		for(ModelElement m : model.elements()) {
 
 			ENIMModelRenderer box = new ENIMModelRenderer(this, m);
-			boxes.put(m.name, box);
-			if(m.translucent) lucents.add(box);
+			boxes.put(m.name(), box);
+			if(m.isTranslucent()) lucents.add(box);
 			else opaques.add(box);
 		}
-		for(ModelElement m : model.elements) {
+		for(ModelElement m : model.elements()) {
 
-			ENIMModelRenderer current = boxes.get(m.name);
-			String parent = m.parent;
+			ENIMModelRenderer current = boxes.get(m.name());
+			String parent = m.parent();
 			if(boxes.containsKey(parent)) {
 
 				boxes.get(parent).addChild(current);

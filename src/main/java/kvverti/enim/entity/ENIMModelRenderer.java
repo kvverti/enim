@@ -52,13 +52,13 @@ public class ENIMModelRenderer extends ModelRenderer {
 
 	public ENIMModelRenderer(ModelBase model, ModelElement features) {
 
-		super(model, features.name);
-		defaultRotations = features.rotation;
-		defaultScale = features.scale;
-		translucent = features.translucent;
-		head = features.head;
-		Vec3f origin = features.origin, from = features.from, to = features.to;
-		int[] uv = features.uv;
+		super(model, features.name());
+		defaultRotations = features.rotation();
+		defaultScale = features.scale();
+		translucent = features.isTranslucent();
+		head = features.isHead();
+		Vec3f origin = features.origin(), from = features.from(), to = features.to();
+		int[] uv = features.uv();
 		setTextureOffset(uv[0], uv[1]);
 		setRotationPoint(origin.x - 8.0f, -origin.y, 8.0f - origin.z);
 		addBox(from.x - origin.x,

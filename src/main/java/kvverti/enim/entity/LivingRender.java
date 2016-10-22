@@ -8,6 +8,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumChatFormatting;
 
 import kvverti.enim.model.EntityState;
+import kvverti.enim.Vec3f;
 
 public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 
@@ -43,12 +44,15 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 			GlStateManager.color(1.0f, 1.0f, 1.0f, 0.25f);
 		}
 		//"Dinnerbone" or "Grumm" mobs render upside down
-		/*if(entity.hasCustomName()) {
+		if(entity.hasCustomName()) {
 
 			String name = EnumChatFormatting.getTextWithoutFormattingCodes(entity.getName());
-			if("Grumm".equals(name) || "Dinnerbone".equals(name))
+			if("Grumm".equals(name) || "Dinnerbone".equals(name)) {
+
+				GlStateManager.translate(0.0f, -entity.height, 0.0f);
 				GlStateManager.rotate(180.0f, 0.0f, 0.0f, 1.0f);
-		}*/
+			}
+		}
 	}
 
 	protected void rotateCorpse(T entity) {
@@ -76,10 +80,11 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 			double distanceSq = entity.getDistanceSqToEntity(renderManager.livingPlayer);
 			if(distanceSq < NAMETAG_VISIBILITY_RANGE_SQ) {
 
-				float namePos = getCurrentEntityState().model.properties.nameplateBase;
+				float namePos = getCurrentEntityState().model().properties().nameplate();
+				float scale = getCurrentEntityState().scale();
 				renderOffsetLivingLabel(entity,
 					x,
-					y - entity.height - (5.0f / 16.0f) + (namePos / 16.0f),
+					y + (namePos / 16.0f) * scale - entity.height - (5.0f / 16.0f),
 					z,
 					entity.getDisplayName().getFormattedText(),
 					2.0f / 75.0f,
