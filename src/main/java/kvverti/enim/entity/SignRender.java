@@ -1,10 +1,7 @@
 package kvverti.enim.entity;
 
-import java.util.Set;
-import java.util.HashSet;
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiUtilRenderComponents;
 import net.minecraft.client.renderer.GlStateManager;

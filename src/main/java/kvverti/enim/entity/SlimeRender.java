@@ -1,17 +1,11 @@
 package kvverti.enim.entity;
 
-import java.util.Set;
-import java.util.HashSet;
-
 import net.minecraft.block.properties.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.EntitySlime;
 
-import org.lwjgl.opengl.GL11;
-
 import kvverti.enim.entity.state.RenderState;
-import kvverti.enim.model.EntityState;
 
 public class SlimeRender extends LivingRender<EntitySlime> {
 

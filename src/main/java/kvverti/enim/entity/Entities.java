@@ -16,8 +16,6 @@ import kvverti.enim.Ticker;
  */
 public final class Entities {
 
-	//private static volatile EnimTicker masterTicker;
-
 	/** Construction disallowed */
 	private Entities() { }
 
@@ -46,6 +44,11 @@ public final class Entities {
 		return Ticker.INSTANCE.jumpTicks(entity);
 	}
 
+	public static boolean hasAttackTarget(Entity entity) {
+
+		return Ticker.INSTANCE.hasAttackTarget(entity);
+	}
+
 	public static float interpolate(float start, float end, float percent) {
 
 		return start + (end - start) * percent;
@@ -70,42 +73,4 @@ public final class Entities {
 
 		return Minecraft.getMinecraft().theWorld;
 	}
-
-	/*public static synchronized void initTicker() {
-
-		if(masterTicker == null) {
-
-			masterTicker = new EnimTicker();
-			new Thread(masterTicker, "Enim Ticker").start();
-		}
-	}
-
-	public static int currentTick() {
-
-		return masterTicker.currentTick();
-	}
-
-	private static final class EnimTicker implements Runnable {
-
-		private final AtomicInteger counter = new AtomicInteger();
-		private final Minecraft mc = Minecraft.getMinecraft();
-
-		/* count game ticks *//*
-		@Override
-		public void run() {
-
-			while(true) {
-
-				if(!mc.isGamePaused())
-					kvverti.enim.Logger.info(counter.incrementAndGet());
-				try { Thread.sleep(50); }
-				catch(InterruptedException e) { }
-			}
-		}
-
-		public int currentTick() {
-
-			return counter.get();
-		}
-	}*/
 }

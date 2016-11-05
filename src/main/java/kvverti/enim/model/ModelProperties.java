@@ -1,9 +1,5 @@
 package kvverti.enim.model;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-
 import com.google.gson.annotations.SerializedName;
 
 import kvverti.enim.Keys;
@@ -62,16 +58,25 @@ public class ModelProperties {
 	public static class OriginPoint {
 
 		public static final OriginPoint DEFAULT =
-			EntityModel.GSON.fromJson("{\"parent\":\"\",\"origin\":[0,0,0]}", OriginPoint.class);
+			EntityModel.GSON.fromJson("{\"element\":\"\",\"rotation\":[0,0,0],\"position\":[0,0,0]}", OriginPoint.class);
 
 		@SerializedName(Keys.PROP_META_PARENT)
-		public final String parent;
+		private final String parent;
 
 		@SerializedName(Keys.PROP_META_ORIGIN)
-		public final Vec3f coords;
+		private final Vec3f coords;
+
+		@SerializedName(Keys.PROP_META_ROTATION)
+		private final Vec3f rotation;
 
 		/** For Json deserialization */
-		private OriginPoint() { parent = ""; coords = Vec3f.ORIGIN; }
+		private OriginPoint() { parent = ""; coords = Vec3f.ORIGIN; rotation = Vec3f.ORIGIN; }
+
+		public String parent() { return parent; }
+
+		public Vec3f coords() { return coords; }
+
+		public Vec3f rotation() { return rotation; }
 
 		@Override
 		public String toString() {

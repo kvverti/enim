@@ -1,11 +1,9 @@
 package kvverti.enim.entity.state;
 
-import java.util.Arrays;
+//import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.function.Function;
 
 import net.minecraft.block.properties.IProperty;
@@ -18,10 +16,8 @@ import com.google.common.collect.ImmutableMap;
 
 import kvverti.enim.entity.ENIMModel;
 import kvverti.enim.model.EntityModel;
-import kvverti.enim.model.EntityStateMap;
 import kvverti.enim.model.EntityState;
 import kvverti.enim.Keys;
-import kvverti.enim.Logger;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toMap;

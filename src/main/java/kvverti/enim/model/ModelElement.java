@@ -1,8 +1,5 @@
 package kvverti.enim.model;
 
-import java.util.Arrays;
-import java.io.IOException;
-
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
 

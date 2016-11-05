@@ -8,7 +8,6 @@ import java.util.EnumSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.*;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 
 import kvverti.enim.entity.state.RenderState;
 import kvverti.enim.entity.state.EnumStringSerializable;

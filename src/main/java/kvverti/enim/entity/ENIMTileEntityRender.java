@@ -1,15 +1,9 @@
 package kvverti.enim.entity;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 
 import com.google.common.collect.ImmutableSet;

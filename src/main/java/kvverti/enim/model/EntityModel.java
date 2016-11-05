@@ -10,7 +10,6 @@ import java.util.NoSuchElementException;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.*;
-import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import kvverti.enim.Keys;

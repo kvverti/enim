@@ -1,10 +1,8 @@
 package kvverti.enim.model;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.lang.reflect.Type;
 
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
@@ -60,6 +58,7 @@ public class Animation {
 		@SerializedName("moving") MOVE,
 		@SerializedName("airborne") AIR,
 		@SerializedName("swimming") SWIM,
+		@SerializedName("tracking") TRACK,
 		@SerializedName("jump") JUMP,
 		@SerializedName("attack") ATTACK,
 		@SerializedName("damage") DAMAGE,

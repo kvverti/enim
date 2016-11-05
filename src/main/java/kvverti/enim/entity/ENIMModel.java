@@ -3,13 +3,12 @@ package kvverti.enim.entity;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.EnumMap;
-import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.tileentity.TileEntity;
 
 import kvverti.enim.abiescript.AbieScript;
@@ -54,6 +53,7 @@ public class ENIMModel extends ModelBase {
 		animateLooping(entity, Animation.Type.MOVE, info.speedSq > 0.0025f);
 		animateLooping(entity, Animation.Type.AIR, !entity.isInWater() && !entity.onGround);
 		animateLooping(entity, Animation.Type.SWIM, entity.isInWater() && !entity.onGround);
+		animateLooping(entity, Animation.Type.TRACK, hasAttackTarget(entity));
 		animateNoLooping(Animation.Type.JUMP, jumpTime(entity));
 	}
 
@@ -131,8 +131,9 @@ public class ENIMModel extends ModelBase {
 		anims.putAll(model.animations());
 		for(ModelElement m : model.elements()) {
 
+			String name = m.name();
 			ENIMModelRenderer box = new ENIMModelRenderer(this, m);
-			boxes.put(m.name(), box);
+			boxes.put(name, box);
 			if(m.isTranslucent()) lucents.add(box);
 			else opaques.add(box);
 		}

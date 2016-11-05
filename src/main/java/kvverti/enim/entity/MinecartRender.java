@@ -4,8 +4,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityMinecart;
 
-import kvverti.enim.model.EntityState;
-
 public class MinecartRender extends BasicRender<EntityMinecart> {
 
 	public MinecartRender(RenderManager manager, String modDomain, String entityStateName) {

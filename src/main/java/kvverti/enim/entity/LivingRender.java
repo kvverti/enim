@@ -7,9 +7,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumChatFormatting;
 
-import kvverti.enim.model.EntityState;
-import kvverti.enim.Vec3f;
-
 public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 
 	public static final float NAMETAG_VISIBILITY_RANGE_SQ = 64.0f * 64.0f;

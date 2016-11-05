@@ -38,6 +38,7 @@ public final class Enim {
 		EnimRenderingRegistry.registerEntityRender(EntityRabbit.class, m -> new RabbitRender(m, "minecraft", "rabbit"));
 		EnimRenderingRegistry.registerEntityRender(EntityChicken.class, m -> new ChickenRender(m, "minecraft", "chicken"));
 		EnimRenderingRegistry.registerEntityRender(EntityBlaze.class, m -> new BasicLivingRender<>(m, "minecraft", "blaze"));
+		EnimRenderingRegistry.registerEntityRender(EntitySpider.class, m -> new BasicLivingRender<>(m, "minecraft", "spider"));
 	}
 
 	@EventHandler

@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.WeakHashMap;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 
 import kvverti.enim.entity.Entities;
 
@@ -25,11 +27,14 @@ import kvverti.enim.entity.Entities;
  */
 public final class Ticker {
 
+	private static final int MEAN_NUM_ENTITIES = 30;
+
 	/** The singleton instance */
 	public static final Ticker INSTANCE = new Ticker();
-	private static final WeakHashMap<Entity, AtomicInteger> entityCounters = new WeakHashMap<>();
-	private static final WeakHashMap<TileEntity, AtomicInteger> tileCounters = new WeakHashMap<>();
-	private static final WeakHashMap<Entity, AtomicInteger> jumpCounters = new WeakHashMap<>();
+	private final WeakHashMap<Entity, AtomicInteger> entityCounters = new WeakHashMap<>(MEAN_NUM_ENTITIES);
+	private final WeakHashMap<TileEntity, AtomicInteger> tileCounters = new WeakHashMap<>(MEAN_NUM_ENTITIES);
+	private final WeakHashMap<Entity, AtomicInteger> jumpCounters = new WeakHashMap<>(MEAN_NUM_ENTITIES);
+	private final WeakHashMap<Entity, AtomicBoolean> attackTargetFlags = new WeakHashMap<>(MEAN_NUM_ENTITIES);
 
 	//slowing down tick rate to match the time returned by World#getTotalWorldTime()
 	private byte slow = 0;
@@ -39,7 +44,7 @@ public final class Ticker {
 
 	/**
 	 * Subscribed to {@link WorldTickEvent} events. Increments all entity and tile entity timers at the start of every
-	 * world tick. This method is only called by Forge on the inetgrated client.
+	 * world tick. This method is only called by Forge on the integrated client.
 	 */
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event) {
@@ -64,19 +69,31 @@ public final class Ticker {
 		jumpCounters.computeIfAbsent(event.entityLiving, e -> new AtomicInteger()).set(0);
 	}
 
+	/**
+	 * Subscribed to {@link LivingSetAttackTargetEvent} events. Maintains a boolean value for each entity that is true when the
+	 * entity has an attack target and false when it does not. This method is only called by Forge on the integrated client.
+	 */
+	@SubscribeEvent
+	public void onLivingSetAttackTarget(LivingSetAttackTargetEvent event) {
+
+		attackTargetFlags.computeIfAbsent(event.entityLiving, e -> new AtomicBoolean()).set(event.target != null);
+	}
+
+	/** Returns the global tick counter for the given entity */
 	public int ticks(Entity entity) {
 
 		return entityCounters.computeIfAbsent(entity, this::computeCounter).get()
 			+ (isClientIntegrated() ? 0 : worldTime());
 	}
 
+	/** Returns the global tick counter for the given tile entity. */
 	public int ticks(TileEntity tile) {
 
 		return tileCounters.computeIfAbsent(tile, this::computeCounter).get()
 			+ (isClientIntegrated() ? 0 : worldTime());
 	}
 
-	/*
+	/**
 	 * If in singleplayer, the jump ticks are incremented automatically from zero, so the counter is returned if positive.
 	 * However, if in multiplayer, the jump ticks are stored relative to the world time when the entity last jumped,
 	 * so the counter value is subtracted from the current world time to get the diference in ticks. As well, in multiplayer
@@ -98,6 +115,17 @@ public final class Ticker {
 			return res >= 0 ? res : -1;
 		}
 		return -1;
+	}
+
+	/**
+	 * Returns whether the given entity has an attack target. There does not seem to be a way to determine this on a dedicated
+	 * server environment, so it will return false in all cases in multiplayer.
+	 */
+	public boolean hasAttackTarget(Entity entity) {
+
+		if(attackTargetFlags.containsKey(entity))
+			return attackTargetFlags.get(entity).get();
+		return false;
 	}
 
 	private AtomicInteger computeCounter(Entity entity) {

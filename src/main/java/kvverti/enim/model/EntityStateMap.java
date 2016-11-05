@@ -2,9 +2,6 @@ package kvverti.enim.model;
 
 import java.lang.reflect.Type;
 import java.util.Map;
-import java.util.AbstractMap;
-
-import net.minecraft.util.ResourceLocation;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ForwardingMap;
@@ -12,7 +9,6 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 import kvverti.enim.Keys;
-import kvverti.enim.Util;
 
 /** An immutable collection of EntityStates for use in deserializing entitystate files. */
 public class EntityStateMap extends ForwardingMap<String, EntityState> {

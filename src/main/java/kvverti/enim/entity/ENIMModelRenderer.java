@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import kvverti.enim.Vec3f;
 import kvverti.enim.Util;
 import kvverti.enim.model.ModelElement;
+import kvverti.enim.model.ModelProperties;
 
 import static kvverti.enim.entity.Entities.*;
 
@@ -76,26 +77,32 @@ public class ENIMModelRenderer extends ModelRenderer {
 
 			if(!compiled) compileDisplayList(scale * defaultScale);
 			GlStateManager.pushMatrix();
+			//transform element into position
 			GlStateManager.translate(offsetX, offsetY, offsetZ);
 			GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 			GlStateManager.rotate(+defaultRotations.z, 0.0f, 0.0f, 1.0f);
 			GlStateManager.rotate(+defaultRotations.y, 0.0f, 1.0f, 0.0f);
 			GlStateManager.rotate(-defaultRotations.x, 1.0f, 0.0f, 0.0f);
+			//apply special transformations
 			if(head) {
 
 				GlStateManager.rotate(headYaw, 0.0f, 1.0f, 0.0f);
 				GlStateManager.rotate(pitch, 1.0f, 0.0f, 0.0f);
 			}
+			//apply animations
 			GlStateManager.translate(shiftDistanceX, -shiftDistanceY, -shiftDistanceZ);
 			GlStateManager.rotate(+toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
 			GlStateManager.rotate(+toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
 			GlStateManager.rotate(-toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
+			//render
 			if(translucent) makeLucent();
 			GlStateManager.callList(displayList());
 			if(translucent) endLucent();
+			//do some transformations so children render properly
 			GlStateManager.scale(defaultScale, defaultScale, defaultScale);
 			GlStateManager.translate(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
 			GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
+			//render children
 			if(childModels != null) childModels.forEach(box -> box.render(scale));
 			GlStateManager.popMatrix();
 		}

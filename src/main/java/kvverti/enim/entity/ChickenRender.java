@@ -1,9 +1,5 @@
 package kvverti.enim.entity;
 
-import java.util.Set;
-import java.util.HashSet;
-
-import net.minecraft.block.properties.*;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.passive.EntityChicken;
 
