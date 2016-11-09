@@ -1,83 +1,8 @@
 define left
 define right
 
+over 4
 {
-rotate left  -0 -0 -10
-rotate right -0 -0 +10
-}
-{
-rotate left  -0 -0 -100
-rotate right -0 -0 +100
-}
-{
-rotate left  -0 -0 +20
-rotate right -0 -0 -20
-}
-{
-rotate left  -0 -0 +90
-rotate right -0 -0 -90
-}
-{
-rotate left  -0 -0 -30
-rotate right -0 -0 +30
-}
-{
-rotate left  -0 -0 -80
-rotate right -0 -0 +80
-}
-{
-rotate left  -0 -0 +40
-rotate right -0 -0 -40
-}
-{
-rotate left  -0 -0 +70
-rotate right -0 -0 -70
-}
-{
-rotate left  -0 -0 -50
-rotate right -0 -0 +50
-}
-{
-rotate left  -0 -0 -60
-rotate right -0 -0 +60
-}
-{
-rotate left  -0 -0 +60
-rotate right -0 -0 -60
-}
-{
-rotate left  -0 -0 +50
-rotate right -0 -0 -50
-}
-{
-rotate left  -0 -0 -70
-rotate right -0 -0 +70
-}
-{
-rotate left  -0 -0 -40
-rotate right -0 -0 +40
-}
-{
-rotate left  -0 -0 +80
-rotate right -0 -0 -80
-}
-{
-rotate left  -0 -0 +30
-rotate right -0 -0 -30
-}
-{
-rotate left  -0 -0 -90
-rotate right -0 -0 +90
-}
-{
-rotate left  -0 -0 -20
-rotate right -0 -0 +20
-}
-{
-rotate left  -0 -0 +100
-rotate right -0 -0 -100
-}
-{
-rotate left  -0 -0 +10
-rotate right -0 -0 -10
+rotate cosine left -0 -0 -110
+rotate cosine right -0 -0 +110
 }

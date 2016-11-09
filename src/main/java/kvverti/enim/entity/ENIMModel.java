@@ -16,6 +16,7 @@ import kvverti.enim.model.EntityModel;
 import kvverti.enim.model.Animation;
 import kvverti.enim.model.ModelElement;
 import kvverti.enim.Vec3f;
+import kvverti.enim.Keys;
 
 import static kvverti.enim.entity.Entities.*;
 
@@ -48,19 +49,21 @@ public class ENIMModel extends ModelBase {
 
 	public void setRotationAngles(Entity entity, EntityInfo info) {
 
+		//kvverti.enim.Logger.info("Time: %d", randomCounterFor(entity));
+		//kvverti.enim.Logger.info("Tick: %f", info.partialTicks);
 		resetAngles(info.headYaw, info.entityPitch);
-		animateLooping(entity, Animation.Type.IDLE, true);
-		animateLooping(entity, Animation.Type.MOVE, info.speedSq > 0.0025f);
-		animateLooping(entity, Animation.Type.AIR, !entity.isInWater() && !entity.onGround);
-		animateLooping(entity, Animation.Type.SWIM, entity.isInWater() && !entity.onGround);
-		animateLooping(entity, Animation.Type.TRACK, hasAttackTarget(entity));
-		animateNoLooping(Animation.Type.JUMP, jumpTime(entity));
+		animateLooping(entity, info, Animation.Type.IDLE, true);
+		animateLooping(entity, info, Animation.Type.MOVE, info.speedSq > 0.0025f);
+		animateLooping(entity, info, Animation.Type.AIR, !entity.isInWater() && !entity.onGround);
+		animateLooping(entity, info, Animation.Type.SWIM, entity.isInWater() && !entity.onGround);
+		animateLooping(entity, info, Animation.Type.TRACK, hasAttackTarget(entity));
+		animateNoLooping(info, Animation.Type.JUMP, jumpTime(entity));
 	}
 
 	public void setRotationAngles(TileEntity tile, EntityInfo info) {
 
 		resetAngles(info.headYaw, info.entityPitch);
-		animateLooping(tile, Animation.Type.IDLE, true);
+		animateLooping(tile, info, Animation.Type.IDLE, true);
 	}
 
 	private void setAnglesHelper(Animation anim, int frame) {
@@ -79,31 +82,34 @@ public class ENIMModel extends ModelBase {
 		}
 	}
 
-	private void animateLooping(Entity entity, Animation.Type type, boolean predicate) {
+	private void animateLooping(Entity entity, EntityInfo info, Animation.Type type, boolean predicate) {
 
 		if(anims.containsKey(type) && predicate) {
 
 			Animation anim = anims.get(type);
-			int frame = randomCounterFor(entity) % anim.frameCount();
+			int frame = (randomCounterFor(entity) * Keys.INTERPOLATION_TICKS
+				+ (int)(info.partialTicks * Keys.INTERPOLATION_TICKS)) % anim.frameCount();
 			if(frame < 0) frame += anim.frameCount();
 			setAnglesHelper(anim, frame);
 		}
 	}
 
-	private void animateLooping(TileEntity tile, Animation.Type type, boolean predicate) {
+	private void animateLooping(TileEntity tile, EntityInfo info, Animation.Type type, boolean predicate) {
 
 		if(anims.containsKey(type) && predicate) {
 
 			Animation anim = anims.get(type);
-			int frame = randomCounterFor(tile) % anim.frameCount();
+			int frame = (randomCounterFor(tile) * Keys.INTERPOLATION_TICKS
+				+ (int)(info.partialTicks * Keys.INTERPOLATION_TICKS)) % anim.frameCount();
 			if(frame < 0) frame += anim.frameCount();
 			setAnglesHelper(anim, frame);
 		}
 	}
 
-	private void animateNoLooping(Animation.Type type, int frame) {
+	private void animateNoLooping(EntityInfo info, Animation.Type type, int frame) {
 
 		Animation anim = anims.get(type);
+		frame = frame * Keys.INTERPOLATION_TICKS + (int)(info.partialTicks * Keys.INTERPOLATION_TICKS);
 		if(anim != null && frame >= 0 && frame < anim.frameCount())
 			setAnglesHelper(anim, frame);
 	}

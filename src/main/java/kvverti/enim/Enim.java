@@ -44,7 +44,7 @@ public final class Enim {
 	@EventHandler
 	public void init(FMLInitializationEvent e) {
 
-    		EnimRenderingRegistry.init(e);
+		EnimRenderingRegistry.init(e);
 		MinecraftForge.EVENT_BUS.register(Ticker.INSTANCE);
 		EnimRenderingRegistry.registerTileEntityRender(TileEntitySign.class, new SignRender("minecraft", "sign"));
 		EnimRenderingRegistry.registerTileEntityRender(TileEntityBanner.class, new BannerRender("minecraft", "banner"));

@@ -1,5 +1,6 @@
 package kvverti.enim;
 
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.WeakHashMap;
 import java.util.Objects;
@@ -37,27 +38,27 @@ public final class Ticker {
 	private final WeakHashMap<Entity, AtomicBoolean> attackTargetFlags = new WeakHashMap<>(MEAN_NUM_ENTITIES);
 
 	//slowing down tick rate to match the time returned by World#getTotalWorldTime()
-	private byte slow = 0;
+	//private byte slow = 0;
 
 	/** Construction disallowed */
 	private Ticker() { }
 
-	/**
+/*	/**
 	 * Subscribed to {@link WorldTickEvent} events. Increments all entity and tile entity timers at the start of every
 	 * world tick. This method is only called by Forge on the integrated client.
 	 */
-	@SubscribeEvent
-	public void onWorldTick(WorldTickEvent event) {
+	//@SubscribeEvent
+	/*public void onWorldTick(WorldTickEvent event) {
 
 		if(event.phase == Phase.START && ++slow % 3 == 0) {
 
-			entityCounters.values().forEach(AtomicInteger::incrementAndGet);
-			tileCounters.values().forEach(AtomicInteger::incrementAndGet);
+		//	entityCounters.values().forEach(AtomicInteger::incrementAndGet);
+		//	tileCounters.values().forEach(AtomicInteger::incrementAndGet);
 			for(Iterator<AtomicInteger> itr = jumpCounters.values().iterator(); itr.hasNext(); )
 				if(itr.next().getAndIncrement() < 0)
 					itr.remove();
 		}
-	}
+	}*/
 
 	/**
 	 * Subscribed to {@link LivingJumpEvent} events. Creates a jump timer if one does not exist for the given entity and
@@ -66,7 +67,7 @@ public final class Ticker {
 	@SubscribeEvent
 	public void onLivingJump(LivingJumpEvent event) {
 
-		jumpCounters.computeIfAbsent(event.entityLiving, e -> new AtomicInteger()).set(0);
+		jumpCounters.computeIfAbsent(event.entityLiving, e -> new AtomicInteger()).set(worldTime());
 	}
 
 	/**
@@ -82,15 +83,15 @@ public final class Ticker {
 	/** Returns the global tick counter for the given entity */
 	public int ticks(Entity entity) {
 
-		return entityCounters.computeIfAbsent(entity, this::computeCounter).get()
-			+ (isClientIntegrated() ? 0 : worldTime());
+		return entityCounters.computeIfAbsent(entity, this::computeCounter).get() + worldTime();
+		//	+ (isClientIntegrated() ? 0 : worldTime());
 	}
 
 	/** Returns the global tick counter for the given tile entity. */
 	public int ticks(TileEntity tile) {
 
-		return tileCounters.computeIfAbsent(tile, this::computeCounter).get()
-			+ (isClientIntegrated() ? 0 : worldTime());
+		return tileCounters.computeIfAbsent(tile, this::computeCounter).get() + worldTime();
+		//	+ (isClientIntegrated() ? 0 : worldTime());
 	}
 
 	/**
@@ -110,8 +111,8 @@ public final class Ticker {
 		}
 		if(jumpCounters.containsKey(entity)) {
 
-			int res = isClientIntegrated() ? jumpCounters.get(entity).get()
-				: worldTime() - jumpCounters.get(entity).get();
+			int res = //isClientIntegrated() ? jumpCounters.get(entity).get()
+				/*:*/ worldTime() - jumpCounters.get(entity).get();
 			return res >= 0 ? res : -1;
 		}
 		return -1;

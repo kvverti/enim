@@ -12,6 +12,7 @@ import net.minecraft.client.resources.IResource;
 
 import kvverti.enim.Vec3f;
 import kvverti.enim.Util;
+import kvverti.enim.Keys;
 
 public class AnimationParser {
 
@@ -215,7 +216,7 @@ public class AnimationParser {
 		int duration,
 		int freq) {
 
-		duration *= freq;
+		duration *= Keys.INTERPOLATION_TICKS * freq;
 		Map<String, Vec3f[]> prevCopy = new HashMap<>(prevFrame);
 		for(int n = 1; n <= duration; n++) {
 

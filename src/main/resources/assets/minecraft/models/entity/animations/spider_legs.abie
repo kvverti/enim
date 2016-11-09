@@ -7,7 +7,7 @@ define right2
 define right3
 define right4
 
-over 15
+over 10
 {
 rotate sine left1 -0 +10 -0
 rotate sine left2 -0 -10 -0
