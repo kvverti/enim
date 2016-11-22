@@ -34,6 +34,7 @@ public final class Keys {
 	public static final String ANIMS_TAG = "animations";
 	public static final String ANIM_SCRIPT = "script";
 	public static final String ANIM_DEFINES = "with";
+	public static final String ANIM_SCALE_WITH_MOVEMENT = "scaled";
 
 	public static final String ABIE_KEY_DEFINE = "define";
 	public static final String ABIE_KEY_FREQ = "freq";
@@ -68,9 +69,9 @@ public final class Keys {
 	public static final String PNG = ".png";
 	public static final String ABIESCRIPT = ".abie";
 
-	public static final Pattern IDENTIFIER_REGEX = Pattern.compile("[A-Za-z_][A-Za-z_0-9]*");
+	public static final Pattern IDENTIFIER_REGEX = Pattern.compile("[a-z_][a-z_0-9]*");
 	public static final Pattern RESOURCE_LOCATION_REGEX =
-		Pattern.compile("(?:(?<domain>[A-Za-z_0-9]+):)?(?<filepath>[A-Za-z_0-9/]+)");
+		Pattern.compile("(?:(?<domain>[a-z_0-9 ]+):)?(?<filepath>[a-z_0-9 /]+)");
 
 	private Keys() { }
 }

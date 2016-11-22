@@ -87,8 +87,7 @@ public class ENIMModel extends ModelBase {
 		if(anims.containsKey(type) && predicate) {
 
 			Animation anim = anims.get(type);
-			int frame = (randomCounterFor(entity) * Keys.INTERPOLATION_TICKS
-				+ (int)(info.partialTicks * Keys.INTERPOLATION_TICKS)) % anim.frameCount();
+			int frame = frameWithInterpolation(randomCounterFor(entity), info.partialTicks) % anim.frameCount();
 			if(frame < 0) frame += anim.frameCount();
 			setAnglesHelper(anim, frame);
 		}
@@ -99,8 +98,7 @@ public class ENIMModel extends ModelBase {
 		if(anims.containsKey(type) && predicate) {
 
 			Animation anim = anims.get(type);
-			int frame = (randomCounterFor(tile) * Keys.INTERPOLATION_TICKS
-				+ (int)(info.partialTicks * Keys.INTERPOLATION_TICKS)) % anim.frameCount();
+			int frame = frameWithInterpolation(randomCounterFor(tile), info.partialTicks) % anim.frameCount();
 			if(frame < 0) frame += anim.frameCount();
 			setAnglesHelper(anim, frame);
 		}
@@ -109,9 +107,14 @@ public class ENIMModel extends ModelBase {
 	private void animateNoLooping(EntityInfo info, Animation.Type type, int frame) {
 
 		Animation anim = anims.get(type);
-		frame = frame * Keys.INTERPOLATION_TICKS + (int)(info.partialTicks * Keys.INTERPOLATION_TICKS);
+		frame = frameWithInterpolation(frame, info.partialTicks);
 		if(anim != null && frame >= 0 && frame < anim.frameCount())
 			setAnglesHelper(anim, frame);
+	}
+
+	private int frameWithInterpolation(int original, float percent) {
+
+		return original * Keys.INTERPOLATION_TICKS + (int) (percent * Keys.INTERPOLATION_TICKS);
 	}
 
 	private void resetAngles(float headYaw, float pitch) {

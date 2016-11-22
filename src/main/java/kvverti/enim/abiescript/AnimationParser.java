@@ -58,6 +58,7 @@ public class AnimationParser {
 
 				} else s.append((char) charValue);
 			}
+			tokens.add(Token.compile(s.toString()));
 			return tokens;
 
 		} catch(IOException e) {
@@ -65,6 +66,9 @@ public class AnimationParser {
 			throw new AbieIOException(file + ": Could not read input stream", e);
 		}
 	}
+
+	//so we don't create two instances for every statement
+	private static final Token[] TOKEN_ARR = new Token[0];
 
 	private List<Statement> parseTokens(List<Token> tokens) {
 
@@ -75,7 +79,7 @@ public class AnimationParser {
 
 				try {
 					String cmdName = tokens.get(i).getValue();
-					Token[] arr = tokens.subList(++i, i += tillNextCmd(tokens, i)).toArray(new Token[0]);
+					Token[] arr = tokens.subList(++i, i += tillNextCmd(tokens, i)).toArray(TOKEN_ARR);
 					statements.add(Statement.compile(cmdName, arr));
 
 				} catch(IndexOutOfBoundsException e) {
