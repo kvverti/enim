@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.function.ToIntBiFunction;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.entity.Entity;
@@ -51,13 +52,14 @@ public class ENIMModel extends ModelBase {
 
 		//kvverti.enim.Logger.info("Time: %d", randomCounterFor(entity));
 		//kvverti.enim.Logger.info("Tick: %f", info.partialTicks);
+		//kvverti.enim.Logger.info("Speed mult: %f", scalarFromSpeed(info.speedSq));
 		resetAngles(info.headYaw, info.entityPitch);
 		animateLooping(entity, info, Animation.Type.IDLE, true);
 		animateLooping(entity, info, Animation.Type.MOVE, info.speedSq > 0.0025f);
 		animateLooping(entity, info, Animation.Type.AIR, !entity.isInWater() && !entity.onGround);
 		animateLooping(entity, info, Animation.Type.SWIM, entity.isInWater() && !entity.onGround);
 		animateLooping(entity, info, Animation.Type.TRACK, hasAttackTarget(entity));
-		animateNoLooping(info, Animation.Type.JUMP, jumpTime(entity));
+		animateNoLooping(entity, info, Animation.Type.JUMP, Entities::jumpTime);
 	}
 
 	public void setRotationAngles(TileEntity tile, EntityInfo info) {
@@ -87,8 +89,9 @@ public class ENIMModel extends ModelBase {
 		if(anims.containsKey(type) && predicate) {
 
 			Animation anim = anims.get(type);
-			int frame = frameWithInterpolation(randomCounterFor(entity), info.partialTicks) % anim.frameCount();
-			if(frame < 0) frame += anim.frameCount();
+			int frame = frameWithInterpolation(randomCounterFor(entity, anim.shouldScaleWithMovement()), info.partialTicks);
+			frame = (frame & Integer.MAX_VALUE) % anim.frameCount();
+			//kvverti.enim.Logger.info("Frame: %d", frame);
 			setAnglesHelper(anim, frame);
 		}
 	}
@@ -104,16 +107,20 @@ public class ENIMModel extends ModelBase {
 		}
 	}
 
-	private void animateNoLooping(EntityInfo info, Animation.Type type, int frame) {
+	private void animateNoLooping(Entity entity, EntityInfo info, Animation.Type type, ToIntBiFunction<Entity, Boolean> frameFunc) {
 
-		Animation anim = anims.get(type);
-		frame = frameWithInterpolation(frame, info.partialTicks);
-		if(anim != null && frame >= 0 && frame < anim.frameCount())
-			setAnglesHelper(anim, frame);
+		if(anims.containsKey(type)) {
+
+			Animation anim = anims.get(type);
+			int frame = frameWithInterpolation(frameFunc.applyAsInt(entity, anim.shouldScaleWithMovement()), info.partialTicks);
+			if(frame >= 0 && frame < anim.frameCount())
+				setAnglesHelper(anim, frame);
+		}
 	}
 
 	private int frameWithInterpolation(int original, float percent) {
 
+		//important: must do integer overflow
 		return original * Keys.INTERPOLATION_TICKS + (int) (percent * Keys.INTERPOLATION_TICKS);
 	}
 

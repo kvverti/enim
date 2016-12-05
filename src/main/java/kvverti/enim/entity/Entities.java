@@ -29,9 +29,9 @@ public final class Entities {
 		return radians * (180.0f / (float) Math.PI);
 	}
 
-	public static int randomCounterFor(Entity entity) {
+	public static int randomCounterFor(Entity entity, boolean scaled) {
 
-		return Ticker.INSTANCE.ticks(entity);
+		return Ticker.INSTANCE.ticks(entity, scaled);
 	}
 
 	public static int randomCounterFor(TileEntity tile) {
@@ -39,9 +39,9 @@ public final class Entities {
 		return Ticker.INSTANCE.ticks(tile);
 	}
 
-	public static int jumpTime(Entity entity) {
+	public static int jumpTime(Entity entity, boolean scaled) {
 
-		return Ticker.INSTANCE.jumpTicks(entity);
+		return Ticker.INSTANCE.jumpTicks(entity, scaled);
 	}
 
 	public static boolean hasAttackTarget(Entity entity) {
@@ -49,9 +49,16 @@ public final class Entities {
 		return Ticker.INSTANCE.hasAttackTarget(entity);
 	}
 
+	public static float speedSq(Entity entity) {
+
+		double x = entity.posX - entity.lastTickPosX;
+		double z = entity.posZ - entity.lastTickPosZ;
+		return (float) (x * x + z * z);
+	}
+
 	public static float interpolate(float start, float end, float percent) {
 
-		return start + (end - start) * percent;
+		return start * (1.0f - percent) + end * percent;
 	}
 
 	public static TextureManager textureManager() {

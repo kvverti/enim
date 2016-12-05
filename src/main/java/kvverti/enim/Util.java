@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.util.function.*;
 
 import net.minecraft.client.resources.IResource;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -123,11 +124,16 @@ public final class Util {
 			: Util.MISSING_LOCATION;
 	}
 
+	public static Reader getReaderFor(IResourceManager manager, ResourceLocation location) throws IOException {
+
+		IResource resource = manager.getResource(location);
+		InputStream istream = resource.getInputStream();
+		return new BufferedReader(new InputStreamReader(istream));
+	}
+
 	public static Reader getReaderFor(ResourceLocation location) throws IOException {
 
-		IResource resource = Entities.resourceManager().getResource(location);
-		InputStream istream = resource.getInputStream();
-		return new InputStreamReader(istream);
+		return getReaderFor(Entities.resourceManager(), location);
 	}
 
 	public static class WrappedCheckedException extends RuntimeException {

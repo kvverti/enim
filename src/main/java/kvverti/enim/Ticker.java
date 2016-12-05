@@ -1,6 +1,7 @@
 package kvverti.enim;
 
 import java.lang.reflect.Method;
+import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.WeakHashMap;
 import java.util.Objects;
@@ -11,6 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.tileentity.TileEntity;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -32,33 +34,13 @@ public final class Ticker {
 
 	/** The singleton instance */
 	public static final Ticker INSTANCE = new Ticker();
-	private final WeakHashMap<Entity, AtomicInteger> entityCounters = new WeakHashMap<>(MEAN_NUM_ENTITIES);
+	private final WeakHashMap<Entity, TickCounter> randomTickCounters = new WeakHashMap<>(MEAN_NUM_ENTITIES);
 	private final WeakHashMap<TileEntity, AtomicInteger> tileCounters = new WeakHashMap<>(MEAN_NUM_ENTITIES);
-	private final WeakHashMap<Entity, AtomicInteger> jumpCounters = new WeakHashMap<>(MEAN_NUM_ENTITIES);
+	private final WeakHashMap<Entity, TickCounter> jumpCounters = new WeakHashMap<>(MEAN_NUM_ENTITIES);
 	private final WeakHashMap<Entity, AtomicBoolean> attackTargetFlags = new WeakHashMap<>(MEAN_NUM_ENTITIES);
-
-	//slowing down tick rate to match the time returned by World#getTotalWorldTime()
-	//private byte slow = 0;
 
 	/** Construction disallowed */
 	private Ticker() { }
-
-/*	/**
-	 * Subscribed to {@link WorldTickEvent} events. Increments all entity and tile entity timers at the start of every
-	 * world tick. This method is only called by Forge on the integrated client.
-	 */
-	//@SubscribeEvent
-	/*public void onWorldTick(WorldTickEvent event) {
-
-		if(event.phase == Phase.START && ++slow % 3 == 0) {
-
-		//	entityCounters.values().forEach(AtomicInteger::incrementAndGet);
-		//	tileCounters.values().forEach(AtomicInteger::incrementAndGet);
-			for(Iterator<AtomicInteger> itr = jumpCounters.values().iterator(); itr.hasNext(); )
-				if(itr.next().getAndIncrement() < 0)
-					itr.remove();
-		}
-	}*/
 
 	/**
 	 * Subscribed to {@link LivingJumpEvent} events. Creates a jump timer if one does not exist for the given entity and
@@ -67,7 +49,7 @@ public final class Ticker {
 	@SubscribeEvent
 	public void onLivingJump(LivingJumpEvent event) {
 
-		jumpCounters.computeIfAbsent(event.entityLiving, e -> new AtomicInteger()).set(worldTime());
+		jumpCounters.put(event.entityLiving, new TickCounter(event.entityLiving));
 	}
 
 	/**
@@ -80,18 +62,16 @@ public final class Ticker {
 		attackTargetFlags.computeIfAbsent(event.entityLiving, e -> new AtomicBoolean()).set(event.target != null);
 	}
 
-	/** Returns the global tick counter for the given entity */
-	public int ticks(Entity entity) {
+	/** Returns the global tick counter for the given entity, optionally scaled for speed */
+	public int ticks(Entity entity, boolean scaled) {
 
-		return entityCounters.computeIfAbsent(entity, this::computeCounter).get() + worldTime();
-		//	+ (isClientIntegrated() ? 0 : worldTime());
+		return randomTickCounters.computeIfAbsent(entity, TickCounter::new).tickValue(scaled);
 	}
 
 	/** Returns the global tick counter for the given tile entity. */
 	public int ticks(TileEntity tile) {
 
 		return tileCounters.computeIfAbsent(tile, this::computeCounter).get() + worldTime();
-		//	+ (isClientIntegrated() ? 0 : worldTime());
 	}
 
 	/**
@@ -100,19 +80,19 @@ public final class Ticker {
 	 * so the counter value is subtracted from the current world time to get the diference in ticks. As well, in multiplayer
 	 * the counters need to be manually reset :( This is a client-side mod after all!
 	 */
-	public int jumpTicks(Entity entity) {
+	public int jumpTicks(Entity entity, boolean scaled) {
 
 		if(!isClientIntegrated()) {
 
 			//check for "jumping" and set to 0 if so (rabbits hop with less "bounce" - less than 0.18)
 			if(entity instanceof EntityLivingBase && entity.motionY > 0.42f
 			|| entity instanceof EntityRabbit     && entity.motionY > 0.10f)
-				jumpCounters.computeIfAbsent(entity, c -> new AtomicInteger()).set(worldTime());
+				jumpCounters.put(entity, new TickCounter(entity));
 		}
-		if(jumpCounters.containsKey(entity)) {
+		TickCounter c = jumpCounters.get(entity);
+		if(c != null) {
 
-			int res = //isClientIntegrated() ? jumpCounters.get(entity).get()
-				/*:*/ worldTime() - jumpCounters.get(entity).get();
+			int res = c.offsetTickValue(scaled);
 			return res >= 0 ? res : -1;
 		}
 		return -1;
@@ -124,17 +104,8 @@ public final class Ticker {
 	 */
 	public boolean hasAttackTarget(Entity entity) {
 
-		if(attackTargetFlags.containsKey(entity))
-			return attackTargetFlags.get(entity).get();
-		return false;
-	}
-
-	private AtomicInteger computeCounter(Entity entity) {
-
-		int result = Objects.hash(entity.getUniqueID());
-		AtomicInteger counter = new AtomicInteger(result);
-		entityCounters.put(entity, counter);
-		return counter;
+		AtomicBoolean b = attackTargetFlags.get(entity);
+		return b != null ? b.get() : false;
 	}
 
 	private AtomicInteger computeCounter(TileEntity tile) {
@@ -146,13 +117,81 @@ public final class Ticker {
 	}
 
 	/** Returns the total world time modulated to the size of an {@code int} */
-	private int worldTime() {
+	private static int worldTime() {
 
-		return (int) (Entities.theWorld().getTotalWorldTime() % Integer.MAX_VALUE);
+		WorldClient world = Entities.theWorld();
+		return world == null ? 0 : (int) world.getTotalWorldTime();
 	}
 
 	private boolean isClientIntegrated() {
 
 		return Minecraft.getMinecraft().isSingleplayer();
+	}
+
+	/**
+	 * Holds two counter values for an entity - one based on the world time and one based on the entity's previous movement speed.
+	 * This class does not hold a strong reference to the passed entity.
+	 */
+	private static class TickCounter {
+
+		/** Offset based on the entity so that different entities have different times. */
+		private final int tickOffsetSeed;
+
+		/** The initial world time at the time of creation */
+		private final int initWorldTime;
+
+		/** The current speed-accumulative tick value */
+		private int speedAccTick;
+
+		/** A weak reference to the entity for which this counter was created. */
+		private WeakReference<Entity> entityRef;
+
+		public TickCounter(Entity entity) {
+
+			tickOffsetSeed = Objects.hash(entity.getUniqueID());
+			initWorldTime = worldTime();
+			prevWorldTime = initWorldTime;
+			speedAccTick = 0;
+			entityRef = new WeakReference<>(entity);
+		}
+
+		/** Returns the tick value for the entity, optionally scaled with movement */
+		public int tickValue(boolean scaled) {
+
+			Entity e = entityRef.get();
+			if(e == null) //why do we still exist?
+				return 0;
+			return tickOffsetSeed + (scaled ? updateSpeedAcc() : worldTime());
+		}
+
+		/** Returns the tick value for the entity, optionally scaled with movement, relative to the initial time at creation. */
+		public int offsetTickValue(boolean scaled) {
+
+			Entity e = entityRef.get();
+			if(e == null) //why do we still exist?
+				return 0;
+			return scaled ? updateSpeedAcc() : worldTime() - initWorldTime;
+		}
+
+		private int prevWorldTime;
+
+		/** Updates and accumulates the speed counter. */
+		private int updateSpeedAcc() {
+
+			Entity e = entityRef.get();
+			if(e == null) //why do we still exist?
+				return 0;
+			int worldTime = worldTime();
+			if(worldTime - prevWorldTime > 0) {
+
+				prevWorldTime = worldTime;
+				float speed = Entities.speedSq(e);
+				if(speed <= 0.0025f)
+					speed = 0.0f;
+				float scalar = Entities.interpolate(1.0f, 4.0f, speed * 100); //magic :o
+				return speedAccTick += (int) scalar;
+			}
+			return speedAccTick;
+		}
 	}
 }

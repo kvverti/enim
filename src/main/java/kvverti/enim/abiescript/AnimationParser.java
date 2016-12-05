@@ -18,19 +18,13 @@ public class AnimationParser {
 
 	private IResource file;
 
-	public AnimationParser(IResource loc) {
+	public AnimationParser() { }
 
-		file = loc;
-	}
+	public AbieScript parse(IResource file) {
 
-	public void setResource(IResource value) {
-
-		file = value;
-	}
-
-	public AbieScript parse() {
-
-		return parseFrames(parseTokens(parseSource()));
+		this.file = file;
+		try { return parseFrames(parseTokens(parseSource())); }
+		finally { this.file = null; }
 	}
 
 	private List<Token> parseSource() {
@@ -58,7 +52,6 @@ public class AnimationParser {
 
 				} else s.append((char) charValue);
 			}
-			tokens.add(Token.compile(s.toString()));
 			return tokens;
 
 		} catch(IOException e) {

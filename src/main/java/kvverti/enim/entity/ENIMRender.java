@@ -106,7 +106,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 		bindTexture(currentState.texture());
 		GlStateManager.rotate(currentState.y(), 0.0f, 1.0f, 0.0f);
 		EntityInfo info = new EntityInfo();
-		info.speedSq = speedSq(entity);
+		info.speedSq = Entities.speedSq(entity);
 		info.partialTicks = partialTicks;
 		info.entityYaw = yaw;
 		info.headYaw = headYaw(entity, yaw);
@@ -141,13 +141,6 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 		super.doRender(entity, x, y, z, yaw, partialTicks);
 		if(entity instanceof EntityLiving)
 			Util.invokeUnchecked(proxy, renderLeash, entity, x, y, z, yaw, partialTicks);
-	}
-
-	private float speedSq(Entity entity) {
-
-		double dx = entity.posX - entity.lastTickPosX;
-		double dz = entity.posZ - entity.lastTickPosZ;
-		return (float) (dx * dx + dz * dz);
 	}
 
 	private float headYaw(Entity entity, float bodyYaw) {

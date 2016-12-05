@@ -74,6 +74,7 @@ public class Animation {
 	public static class Deserializer implements JsonDeserializer<Animation> {
 
 		private static final java.lang.reflect.Type definesType = new TypeToken<Map<String, String>>(){}.getType();
+		private static final AnimationParser parser = new AnimationParser();
 
 		public Animation deserialize(JsonElement json, java.lang.reflect.Type type, JsonDeserializationContext context) {
 
@@ -82,10 +83,10 @@ public class Animation {
 				ResourceLocation scriptLoc = Util.getResourceLocation(
 					obj.get(Keys.ANIM_SCRIPT).getAsString(), Keys.ANIMS_DIR, Keys.ABIESCRIPT);
 				IResource scriptFile = Entities.resourceManager().getResource(scriptLoc);
-				AbieScript script = new AnimationParser(scriptFile).parse();
+				AbieScript script = parser.parse(scriptFile);
 				Map<String, String> defines = context.deserialize(obj.getAsJsonObject(Keys.ANIM_DEFINES), definesType);
 				boolean scaleWithMovement = obj.has(Keys.ANIM_SCALE_WITH_MOVEMENT) ?
-					obj.getAsJsonPrimitive(Keys.ANIM_SCALE_WITH_MOVEMENT).getAsBoolean();
+					obj.getAsJsonPrimitive(Keys.ANIM_SCALE_WITH_MOVEMENT).getAsBoolean()
 					: false;
 				return new Animation(script, defines, scaleWithMovement);
 

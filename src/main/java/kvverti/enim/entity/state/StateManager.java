@@ -26,17 +26,15 @@ public class StateManager {
 
 	private final Map<String, EntityState> stateMap = new HashMap<>();
 	private final Map<String, ENIMModel> modelMap = new HashMap<>();
-//	private final Map<IProperty<?>, Comparable<?>> defaults = new HashMap<>();
 	private final ImmutableSet<String> stateNames;
 	private final Collection<IProperty<?>> properties;
 	private final BlockState stateDelegate;
 	private final Map<IBlockState, RenderState> renderStates;
 	private RenderState defaultState;
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings("unchecked")
 	public StateManager(IProperty<?>... properties) {
 
-	//	this.properties = Arrays.asList(properties.clone());
 		this.stateDelegate = new BlockState(Blocks.air, properties);
 		this.properties = (Collection) stateDelegate.getProperties();
 		this.renderStates = stateDelegate.getValidStates().stream()
@@ -72,25 +70,14 @@ public class StateManager {
 
 	public RenderState getDefaultState() {
 
-	//	RenderState res = new MutableRenderState(properties);
-	//	defaults.forEach((property, value) -> defaultStateHelper(res, property, value));
-	//	return res;
 		return defaultState;
 	}
-
-	/*private <T extends Comparable<T>>
-		void defaultStateHelper(RenderState state, IProperty<T> property, Comparable<?> value) {
-
-		state.withProperty(property, property.getValueClass().cast(value));
-	}*/
 
 	public void setDefaultState(RenderState state) {
 
 		Collection<IProperty<?>> cp = state.getPropertyNames();
 		if(!properties.containsAll(cp) || !cp.containsAll(properties))
 			throw new IllegalArgumentException("Cannot set default state, properties mismatch");
-	//	defaults.clear();
-	//	defaults.putAll(state.getProperties());
 		defaultState = state;
 	}
 
@@ -143,14 +130,14 @@ public class StateManager {
 		}
 
 		@Override
-		@SuppressWarnings("rawtypes")
+		@SuppressWarnings("unchecked")
 		public Collection<IProperty<?>> getPropertyNames() {
 
 			return (Collection) delegate.getPropertyNames();
 		}
 
 		@Override
-		@SuppressWarnings("rawtypes")
+		@SuppressWarnings("unchecked")
 		public ImmutableMap<IProperty<?>, Comparable<?>> getProperties() {
 
 			return (ImmutableMap) delegate.getProperties();
