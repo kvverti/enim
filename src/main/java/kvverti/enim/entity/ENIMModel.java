@@ -78,9 +78,9 @@ public class ENIMModel extends ModelBase {
 			box.rotateAngleX = toRadians(forms[0].x);
 			box.rotateAngleY = toRadians(forms[0].y);
 			box.rotateAngleZ = toRadians(forms[0].z);
-			box.shiftDistanceX = forms[1].x / 16.0f;
-			box.shiftDistanceY = forms[1].y / 16.0f;
-			box.shiftDistanceZ = forms[1].z / 16.0f;
+			box.shiftDistanceX = forms[1].x;
+			box.shiftDistanceY = forms[1].y;
+			box.shiftDistanceZ = forms[1].z;
 		}
 	}
 

@@ -9,7 +9,7 @@
 			"to": [11,13,4],
 			"uv": [0,9],
 			"origin": [8,5,4],
-			"rotation": [-90,0,0]
+			"rotation": [90,0,0]
 		},
 		{
 			"name": "right_wing",

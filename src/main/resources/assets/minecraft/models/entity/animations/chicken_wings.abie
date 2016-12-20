@@ -3,6 +3,6 @@ define right
 
 over 4
 {
-rotate cosine left -0 -0 -110
-rotate cosine right -0 -0 +110
+rotate cosine left  -0 -0 +110
+rotate cosine right -0 -0 -110
 }

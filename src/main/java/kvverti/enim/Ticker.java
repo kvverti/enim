@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityRabbit;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.tileentity.TileEntity;
@@ -89,6 +90,9 @@ public final class Ticker {
 			|| entity instanceof EntityRabbit     && entity.motionY > 0.10f)
 				jumpCounters.put(entity, new TickCounter(entity));
 		}
+		//because Forge doesn't send jump events for the EntitySlime class
+		if(entity.getClass() == EntitySlime.class && entity.motionY > 0.20f)
+			jumpCounters.put(entity, new TickCounter(entity));
 		TickCounter c = jumpCounters.get(entity);
 		if(c != null) {
 
@@ -161,7 +165,7 @@ public final class Ticker {
 			Entity e = entityRef.get();
 			if(e == null) //why do we still exist?
 				return 0;
-			return tickOffsetSeed + (scaled ? updateSpeedAcc() : worldTime());
+			return tickOffsetSeed + (scaled ? updateSpeedAcc(e) : worldTime());
 		}
 
 		/** Returns the tick value for the entity, optionally scaled with movement, relative to the initial time at creation. */
@@ -170,17 +174,14 @@ public final class Ticker {
 			Entity e = entityRef.get();
 			if(e == null) //why do we still exist?
 				return 0;
-			return scaled ? updateSpeedAcc() : worldTime() - initWorldTime;
+			return scaled ? updateSpeedAcc(e) : worldTime() - initWorldTime;
 		}
 
 		private int prevWorldTime;
 
 		/** Updates and accumulates the speed counter. */
-		private int updateSpeedAcc() {
+		private int updateSpeedAcc(Entity e) {
 
-			Entity e = entityRef.get();
-			if(e == null) //why do we still exist?
-				return 0;
 			int worldTime = worldTime();
 			if(worldTime - prevWorldTime > 0) {
 

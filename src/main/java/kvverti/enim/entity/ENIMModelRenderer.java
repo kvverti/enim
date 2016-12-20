@@ -80,9 +80,9 @@ public class ENIMModelRenderer extends ModelRenderer {
 			//transform element into position
 			GlStateManager.translate(offsetX, offsetY, offsetZ);
 			GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-			GlStateManager.rotate(+defaultRotations.z, 0.0f, 0.0f, 1.0f);
-			GlStateManager.rotate(+defaultRotations.y, 0.0f, 1.0f, 0.0f);
-			GlStateManager.rotate(-defaultRotations.x, 1.0f, 0.0f, 0.0f);
+			GlStateManager.rotate(-defaultRotations.z, 0.0f, 0.0f, 1.0f);
+			GlStateManager.rotate(-defaultRotations.y, 0.0f, 1.0f, 0.0f);
+			GlStateManager.rotate(+defaultRotations.x, 1.0f, 0.0f, 0.0f);
 			//apply special transformations
 			if(head) {
 
@@ -90,10 +90,10 @@ public class ENIMModelRenderer extends ModelRenderer {
 				GlStateManager.rotate(pitch, 1.0f, 0.0f, 0.0f);
 			}
 			//apply animations
-			GlStateManager.translate(shiftDistanceX, -shiftDistanceY, -shiftDistanceZ);
-			GlStateManager.rotate(+toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
-			GlStateManager.rotate(+toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
-			GlStateManager.rotate(-toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
+			GlStateManager.translate(shiftDistanceX * scale, -shiftDistanceY * scale, -shiftDistanceZ * scale);
+			GlStateManager.rotate(-toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
+			GlStateManager.rotate(-toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
+			GlStateManager.rotate(+toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
 			//render
 			if(translucent) makeLucent();
 			GlStateManager.callList(displayList());
