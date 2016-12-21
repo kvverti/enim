@@ -20,7 +20,7 @@ public final class Enim {
 
 	public static final String ID = "enim";
 	public static final String NAME = "ENIM";
-	public static final String VERSION = "dev-2016.8.22.0";
+	public static final String VERSION = "dev-2016.12.20.0";
 	//dev format: dev-year.month.day.edit
 	//release format: major.minor.fix
 
@@ -34,16 +34,18 @@ public final class Enim {
 		EnimRenderingRegistry.registerEntityRender(EntityLeashKnot.class, m -> new BasicRender<>(m, "minecraft", "lead"));
 		EnimRenderingRegistry.registerEntityRender(EntityMinecartEmpty.class, m -> new MinecartRender(m, "minecraft", "minecart"));
 		EnimRenderingRegistry.registerEntityRender(EntitySlime.class, m -> new SlimeRender(m, "minecraft", "slime"));
+		EnimRenderingRegistry.registerEntityRender(EntityMagmaCube.class, m -> new SlimeRender(m, "minecraft", "magma_cube"));
 		EnimRenderingRegistry.registerEntityRender(EntityCreeper.class, m -> new CreeperRender(m, "minecraft", "creeper"));
 		EnimRenderingRegistry.registerEntityRender(EntityRabbit.class, m -> new RabbitRender(m, "minecraft", "rabbit"));
 		EnimRenderingRegistry.registerEntityRender(EntityChicken.class, m -> new ChickenRender(m, "minecraft", "chicken"));
 		EnimRenderingRegistry.registerEntityRender(EntityBlaze.class, m -> new BasicLivingRender<>(m, "minecraft", "blaze"));
+		EnimRenderingRegistry.registerEntityRender(EntitySpider.class, m -> new BasicLivingRender<>(m, "minecraft", "spider"));
 	}
 
 	@EventHandler
 	public void init(FMLInitializationEvent e) {
 
-    		EnimRenderingRegistry.init(e);
+		EnimRenderingRegistry.init(e);
 		MinecraftForge.EVENT_BUS.register(Ticker.INSTANCE);
 		EnimRenderingRegistry.registerTileEntityRender(TileEntitySign.class, new SignRender("minecraft", "sign"));
 		EnimRenderingRegistry.registerTileEntityRender(TileEntityBanner.class, new BannerRender("minecraft", "banner"));

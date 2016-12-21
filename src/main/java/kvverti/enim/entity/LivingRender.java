@@ -5,8 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
-
-import kvverti.enim.modelsystem.EntityState;
+import net.minecraft.util.EnumChatFormatting;
 
 public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 
@@ -24,19 +23,32 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 		return !entity.isInvisible() || !entity.isInvisibleToPlayer(Entities.thePlayer());
 	}
 
-	/* Must call super.preRender(entity, state, yaw); in subclasses!! */
+	/* Must call super.preRender(entity, state, info); in subclasses!! */
 	@Override
-	public void preRender(T entity, EntityState state, float yaw) {
+	public void preRender(T entity, EntityInfo info) {
 
+		//fall over when dead
 		if(entity.deathTime > 0)
 			rotateCorpse(entity);
+		//tint red when damaged
 		if(entity.hurtTime > 0 || entity.deathTime > 0)
 			GlStateManager.color(1.0f, 0.5f, 0.5f);
+		//invisible mobs as translucent to players in creative/spectator
 		if(entity.isInvisible() && !entity.isInvisibleToPlayer(Entities.thePlayer())) {
 
 			GlStateManager.enableBlend();
 			GlStateManager.blendFunc(770, 771);
 			GlStateManager.color(1.0f, 1.0f, 1.0f, 0.25f);
+		}
+		//"Dinnerbone" or "Grumm" mobs render upside down
+		if(entity.hasCustomName()) {
+
+			String name = EnumChatFormatting.getTextWithoutFormattingCodes(entity.getName());
+			if("Grumm".equals(name) || "Dinnerbone".equals(name)) {
+
+				GlStateManager.translate(0.0f, -entity.height, 0.0f);
+				GlStateManager.rotate(180.0f, 0.0f, 0.0f, 1.0f);
+			}
 		}
 	}
 
@@ -65,9 +77,11 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 			double distanceSq = entity.getDistanceSqToEntity(renderManager.livingPlayer);
 			if(distanceSq < NAMETAG_VISIBILITY_RANGE_SQ) {
 
+				float namePos = getCurrentEntityState().model().properties().nameplate();
+				float scale = getCurrentEntityState().scale();
 				renderOffsetLivingLabel(entity,
 					x,
-					y - (entity.isChild() ? entity.height / 2.0 : 0.0),
+					y + (namePos / 16.0f) * scale - entity.height - (5.0f / 16.0f),
 					z,
 					entity.getDisplayName().getFormattedText(),
 					2.0f / 75.0f,

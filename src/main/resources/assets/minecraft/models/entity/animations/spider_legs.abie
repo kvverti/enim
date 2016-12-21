@@ -1,0 +1,20 @@
+define left1
+define left2
+define left3
+define left4
+define right1
+define right2
+define right3
+define right4
+
+over 60
+{
+rotate sine left1  -0 -10 -0
+rotate sine left2  -0 +10 -0
+rotate sine left3  -0 -10 -0
+rotate sine left4  -0 +10 -0
+rotate sine right1 -0 +10 -0
+rotate sine right2 -0 -10 -0
+rotate sine right3 -0 +10 -0
+rotate sine right4 -0 -10 -0
+}

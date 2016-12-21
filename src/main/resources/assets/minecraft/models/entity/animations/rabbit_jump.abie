@@ -5,8 +5,8 @@ define right_hind
 
 over 7
 {
-rotate cosine left_fore  +45 -0 -0
-rotate cosine right_fore +45 -0 -0
-rotate cosine left_hind  -45 -0 -0
-rotate cosine right_hind -45 -0 -0
+rotate cosine left_fore  -45 -0 -0
+rotate cosine right_fore -45 -0 -0
+rotate cosine left_hind  +45 -0 -0
+rotate cosine right_hind +45 -0 -0
 }

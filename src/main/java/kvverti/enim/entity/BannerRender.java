@@ -2,10 +2,7 @@ package kvverti.enim.entity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Set;
-import java.util.HashSet;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntityBannerRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntityBanner;
@@ -13,7 +10,6 @@ import net.minecraft.util.ResourceLocation;
 
 import kvverti.enim.Util;
 import kvverti.enim.entity.state.RenderState;
-import kvverti.enim.modelsystem.EntityState;
 
 public class BannerRender extends SignLikeRender<TileEntityBanner> {
 
@@ -47,9 +43,9 @@ public class BannerRender extends SignLikeRender<TileEntityBanner> {
 	}
 
 	@Override
-	public void preRender(TileEntityBanner tile, EntityState state) {
+	public void preRender(TileEntityBanner tile, EntityInfo info) {
 
-		setBannerTextures(state.textureFile());
+		setBannerTextures(getCurrentEntityState().texture());
 		bindTexture(bindBannerTexture(tile));
 	}
 

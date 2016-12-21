@@ -1,4 +1,4 @@
-package kvverti.enim.modelsystem;
+package kvverti.enim.abiescript;
 
 public final class Token {
 
@@ -21,14 +21,14 @@ public final class Token {
 		return type;
 	}
 
-	public static Token compile(String s) throws TokenSyntaxException {
+	public static Token compile(String s) {
 
 		TokenType ttype = TokenType.match(s);
 		if(ttype != null) {
 
 			return new Token(s, ttype);
 
-		} else throw new TokenSyntaxException("Unknown symbol: " + s, s);
+		} else throw new AbieSyntaxException("Could not resolve token: " + s);
 	}
 
 	@Override

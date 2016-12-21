@@ -1,0 +1,31 @@
+define layer0
+define layer1
+define layer2
+define layer3
+define layer4
+define layer5
+define layer6
+define layer7
+
+over 8
+{
+shift layer7 -0 +8.000 -0
+shift layer6 -0 +5.714 -0
+shift layer5 -0 +3.428 -0
+shift layer4 -0 +1.143 -0
+shift layer3 -0 -1.143 -0
+shift layer2 -0 -3.428 -0
+shift layer1 -0 -5.714 -0
+shift layer0 -0 -8.000 -0
+}
+over 15
+{
+shift layer7 -0 -8.000 -0
+shift layer6 -0 -5.714 -0
+shift layer5 -0 -3.428 -0
+shift layer4 -0 -1.143 -0
+shift layer3 -0 +1.143 -0
+shift layer2 -0 +3.428 -0
+shift layer1 -0 +5.714 -0
+shift layer0 -0 +8.000 -0
+}

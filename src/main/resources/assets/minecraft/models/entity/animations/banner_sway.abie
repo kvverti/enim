@@ -1,4 +1,4 @@
 define banner
 
 over 106
-rotate cosine banner +3.5 -0 -0
+rotate cosine banner -3.5 -0 -0

@@ -1,4 +1,7 @@
 {
+	"properties": {
+		"nameplate": 28
+	},
 	"elements": [
 		{
 			"name": "body",
@@ -50,6 +53,7 @@
 	],
 	"animations": {
 		"moving": {
+			"scaled": true,
 			"script": "quadruped_swing",
 			"with": {
 				"front_left": "front_left_foot",

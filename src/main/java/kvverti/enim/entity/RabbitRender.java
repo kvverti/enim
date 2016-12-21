@@ -2,8 +2,6 @@ package kvverti.enim.entity;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
 
 import net.minecraft.block.properties.*;
 import net.minecraft.client.renderer.entity.RenderManager;

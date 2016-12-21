@@ -1,7 +1,8 @@
-package kvverti.enim.modelsystem;
+package kvverti.enim.abiescript;
 
-import kvverti.enim.Logger;
+import kvverti.enim.Keys;
 import kvverti.enim.Util;
+import kvverti.enim.Vec3f;
 
 final class StateDefine extends Statement {
 
@@ -37,49 +38,41 @@ final class StateFreq extends Statement {
 
 final class StateRotate extends StateAneme {
 
-	private final float[] angles = new float[3];
+	private final Vec3f angles;
 
 	StateRotate(Token elem, Token atype, Token time, int angleStartIndex, Token[] tokens) {
 
 		super(StatementType.ROTATE, elem, atype, time);
+		float[] angles = new float[3];
 		for(int i = 0; i < angles.length; i++)
 			angles[i] = Float.parseFloat(tokens[i + angleStartIndex].getValue());
+		this.angles = Vec3f.of(angles[0], angles[1], angles[2]);
 	}
 
 	@Override
-	public float[] getAngles() {
+	public Vec3f[] getTransforms() {
 
-		return angles.clone();
-	}
-
-	@Override
-	public float[] getShifts() {
-
-		return new float[3];
+		return new Vec3f[] { angles, Vec3f.ORIGIN };
 	}
 }
 
 final class StateShift extends StateAneme {
 
-	private final float[] shifts = new float[3];
+	private final Vec3f shifts;
 
 	StateShift(Token elem, Token atype, Token time, int shiftStartIndex, Token[] tokens) {
 
 		super(StatementType.SHIFT, elem, atype, time);
+		float[] shifts = new float[3];
 		for(int i = 0; i < shifts.length; i++)
 			shifts[i] = Float.parseFloat(tokens[i + shiftStartIndex].getValue());
+		this.shifts = Vec3f.of(shifts[0], shifts[1], shifts[2]);
 	}
 
 	@Override
-	public float[] getAngles() {
+	public Vec3f[] getTransforms() {
 
-		return new float[3];
-	}
-
-	@Override
-	public float[] getShifts() {
-
-		return shifts.clone();
+		return new Vec3f[] { Vec3f.ORIGIN, shifts };
 	}
 }
 
@@ -179,9 +172,7 @@ abstract class StateAneme extends Statement {
 		return period;
 	}
 
-	public abstract float[] getAngles();
-
-	public abstract float[] getShifts();
+	public abstract Vec3f[] getTransforms();
 }
 
 abstract class StateFrameModifier extends Statement {

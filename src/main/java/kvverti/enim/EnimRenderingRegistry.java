@@ -1,10 +1,9 @@
 package kvverti.enim;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.function.Function;
 
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -19,11 +18,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
+import com.google.gson.JsonParseException;
+
+import kvverti.enim.abiescript.AbieParseException;
 import kvverti.enim.entity.ReloadableRender;
 import kvverti.enim.entity.Entities;
-import kvverti.enim.modelsystem.EntityJsonParser;
-import kvverti.enim.modelsystem.EntityState;
-import kvverti.enim.modelsystem.ENIMException;
+import kvverti.enim.model.EntityStateMap;
+import kvverti.enim.model.EntityModel;
 
 /**
  * Registry for ENIM related rendering features. This includes all entity and tile entity renders as well as armor items
@@ -45,7 +46,7 @@ public final class EnimRenderingRegistry {
 	 * when resource packs change, in addition to being registered with Forge. This method should be called during the
 	 * preinitialization phase.
 	 * @param <T> The type of entity
-	 * @param <R> The type of renderer
+	 * @param <R> The type of render
 	 * @param cls The entity class which will be rendered
 	 * @param factory A factory that returns a reloadable entity render with the given RenderManager
 	 */
@@ -76,6 +77,19 @@ public final class EnimRenderingRegistry {
 		registry.renders.add(render);
 	}
 
+	/*
+	 * Registers a reloadable entity renderer. Renders registered through this method will be reloaded with the game resources
+	 * when resource packs change, in addition to being registered with Forge. This method should be called during the
+	 * preinitialization phase.
+	 * @param <T> The type of entity
+	 * @param cls The entity class which will be rendered
+	 * @param factory A factory that returns a reloadable entity render with the given RenderManager
+	 */
+/*	public static <T extends Entity> void registerEntityRender(Class<T> cls, ReloadableRenderFactory<? super T> factory) {
+
+		RenderingRegistry.registerEntityRenderingHandler(cls, factory);
+	}*/
+
 	/** EventHandler - called during init phase */
 	static void init(FMLInitializationEvent e) {
 
@@ -86,23 +100,19 @@ public final class EnimRenderingRegistry {
 	private void reloadRenders(IResourceManager manager) {
 
 		Logger.info("Reloading resources...");
-		Map<String, EntityState> models = new HashMap<>();
 		for(ReloadableRender r : renders) {
 
-			try {
-				ResourceLocation estateLoc = r.getEntityStateFile();
-				EntityJsonParser parser = new EntityJsonParser(manager.getResource(estateLoc));
-				parser.parseModelLocations(r.getEntityStateNames(), models);
-				models.values().forEach(r::reloadRender);
+			ResourceLocation estateLoc = r.getEntityStateFile();
+			try(Reader rd = Util.getReaderFor(manager, estateLoc)) {
 
-			} catch(ENIMException|IOException e) {
+				EntityStateMap states = EntityModel.GSON.fromJson(rd, EntityStateMap.class);
+				r.reload(states);
 
+			} catch(JsonParseException|IOException|AbieParseException e) {
+
+				Logger.error("Exception when parsing models for " + estateLoc);
 				Logger.error(e);
 				r.setMissingno();
-
-			} finally {
-
-				models.clear();
 			}
 		}
 		Logger.info("Reload complete");

@@ -4,10 +4,10 @@ define rear_left
 define rear_right
 
 
-over 20
+over 60
 {
-rotate sine front_left  +30 -0 -0
-rotate sine rear_left   -30 -0 -0
-rotate sine front_right -30 -0 -0
-rotate sine rear_right  +30 -0 -0
+rotate sine front_left  -30 -0 -0
+rotate sine rear_left   +30 -0 -0
+rotate sine front_right +30 -0 -0
+rotate sine rear_right  -30 -0 -0
 }

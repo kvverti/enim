@@ -4,8 +4,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityMinecart;
 
-import kvverti.enim.modelsystem.EntityState;
-
 public class MinecartRender extends BasicRender<EntityMinecart> {
 
 	public MinecartRender(RenderManager manager, String modDomain, String entityStateName) {
@@ -14,17 +12,16 @@ public class MinecartRender extends BasicRender<EntityMinecart> {
 	}
 
 	@Override
-	public void preRender(EntityMinecart entity, EntityState state, float yaw) {
+	public void preRender(EntityMinecart entity, EntityInfo info) {
 
-		GlStateManager.rotate(-yaw, 0.0f, 1.0f, 0.0f);
+		GlStateManager.rotate(-info.entityYaw, 0.0f, 1.0f, 0.0f);
 		double dx = entity.posX - entity.lastTickPosX;
 		double dy = entity.posY - entity.lastTickPosY;
 		double dz = entity.posZ - entity.lastTickPosZ;
 
 		double newYaw = Math.atan2(dz, dx) * 180.0 / Math.PI;
-		yaw = newYaw == 0.0 ? entity.prevRotationYaw : (float) newYaw;
-		entity.rotationYaw = yaw;
-		GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
+		entity.rotationYaw = newYaw == 0.0 ? entity.prevRotationYaw : (float) newYaw;
+		GlStateManager.rotate(entity.rotationYaw, 0.0f, 1.0f, 0.0f);
 
 		double dydx = +Math.abs(dy / dx);
 		double dydz = -Math.abs(dy / dz);

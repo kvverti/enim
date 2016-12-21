@@ -1,4 +1,7 @@
 {
+	"properties": {
+		"nameplate": 18
+	},
 	"elements": [
 		{
 			"name": "body",
@@ -6,7 +9,7 @@
 			"to": [11,7.1,10.45],
 			"uv": [0,0],
 			"origin": [8,1,0],
-			"rotation": [20,0,0]
+			"rotation": [-20,0,0]
 		},
 		{
 			"name": "right_foot",
@@ -15,7 +18,7 @@
 			"to": [6,1,7],
 			"uv": [8,24],
 			"origin": [5,1,0],
-			"rotation": [-20,0,0]
+			"rotation": [20,0,0]
 		},
 		{
 			"name": "left_foot",
@@ -24,7 +27,7 @@
 			"to": [12,1,7],
 			"uv": [26,24],
 			"origin": [11,1,0],
-			"rotation": [-20,0,0]
+			"rotation": [20,0,0]
 		},
 		{
 			"name": "right_hindleg",
@@ -49,7 +52,7 @@
 			"to": [6,4,10.45],
 			"uv": [0,15],
 			"origin": [5,3,9.45],
-			"rotation": [-10,0,0]
+			"rotation": [10,0,0]
 		},
 		{
 			"name": "left_foreleg",
@@ -58,7 +61,7 @@
 			"to": [12,4,10.45],
 			"uv": [8,15],
 			"origin": [11,3,9.45],
-			"rotation": [-10,0,0]
+			"rotation": [10,0,0]
 		},
 		{
 			"name": "tail",
@@ -89,7 +92,7 @@
 			"to": [7.5,17,9],
 			"uv": [52,0],
 			"origin": [8,12,8],
-			"rotation": [0,-15,0]
+			"rotation": [0,15,0]
 		},
 		{
 			"name": "left_ear",
@@ -98,7 +101,7 @@
 			"to": [10.5,17,9],
 			"uv": [58,0],
 			"origin": [8,12,8],
-			"rotation": [0,15,0]
+			"rotation": [0,-15,0]
 		},
 		{
 			"name": "antennae",
@@ -107,7 +110,7 @@
 			"to": [10.5,17,12],
 			"uv": [37,9],
 			"origin": [8,12,12],
-			"rotation": [15,0,0]
+			"rotation": [-15,0,0]
 		}
 	],
 	"animations": {

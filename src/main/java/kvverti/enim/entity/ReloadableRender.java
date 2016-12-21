@@ -1,16 +1,16 @@
 package kvverti.enim.entity;
 
-import java.util.Set;
-
 import net.minecraft.util.ResourceLocation;
 
-import kvverti.enim.modelsystem.EntityState;
+import com.google.common.collect.ImmutableSet;
+
+import kvverti.enim.model.EntityStateMap;
 
 /**
  * A renderer that can be reloaded from the game resources. These renderers can be changed via resource packs. ENIM uses
  * {@code ReloadableRender}s for {@link net.minecraft.entity.Entity} and {@link net.minecraft.tileentity.TileEntity} renderers,
  * but other types of renderers may also be made reloadable. {@code ReloadableRender}s use instances of
- * {@link kvverti.enim.entity.state.RenderState} and {@link EntityState} to control their rendering properties.
+ * {@link kvverti.enim.entity.state.RenderState} and {@link kvverti.enim.model.EntityState} to control their rendering properties.
  * @see kvverti.enim.entity.state.RenderState
  * @see kvverti.enim.entity.state.StateManager
  */
@@ -28,13 +28,13 @@ public interface ReloadableRender {
 	 * {@code entitystate} file.
 	 * @return the set of state names for thsi render
 	 */
-	Set<String> getEntityStateNames();
+	ImmutableSet<String> getEntityStateNames();
 
 	/**
 	 * Reloads this render from the game resources. This enables the render's models to be changed while the game is running.
-	 * @param state the properties with which to replace a particular state
+	 * @param states the state replacements for this render
 	 */
-	void reloadRender(EntityState state);
+	void reload(EntityStateMap states);
 
 	/**
 	 * Sets this render to a default state not dependent on the game resources. Use this method when the game resources this

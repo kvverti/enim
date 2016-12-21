@@ -1,13 +1,19 @@
 package kvverti.enim;
 
+import java.io.*;
+import java.util.regex.Matcher;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.*;
 
+import net.minecraft.client.resources.IResource;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+
+import kvverti.enim.entity.Entities;
 
 /** Utility class */
 public final class Util {
@@ -30,7 +36,7 @@ public final class Util {
 		try { return (T) field.get(instance); }
 		catch(IllegalAccessException e) {
 
-			throw new AssertionError("Field was not accessible!");
+			throw unchecked(e);
 		}
 	}
 
@@ -39,7 +45,7 @@ public final class Util {
 		try { return field.getInt(instance); }
 		catch(IllegalAccessException e) {
 
-			throw new AssertionError("Field was not accessible!");
+			throw unchecked(e);
 		}
 	}
 
@@ -48,7 +54,7 @@ public final class Util {
 		try { field.set(instance, value); }
 		catch(IllegalAccessException e) {
 
-			throw new AssertionError("Field was not accessible!");
+			throw unchecked(e);
 		}
 	}
 
@@ -66,7 +72,7 @@ public final class Util {
 		try { return (T) method.invoke(instance, args); }
 		catch(IllegalAccessException e) {
 
-			throw new AssertionError("Method was not accessible!");
+			throw unchecked(e);
 		}
 	}
 
@@ -100,12 +106,6 @@ public final class Util {
 		for(E e : arr) { if(!check.test(e)) throw exc.apply(e); }
 	}
 
-	public static <E, X extends Exception>
-		void validate(Iterable<E> coll, ThrowingConsumer<? super E, X> check) throws X {
-
-		for(E e : coll) { check.acceptThrowing(e); }
-	}
-
 	public static void assertThat(boolean condition, Object message) {
 
 		if(!condition) throw new AssertionError(message);
@@ -114,6 +114,26 @@ public final class Util {
 	public static void assertFalse(Object message) {
 
 		assertThat(false, message);
+	}
+
+	public static ResourceLocation getResourceLocation(String location, String prefix, String postfix) {
+
+		Matcher m = Keys.RESOURCE_LOCATION_REGEX.matcher(location);
+		return location != null && m.matches() ?
+			new ResourceLocation(m.group("domain"), prefix + m.group("filepath") + postfix)
+			: Util.MISSING_LOCATION;
+	}
+
+	public static Reader getReaderFor(IResourceManager manager, ResourceLocation location) throws IOException {
+
+		IResource resource = manager.getResource(location);
+		InputStream istream = resource.getInputStream();
+		return new BufferedReader(new InputStreamReader(istream));
+	}
+
+	public static Reader getReaderFor(ResourceLocation location) throws IOException {
+
+		return getReaderFor(Entities.resourceManager(), location);
 	}
 
 	public static class WrappedCheckedException extends RuntimeException {
@@ -133,51 +153,9 @@ public final class Util {
 			return this;
 		}
 
-		public <X extends Throwable> X orElseWrap(Function<? super Throwable, X> cnstr) {
+		public <X extends Throwable> X orElseWrap(Function<? super Throwable, X> ctor) {
 
-			return cnstr.apply(getCause());
-		}
-	}
-
-	@FunctionalInterface
-	public interface ThrowingConsumer<T, X extends Exception> extends Consumer<T> {
-
-		void acceptThrowing(T t) throws X;
-
-		@Override
-		default void accept(T t) {
-
-			try { acceptThrowing(t); }
-			catch(Exception e) {
-
-				throw unchecked(e);
-			}
-		}
-
-		static <T> Consumer<T> of(ThrowingConsumer<T, ?> cons) {
-
-			return cons;
-		}
-	}
-
-	@FunctionalInterface
-	public interface ThrowingFunction<T, R, X extends Exception> extends Function<T, R> {
-
-		R applyThrowing(T t) throws X;
-
-		@Override
-		default R apply(T t) {
-
-			try { return applyThrowing(t); }
-			catch(Exception e) {
-
-				throw unchecked(e);
-			}
-		}
-
-		static <T, R> Function<T, R> of(ThrowingFunction<T, R, ?> func) {
-
-			return func;
+			return ctor.apply(getCause());
 		}
 	}
 }

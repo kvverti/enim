@@ -1,18 +1,13 @@
 package kvverti.enim.entity;
 
-import java.util.Set;
-import java.util.HashSet;
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiUtilRenderComponents;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.IChatComponent;
-
-import kvverti.enim.modelsystem.EntityState;
 
 public class SignRender extends SignLikeRender<TileEntitySign> {
 
@@ -22,7 +17,7 @@ public class SignRender extends SignLikeRender<TileEntitySign> {
 	}
 
 	@Override
-	public void postRender(TileEntitySign tile) {
+	public void postRender(TileEntitySign tile, EntityInfo info) {
 
 		//BEGIN MAGIC
 		FontRenderer render = this.getFontRenderer();

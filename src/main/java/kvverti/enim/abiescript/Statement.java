@@ -1,6 +1,9 @@
-package kvverti.enim.modelsystem;
+package kvverti.enim.abiescript;
 
 import java.util.Arrays;
+
+import kvverti.enim.Keys;
+import kvverti.enim.Util;
 
 public abstract class Statement {
 
@@ -16,7 +19,7 @@ public abstract class Statement {
 		return type;
 	}
 
-	public static Statement compile(String name, Token... args) throws SyntaxException {
+	public static Statement compile(String name, Token... args) {
 
 		StatementType type = getType(name, args);
 		switch(type) {
@@ -35,19 +38,18 @@ public abstract class Statement {
 			case START_FRAME: return StateStart.INSTANCE;
 			case END_FRAME: return StateEnd.INSTANCE;
 
-			default: throw new IllegalArgumentException("Unknown StatementType: " + type);
+			default: Util.assertFalse("Unknown StatementType: " + type);
+				return null; //never reached
 		}
 	}
 
-	private static StatementType getType(String name, Token[] args) throws SyntaxException {
+	private static StatementType getType(String name, Token[] args) {
 
 		StatementType[] types = StatementType.byName(name);
-		for(StatementType type : types) {
-
+		for(StatementType type : types)
 			if(validate(type, args))
 				return type;
-		}
-		throw new SyntaxException("Invalid command or syntax for " + name + " with args " + Arrays.toString(args));
+		throw new AbieSyntaxException("Invalid command or syntax for " + name + " with args " + Arrays.toString(args));
 	}
 
 	private static boolean validate(StatementType type, Token[] args) {
@@ -60,19 +62,6 @@ public abstract class Statement {
 				return false;
 		return true;
 	}
-
-	/*private static void validate(StatementType type, Token[] args) throws SyntaxException {
-
-		int flag = -1;
-		TokenType[] types = type.getTokenTypes();
-		for(int i = 0; i < types.length; i++) {
-
-			if(types[i] != args[i].getTokenType()) flag = i;
-		}
-		if(flag >= 0)
-			throw new SyntaxException("Unexpected argument type for statement " + type + ": "
-				+ "expected " + types[flag] + ", got " + args[flag]);
-	}*/
 
 	@Override
 	public String toString() {

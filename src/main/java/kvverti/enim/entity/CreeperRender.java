@@ -1,8 +1,5 @@
 package kvverti.enim.entity;
 
-import java.util.Set;
-import java.util.HashSet;
-
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.EntityCreeper;
 

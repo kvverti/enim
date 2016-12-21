@@ -1,4 +1,4 @@
-package kvverti.enim.modelsystem;
+package kvverti.enim.abiescript;
 
 import kvverti.enim.Util;
 
@@ -13,26 +13,18 @@ public final class AnimationFrame {
 		this.anemes = anemes;
 	}
 
-	public static AnimationFrame compile(StateFrameModifier modifier, Statement[] anemes) throws SyntaxException {
+	public static AnimationFrame compile(StateFrameModifier modifier, Statement[] anemes) {
 
 		StateAneme[] validAnemes = new StateAneme[anemes.length];
-		Util.validate(anemes, Statement::isAneme, state -> new SyntaxException("Not an aneme: " + state));
+		Util.validate(anemes, Statement::isAneme, state -> new AbieSyntaxException("Not an aneme: " + state));
 		System.arraycopy(anemes, 0, validAnemes, 0, anemes.length);
 		return new AnimationFrame(modifier, validAnemes);
 	}
 
 	public static AnimationFrame compilePause(int duration) {
 
-		try {
-			StateRepeat repeat = (StateRepeat)
-				Statement.compile("repeat", Token.compile(Integer.toString(duration)));
-			return new AnimationFrame(repeat, new StateAneme[0]);
-
-		  //duration was negative
-		} catch(SyntaxException e) {
-
-			throw new IllegalArgumentException(Integer.toString(duration));
-		}
+		StateRepeat repeat = (StateRepeat) Statement.compile("repeat", Token.compile(Integer.toString(duration)));
+		return new AnimationFrame(repeat, new StateAneme[0]);
 	}
 
 	public StateFrameModifier modifier() {

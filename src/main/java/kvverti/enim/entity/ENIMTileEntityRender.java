@@ -1,29 +1,24 @@
 package kvverti.enim.entity;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
-
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
+
+import com.google.common.collect.ImmutableSet;
 
 import kvverti.enim.entity.state.RenderState;
 import kvverti.enim.entity.state.StateManager;
-import kvverti.enim.modelsystem.ModelElement;
-import kvverti.enim.modelsystem.EntityState;
-import kvverti.enim.modelsystem.Keys;
+import kvverti.enim.model.EntityState;
+import kvverti.enim.model.EntityStateMap;
+import kvverti.enim.Keys;
 
 public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecialRenderer<T> implements ReloadableRender {
 
 	private final ResourceLocation entityStateFile;
 	private final StateManager stateManager;
+	private EntityState currentState;
 
 	protected ENIMTileEntityRender(String modDomain, String entityStateFile, IProperty<?>... properties) {
 
@@ -38,6 +33,11 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 		return stateManager;
 	}
 
+	protected final EntityState getCurrentEntityState() {
+
+		return currentState;
+	}
+
 	@Override
 	public final ResourceLocation getEntityStateFile() {
 
@@ -45,7 +45,7 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 	}
 
 	@Override
-	public final Set<String> getEntityStateNames() {
+	public final ImmutableSet<String> getEntityStateNames() {
 
 		return stateManager.stateStringNames();
 	}
@@ -57,24 +57,28 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 		GlStateManager.translate((float) x + 0.5f, (float) y, (float) z + 0.5f);
 		GlStateManager.rotate(180.0f, 1.0f, 0.0f, 0.0f);
 
-		EntityState state = stateManager.getState(getStateFromTile(tileEntity));
-		ENIMModel model = state.model();
-		bindTexture(state.texture());
-		GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
-		preRender(tileEntity, state);
-		model.render(tileEntity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f * state.scale());
-		postRender(tileEntity);
+		RenderState renderState = getStateFromTile(tileEntity);
+		currentState = stateManager.getState(renderState);
+		ENIMModel model = stateManager.getModel(renderState);
+		bindTexture(currentState.texture());
+		GlStateManager.rotate(currentState.y(), 0.0f, 1.0f, 0.0f);
+		EntityInfo info = new EntityInfo();
+		info.partialTicks = partialTicks;
+		info.scale = 0.0625f * currentState.scale();
+		preRender(tileEntity, info);
+		model.render(tileEntity, info);
+		postRender(tileEntity, info);
 		GlStateManager.popMatrix();
 	}
 
-	public void preRender(T tile, EntityState state) { }
+	public void preRender(T tile, EntityInfo info) { }
 
-	public void postRender(T tile) { }
+	public void postRender(T tile, EntityInfo info) { }
 
 	@Override
-	public final void reloadRender(EntityState state) {
+	public final void reload(EntityStateMap states) {
 
-		stateManager.setState(state);
+		stateManager.reloadStates(states);
 	}
 
 	@Override

@@ -1,4 +1,7 @@
 {
+	"properties": {
+		"nameplate": 30
+	},
 	"elements": [
 		{
 			"name": "head",

@@ -2,31 +2,25 @@ package kvverti.enim.entity;
 
 import java.lang.reflect.Method;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.IResource;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 
+import com.google.common.collect.ImmutableSet;
+
 import kvverti.enim.entity.state.RenderState;
 import kvverti.enim.entity.state.StateManager;
-import kvverti.enim.modelsystem.ModelElement;
-import kvverti.enim.modelsystem.EntityState;
-import kvverti.enim.modelsystem.Keys;
-import kvverti.enim.Logger;
+import kvverti.enim.model.EntityState;
+import kvverti.enim.model.EntityStateMap;
+import kvverti.enim.Keys;
 import kvverti.enim.Util;
 
 public abstract class ENIMRender<T extends Entity> extends Render<T> implements ReloadableRender {
@@ -59,6 +53,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 
 	private final ResourceLocation entityStateFile;
 	private final StateManager stateManager;
+	private EntityState currentState;
 
 	protected ENIMRender(RenderManager manager, String modDomain, String entityStateFile, IProperty<?>... properties) {
 
@@ -74,6 +69,11 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 		return stateManager;
 	}
 
+	protected final EntityState getCurrentEntityState() {
+
+		return currentState;
+	}
+
 	@Override
 	public final ResourceLocation getEntityStateFile() {
 
@@ -81,7 +81,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 	}
 
 	@Override
-	public final Set<String> getEntityStateNames() {
+	public final ImmutableSet<String> getEntityStateNames() {
 
 		return stateManager.stateStringNames();
 	}
@@ -89,42 +89,58 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 	@Override
 	public final void doRender(T entity, double x, double y, double z, float yaw, float partialTicks) {
 
-		if(shouldRender(entity)) {
+		final float VIEW_LOCK = 60.0f;
+		GlStateManager.pushMatrix();
+		GlStateManager.disableCull();
+		GlStateManager.translate((float) x, (float) y, (float) z);
+		GlStateManager.rotate(180.0f, 1.0f, 0.0f, 0.0f);
+		float diff = headYaw(entity, yaw);
+		if     (diff >  VIEW_LOCK) entity.rotationYaw = yaw += diff - VIEW_LOCK;
+		else if(diff < -VIEW_LOCK) entity.rotationYaw = yaw += diff + VIEW_LOCK;
+		GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
 
-			final float VIEW_LOCK = 60.0f;
-			GlStateManager.pushMatrix();
-			GlStateManager.translate((float) x, (float) y, (float) z);
-			GlStateManager.rotate(180.0f, 1.0f, 0.0f, 0.0f);
-			float diff = headYaw(entity, yaw);
-			if     (diff >  VIEW_LOCK) entity.rotationYaw = yaw += diff - VIEW_LOCK;
-			else if(diff < -VIEW_LOCK) entity.rotationYaw = yaw += diff + VIEW_LOCK;
-			GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
+		RenderState renderState = getStateFromEntity(entity);
+		currentState = stateManager.getState(renderState);
+		ENIMModel model = stateManager.getModel(renderState);
+		//bindEntityTexture(entity);
+		bindTexture(currentState.texture());
+		GlStateManager.rotate(currentState.y(), 0.0f, 1.0f, 0.0f);
+		EntityInfo info = new EntityInfo();
+		info.speedSq = Entities.speedSq(entity);
+		info.partialTicks = partialTicks;
+		info.entityYaw = yaw;
+		info.headYaw = headYaw(entity, yaw);
+		info.entityPitch = entity.rotationPitch;
+		info.scale = 0.0625f * currentState.scale();
+		preRender(entity, info);
+		if(shouldRender(entity))
+			model.render(entity, info);
+		//because invisibility doesn't work with your texture layers, Mojang
+		ResourceLocation overlay = currentState.overlay();
+		if(overlay != null) {
 
-			EntityState state = stateManager.getState(getStateFromEntity(entity));
-			ENIMModel model = state.model();
-			bindEntityTexture(entity);
-			GlStateManager.rotate(state.rotation(), 0.0f, 1.0f, 0.0f);
-			preRender(entity, state, yaw);
-			model.render(entity,
-				speed(entity),
-				yaw,
-				partialTicks,
-				headYaw(entity, yaw),
-				entity.rotationPitch,
-				0.0625f * state.scale());
-			postRender(entity);
-			GlStateManager.popMatrix();
+			bindTexture(overlay);
+			GlStateManager.enableBlend();
+			GlStateManager.disableAlpha();
+			GlStateManager.blendFunc(1, 1);
+			//begin magic
+			GlStateManager.depthMask(!entity.isInvisible());
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0f0, 0.0f);
+			//end magic
+			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+			model.render(entity, info);
+			//begin magic
+			int brightness = entity.getBrightnessForRender(partialTicks);
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightness % 0x10000, brightness / 0x10000);
+			//end magic
+			GlStateManager.disableBlend();
+			GlStateManager.enableAlpha();
 		}
+		postRender(entity, info);
+		GlStateManager.popMatrix();
 		super.doRender(entity, x, y, z, yaw, partialTicks);
 		if(entity instanceof EntityLiving)
 			Util.invokeUnchecked(proxy, renderLeash, entity, x, y, z, yaw, partialTicks);
-	}
-
-	private float speed(Entity entity) {
-
-		double dx = entity.posX - entity.lastTickPosX;
-		double dz = entity.posZ - entity.lastTickPosZ;
-		return (float) Math.sqrt(dx * dx + dz * dz);
 	}
 
 	private float headYaw(Entity entity, float bodyYaw) {
@@ -134,9 +150,9 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 
 	public boolean shouldRender(T entity) { return true; }
 
-	public void preRender(T entity, EntityState state, float yaw) { }
+	public void preRender(T entity, EntityInfo info) { }
 
-	public void postRender(T entity) { }
+	public void postRender(T entity, EntityInfo info) { }
 
 	@Override
 	protected final ResourceLocation getEntityTexture(T entity) {
@@ -145,9 +161,9 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 	}
 
 	@Override
-	public final void reloadRender(EntityState state) {
+	public final void reload(EntityStateMap states) {
 
-		stateManager.setState(state);
+		stateManager.reloadStates(states);
 	}
 
 	@Override
