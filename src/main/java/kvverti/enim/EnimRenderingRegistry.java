@@ -77,19 +77,6 @@ public final class EnimRenderingRegistry {
 		registry.renders.add(render);
 	}
 
-	/*
-	 * Registers a reloadable entity renderer. Renders registered through this method will be reloaded with the game resources
-	 * when resource packs change, in addition to being registered with Forge. This method should be called during the
-	 * preinitialization phase.
-	 * @param <T> The type of entity
-	 * @param cls The entity class which will be rendered
-	 * @param factory A factory that returns a reloadable entity render with the given RenderManager
-	 */
-/*	public static <T extends Entity> void registerEntityRender(Class<T> cls, ReloadableRenderFactory<? super T> factory) {
-
-		RenderingRegistry.registerEntityRenderingHandler(cls, factory);
-	}*/
-
 	/** EventHandler - called during init phase */
 	static void init(FMLInitializationEvent e) {
 

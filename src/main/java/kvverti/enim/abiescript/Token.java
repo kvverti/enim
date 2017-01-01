@@ -16,6 +16,16 @@ public final class Token {
 		return value;
 	}
 
+	public float getFloatValue() {
+
+		return Float.parseFloat(value);
+	}
+
+	public int getIntValue() {
+
+		return Integer.parseInt(value);
+	}
+
 	public TokenType getTokenType() {
 
 		return type;

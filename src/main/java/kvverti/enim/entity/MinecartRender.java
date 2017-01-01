@@ -3,6 +3,7 @@ package kvverti.enim.entity;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.util.math.Vec3d;
 
 public class MinecartRender extends BasicRender<EntityMinecart> {
 
@@ -11,25 +12,37 @@ public class MinecartRender extends BasicRender<EntityMinecart> {
 		super(manager, modDomain, entityStateName);
 	}
 
+	/** Modified from RenderMinecart#doRender */
 	@Override
-	public void preRender(EntityMinecart entity, EntityInfo info) {
+	protected void preRender(EntityMinecart entity, EntityInfo info) {
 
+		super.preRender(entity, info);
 		GlStateManager.rotate(-info.entityYaw, 0.0f, 1.0f, 0.0f);
-		double dx = entity.posX - entity.lastTickPosX;
-		double dy = entity.posY - entity.lastTickPosY;
-		double dz = entity.posZ - entity.lastTickPosZ;
+		double dx = Entities.interpolate((float) entity.lastTickPosX, (float) entity.posX, info.partialTicks);
+		double dy = Entities.interpolate((float) entity.lastTickPosY, (float) entity.posY, info.partialTicks);
+		double dz = Entities.interpolate((float) entity.lastTickPosZ, (float) entity.posZ, info.partialTicks);
+		Vec3d fallback = entity.getPos(dx, dy, dz);
+		if(fallback != null) {
 
-		double newYaw = Math.atan2(dz, dx) * 180.0 / Math.PI;
-		entity.rotationYaw = newYaw == 0.0 ? entity.prevRotationYaw : (float) newYaw;
-		GlStateManager.rotate(entity.rotationYaw, 0.0f, 1.0f, 0.0f);
+			final double MAGIC = 0.3;
+			Vec3d weightedMax = entity.getPosOffset(dx, dy, dz, MAGIC);
+			Vec3d weightedMin = entity.getPosOffset(dx, dy, dz, -MAGIC);
+			if(weightedMax == null)
+				weightedMax = fallback;
+			if(weightedMin == null)
+				weightedMin = fallback;
+			Vec3d rotation = weightedMin.addVector(-weightedMax.xCoord, -weightedMax.yCoord, -weightedMax.zCoord);
+			if(rotation.lengthVector() != 0.0) {
 
-		double dydx = +Math.abs(dy / dx);
-		double dydz = -Math.abs(dy / dz);
-		boolean dxGreater = Math.abs(dx) > Math.abs(dz);
-		double newPitch = Math.atan(dxGreater ? dydx : dydz) * 180.0 / Math.PI;
-		if(Double.isNaN(newPitch)) newPitch = entity.prevRotationPitch;
-		if(dxGreater && dy < 0 || !dxGreater && dy > 0) newPitch = -newPitch;
-		entity.rotationPitch = (float) newPitch;
-		GlStateManager.rotate((float) -newPitch, 0.0f, 0.0f, 1.0f);
+				info.entityYaw = Entities.toDegrees((float) Math.atan2(rotation.zCoord, rotation.xCoord));
+				info.entityPitch = (float) (Math.atan(rotation.yCoord) * 73.0);
+			}
+		}
+		GlStateManager.rotate(info.entityYaw, 0.0f, 1.0f, 0.0f);
+		GlStateManager.rotate(-info.entityPitch, 0.0f, 0.0f, 1.0f);
+		float roll = (float) entity.getRollingAmplitude() - info.partialTicks;
+		float damage = Math.max(0.0f, entity.getDamage() - info.partialTicks);
+		if(roll > 0.0f)
+			GlStateManager.rotate((float) Math.sin(roll) * roll * (damage / 10.0f) * (float) entity.getRollingDirection(), 1.0f, 0.0f, 0.0f);
 	}
 }

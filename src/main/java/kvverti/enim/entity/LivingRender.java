@@ -2,10 +2,11 @@ package kvverti.enim.entity;
 
 import net.minecraft.block.properties.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 
@@ -25,8 +26,9 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 
 	/* Must call super.preRender(entity, state, info); in subclasses!! */
 	@Override
-	public void preRender(T entity, EntityInfo info) {
+	protected void preRender(T entity, EntityInfo info) {
 
+		super.preRender(entity, info);
 		//fall over when dead
 		if(entity.deathTime > 0)
 			rotateCorpse(entity);
@@ -43,7 +45,7 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 		//"Dinnerbone" or "Grumm" mobs render upside down
 		if(entity.hasCustomName()) {
 
-			String name = EnumChatFormatting.getTextWithoutFormattingCodes(entity.getName());
+			String name = TextFormatting.getTextWithoutFormattingCodes(entity.getName());
 			if("Grumm".equals(name) || "Dinnerbone".equals(name)) {
 
 				GlStateManager.translate(0.0f, -entity.height, 0.0f);
@@ -64,9 +66,9 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 
 		return entity.hasCustomName() &&
 			Minecraft.isGuiEnabled() &&
-			entity != renderManager.livingPlayer &&
+			entity != renderManager.renderViewEntity &&
 			!entity.isInvisibleToPlayer(Entities.thePlayer()) &&
-			entity.riddenByEntity == null;
+			entity.getPassengers().isEmpty();
 	}
 
 	@Override
@@ -74,18 +76,21 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 
 		if(canRenderName(entity)) {
 
-			double distanceSq = entity.getDistanceSqToEntity(renderManager.livingPlayer);
+			double distanceSq = entity.getDistanceSqToEntity(renderManager.renderViewEntity);
 			if(distanceSq < NAMETAG_VISIBILITY_RANGE_SQ) {
 
 				float namePos = getCurrentEntityState().model().properties().nameplate();
-				float scale = getCurrentEntityState().scale();
-				renderOffsetLivingLabel(entity,
-					x,
-					y + (namePos / 16.0f) * scale - entity.height - (5.0f / 16.0f),
-					z,
+				float scale = 0.0625f * getCurrentEntityState().scale();
+				EntityRenderer.drawNameplate(getFontRendererFromRenderManager(),
 					entity.getDisplayName().getFormattedText(),
-					2.0f / 75.0f,
-					distanceSq);
+					(float) x,
+					(float) y + namePos * scale + (3.0f / 16.0f),
+					(float) z,
+					0,
+					renderManager.playerViewY,
+					renderManager.playerViewX,
+					renderManager.options.thirdPersonView == 2,
+					entity.isSneaking());
 			}
 		}
 	}

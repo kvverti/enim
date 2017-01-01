@@ -73,11 +73,11 @@ public final class Entities {
 
 	public static EntityPlayerSP thePlayer() {
 
-		return Minecraft.getMinecraft().thePlayer;
+		return Minecraft.getMinecraft().player;
 	}
 
 	public static WorldClient theWorld() {
 
-		return Minecraft.getMinecraft().theWorld;
+		return Minecraft.getMinecraft().world;
 	}
 }

@@ -1,0 +1,30 @@
+define body
+define neck
+define head
+define tail1
+define tail2
+define tail3
+define tail4
+
+over 7
+{
+shift  sine +1 -0.125 head +0.5 -0 -0
+rotate sine +1 -0.125 head -0  -10 -0
+
+shift  sine +1 -0 neck +0.5 -0 -0
+rotate sine +1 -0 neck -0  -10 -0
+
+rotate sine +1 -0.25 body -0 +10 -0
+
+shift  sine +1 -0 tail1 +0.5 -0 -0
+rotate sine +1 -0 tail1 -0  +10 -0
+
+shift  sine +1 +0.083 tail2 +0.5 -0 -0
+rotate sine +1 +0.083 tail2 -0  +10 -0
+
+shift  sine +1 +0.167 tail3 +0.5 -0 -0
+rotate sine +1 +0.167 tail3 -0  +10 -0
+
+shift  sine +1 +0.25 tail4 +0.5 -0 -0
+rotate sine +1 +0.25 tail4 -0  +10 -0
+}

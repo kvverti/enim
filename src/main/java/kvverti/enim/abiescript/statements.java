@@ -1,5 +1,9 @@
 package kvverti.enim.abiescript;
 
+import java.util.function.DoubleUnaryOperator;
+
+import com.google.common.collect.ImmutableMap;
+
 import kvverti.enim.Keys;
 import kvverti.enim.Util;
 import kvverti.enim.Vec3f;
@@ -40,13 +44,30 @@ final class StateRotate extends StateAneme {
 
 	private final Vec3f angles;
 
-	StateRotate(Token elem, Token atype, Token time, int angleStartIndex, Token[] tokens) {
+	private StateRotate(String atype, float time, float offset, String elem, float x, float y, float z) {
 
-		super(StatementType.ROTATE, elem, atype, time);
-		float[] angles = new float[3];
-		for(int i = 0; i < angles.length; i++)
-			angles[i] = Float.parseFloat(tokens[i + angleStartIndex].getValue());
-		this.angles = Vec3f.of(angles[0], angles[1], angles[2]);
+		super(StatementType.ROTATE, atype, time, offset, elem);
+		this.angles = Vec3f.of(x, y, z);
+	}
+
+	StateRotate(Token atype, Token time, Token offset, Token elem, Token x, Token y, Token z) {
+
+		this(atype.getValue(), time.getFloatValue(), offset.getFloatValue(), elem.getValue(), x.getFloatValue(), y.getFloatValue(), z.getFloatValue());
+	}
+
+	StateRotate(Token atype, Token time, Token elem, Token x, Token y, Token z) {
+
+		this(atype.getValue(), time.getFloatValue(), 0.0f, elem.getValue(), x.getFloatValue(), y.getFloatValue(), z.getFloatValue());
+	}
+
+	StateRotate(Token atype, Token elem, Token x, Token y, Token z) {
+
+		this(atype.getValue(), 1.0f, 0.0f, elem.getValue(), x.getFloatValue(), y.getFloatValue(), z.getFloatValue());
+	}
+
+	StateRotate(Token elem, Token x, Token y, Token z) {
+
+		this("linear", 1.0f, 0.0f, elem.getValue(), x.getFloatValue(), y.getFloatValue(), z.getFloatValue());
 	}
 
 	@Override
@@ -60,13 +81,30 @@ final class StateShift extends StateAneme {
 
 	private final Vec3f shifts;
 
-	StateShift(Token elem, Token atype, Token time, int shiftStartIndex, Token[] tokens) {
+	private StateShift(String atype, float time, float offset, String elem, float x, float y, float z) {
 
-		super(StatementType.SHIFT, elem, atype, time);
-		float[] shifts = new float[3];
-		for(int i = 0; i < shifts.length; i++)
-			shifts[i] = Float.parseFloat(tokens[i + shiftStartIndex].getValue());
-		this.shifts = Vec3f.of(shifts[0], shifts[1], shifts[2]);
+		super(StatementType.SHIFT, atype, time, offset, elem);
+		this.shifts = Vec3f.of(x, y, z);
+	}
+
+	StateShift(Token atype, Token time, Token offset, Token elem, Token x, Token y, Token z) {
+
+		this(atype.getValue(), time.getFloatValue(), offset.getFloatValue(), elem.getValue(), x.getFloatValue(), y.getFloatValue(), z.getFloatValue());
+	}
+
+	StateShift(Token atype, Token time, Token elem, Token x, Token y, Token z) {
+
+		this(atype.getValue(), time.getFloatValue(), 0.0f, elem.getValue(), x.getFloatValue(), y.getFloatValue(), z.getFloatValue());
+	}
+
+	StateShift(Token atype, Token elem, Token x, Token y, Token z) {
+
+		this(atype.getValue(), 1.0f, 0.0f, elem.getValue(), x.getFloatValue(), y.getFloatValue(), z.getFloatValue());
+	}
+
+	StateShift(Token elem, Token x, Token y, Token z) {
+
+		this("linear", 1.0f, 0.0f, elem.getValue(), x.getFloatValue(), y.getFloatValue(), z.getFloatValue());
 	}
 
 	@Override
@@ -130,25 +168,30 @@ final class StateEnd extends Statement {
 
 abstract class StateAneme extends Statement {
 
-	private final int angleType;
-	private final int period;
-	private final String element;
+	/** Primitive specialization of BiFunction for double parameters and returning DoubleUnaryOperator. */
+	@FunctionalInterface
+	private interface AnemeTransformation { DoubleUnaryOperator apply(double a, double b); }
 
-	StateAneme(StatementType type, Token elem, Token aType, Token time) {
+	/**
+	 * Factories for functions of the form dx = f(ωt + φ), where t ranges 0 <= t <= 1.
+	 * The results are multiplied by the amplitude Δx corresponding to values in {@link #getTransforms()}.
+	 * Thus, the complete transformation is given by dx = Δxf(ωt + φ).
+	 */
+	private static final ImmutableMap<String, AnemeTransformation> functionFactories =
+		ImmutableMap.<String, AnemeTransformation>builder()
+		.put(Keys.ABIE_KEY_LINEAR, (ω, φ) -> t -> ω * t + φ)
+		.put(Keys.ABIE_KEY_SINE, (ω, φ) -> t -> Math.sin(2.0 * Math.PI * (ω * t + φ)))
+		.put(Keys.ABIE_KEY_COSINE, (ω, φ) -> t -> 0.5 * (1.0 - Math.cos(2.0 * Math.PI * (ω * t + φ))))
+		.build();
+
+	private final String element;
+	private final DoubleUnaryOperator function;
+
+	StateAneme(StatementType type, String aType, float time, float offset, String elem) {
 
 		super(type);
-		period = Integer.parseInt(time.getValue());
-		element = elem.getValue();
-		switch(aType.getValue()) {
-
-			case Keys.ABIE_KEY_SINE: angleType = 1;
-				break;
-			case Keys.ABIE_KEY_COSINE: angleType = 2;
-				break;
-			default: Util.assertFalse("Unexpected angle type: " + aType.getValue());
-			case Keys.ABIE_KEY_LINEAR: angleType = 0;
-				break;
-		}
+		element = elem;
+		function = functionFactories.get(aType).apply(time, offset);
 	}
 
 	@Override
@@ -162,14 +205,9 @@ abstract class StateAneme extends Statement {
 		return element;
 	}
 
-	public int getAngleType() {
+	public DoubleUnaryOperator getTransformationFunction() {
 
-		return angleType;
-	}
-
-	public int getRelativePeriod() {
-
-		return period;
+		return function;
 	}
 
 	public abstract Vec3f[] getTransforms();
@@ -177,16 +215,16 @@ abstract class StateAneme extends Statement {
 
 abstract class StateFrameModifier extends Statement {
 
-	private final String modifier;
+	private final Token modifier;
 
 	StateFrameModifier(StatementType t, Token... ts) {
 
 		super(t);
-		modifier = ts[0].getValue();
+		modifier = ts[0];
 	}
 
 	public int getIntModifier() {
 
-		return Integer.parseInt(modifier);
+		return modifier.getIntValue();
 	}
 }

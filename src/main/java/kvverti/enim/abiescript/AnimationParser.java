@@ -219,51 +219,22 @@ public class AnimationParser {
 
 			for(StateAneme aneme : animFrame.anemes()) {
 
-				Vec3f[] start = prevFrame.get(aneme.getSpecifiedElement());
 				Vec3f[] original = prevCopy.get(aneme.getSpecifiedElement());
-				Vec3f[] angles = start.clone();
+				Vec3f[] angles = prevFrame.get(aneme.getSpecifiedElement()).clone();
 				Vec3f[] trans = aneme.getTransforms();
-				int atype = aneme.getAngleType();
-				float time = (float) n * aneme.getRelativePeriod() / duration;
+				float ft = (float) aneme.getTransformationFunction().applyAsDouble((float) n / duration);
 				float x, y, z;
-				x = trans[0].x != 0.0f ? selectHelper(atype, original[0].x, original[0].x + trans[0].x, time) : angles[0].x;
-				y = trans[0].y != 0.0f ? selectHelper(atype, original[0].y, original[0].y + trans[0].y, time) : angles[0].y;
-				z = trans[0].z != 0.0f ? selectHelper(atype, original[0].z, original[0].z + trans[0].z, time) : angles[0].z;
+				x = trans[0].x == 0.0f ? angles[0].x : original[0].x + trans[0].x * ft;
+				y = trans[0].y == 0.0f ? angles[0].y : original[0].y + trans[0].y * ft;
+				z = trans[0].z == 0.0f ? angles[0].z : original[0].z + trans[0].z * ft;
 				angles[0] = Vec3f.of(x, y, z);
-				x = trans[1].x != 0.0f ? selectHelper(atype, original[1].x, original[1].x + trans[1].x, time) : angles[1].x;
-				y = trans[1].y != 0.0f ? selectHelper(atype, original[1].y, original[1].y + trans[1].y, time) : angles[1].y;
-				z = trans[1].z != 0.0f ? selectHelper(atype, original[1].z, original[1].z + trans[1].z, time) : angles[1].z;
+				x = trans[1].x == 0.0f ? angles[1].x : original[1].x + trans[1].x * ft;
+				y = trans[1].y == 0.0f ? angles[1].y : original[1].y + trans[1].y * ft;
+				z = trans[1].z == 0.0f ? angles[1].z : original[1].z + trans[1].z * ft;
 				angles[1] = Vec3f.of(x, y, z);
 				prevFrame.put(aneme.getSpecifiedElement(), angles);
 			}
 			frames.add(new AbieScript.Frame(new HashMap<>(prevFrame)));
 		}
-	}
-
-	private static float selectHelper(int type, float start, float end, float percent) {
-
-		switch(type) {
-
-			case 0: return interpolate(start, end, percent);
-			case 1: return interpolateSine(start, end, percent);
-			case 2: return interpolateCosine(start, end, percent);
-			default: Util.assertFalse("Unknown angle type");
-				return 0; //never reached
-		}
-	}
-
-	private static float interpolate(float start, float end, float percent) {
-
-		return start + percent * (end - start);
-	}
-
-	private static float interpolateSine(float start, float end, float percent) {
-
-		return start + (float) Math.sin(percent * 2.0 * Math.PI) * (end - start);
-	}
-
-	private static float interpolateCosine(float start, float end, float percent) {
-
-		return start + (float) (1.0 - Math.cos(percent * 2.0 * Math.PI)) * 0.5f * (end - start);
 	}
 }

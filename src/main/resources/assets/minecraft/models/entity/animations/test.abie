@@ -3,7 +3,7 @@ define elem
 freq 40
 
 {
-shift sine 2 elem -0 +8 -0
+shift sine +2 elem -0 +8 -0
 shift sine elem -0 -0 +16
 }
 #shift linear elem -0 -16 -0

@@ -20,7 +20,7 @@ public final class Enim {
 
 	public static final String ID = "enim";
 	public static final String NAME = "ENIM";
-	public static final String VERSION = "dev-2016.12.20.0";
+	public static final String VERSION = "dev-2016.12.31.0";
 	//dev format: dev-year.month.day.edit
 	//release format: major.minor.fix
 
@@ -30,7 +30,7 @@ public final class Enim {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
 
-		EnimRenderingRegistry.registerEntityRender(EntityBoat.class, m -> new BasicRender<>(m, "minecraft", "boat"));
+	//	EnimRenderingRegistry.registerEntityRender(EntityBoat.class, m -> new BoatRender(m, "minecraft", "boat"));
 		EnimRenderingRegistry.registerEntityRender(EntityLeashKnot.class, m -> new BasicRender<>(m, "minecraft", "lead"));
 		EnimRenderingRegistry.registerEntityRender(EntityMinecartEmpty.class, m -> new MinecartRender(m, "minecraft", "minecart"));
 		EnimRenderingRegistry.registerEntityRender(EntitySlime.class, m -> new SlimeRender(m, "minecraft", "slime"));
@@ -40,6 +40,8 @@ public final class Enim {
 		EnimRenderingRegistry.registerEntityRender(EntityChicken.class, m -> new ChickenRender(m, "minecraft", "chicken"));
 		EnimRenderingRegistry.registerEntityRender(EntityBlaze.class, m -> new BasicLivingRender<>(m, "minecraft", "blaze"));
 		EnimRenderingRegistry.registerEntityRender(EntitySpider.class, m -> new BasicLivingRender<>(m, "minecraft", "spider"));
+		EnimRenderingRegistry.registerEntityRender(EntityCaveSpider.class, m -> new BasicLivingRender<>(m, "minecraft", "cave_spider"));
+		EnimRenderingRegistry.registerEntityRender(EntitySilverfish.class, m -> new BasicLivingRender<>(m, "minecraft", "silverfish"));
 	}
 
 	@EventHandler
@@ -54,6 +56,5 @@ public final class Enim {
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent e) {
 
-		//Entities.initTicker();
 	}
 }

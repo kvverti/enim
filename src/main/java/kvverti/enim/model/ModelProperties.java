@@ -13,6 +13,9 @@ public class ModelProperties {
 	@SerializedName(Keys.PROP_NAMETAG_ORIGIN)
 	private final float nameplateBase;
 
+	@SerializedName(Keys.PROP_SHADOW_SIZE)
+	private final float shadowSize;
+
 	@SerializedName(Keys.PROP_HELD_ITEM_ORIGIN_LEFT)
 	private final OriginPoint heldItemLeft;
 
@@ -23,6 +26,7 @@ public class ModelProperties {
 	private ModelProperties() {
 
 		nameplateBase = 0.0f;
+		shadowSize = 0.0f;
 		heldItemLeft = OriginPoint.DEFAULT;
 		heldItemRight = OriginPoint.DEFAULT;
 	}
@@ -32,6 +36,11 @@ public class ModelProperties {
 	 * of the nameplate in pixel units.
 	 */
 	public float nameplate() { return nameplateBase; }
+
+	/**
+	 * The radius of the model's shadow in pixel units. Living entities will render the shadow at this size.
+	 */
+	public float shadowSize() { return shadowSize; }
 
 	/**
 	 * The position of the entity's left hand. Items held in the left hand will be rendered at this position and will move with the

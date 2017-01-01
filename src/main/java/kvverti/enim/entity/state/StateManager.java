@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 
@@ -28,14 +28,14 @@ public class StateManager {
 	private final Map<String, ENIMModel> modelMap = new HashMap<>();
 	private final ImmutableSet<String> stateNames;
 	private final Collection<IProperty<?>> properties;
-	private final BlockState stateDelegate;
+	private final BlockStateContainer stateDelegate;
 	private final Map<IBlockState, RenderState> renderStates;
 	private RenderState defaultState;
 
 	@SuppressWarnings("unchecked")
 	public StateManager(IProperty<?>... properties) {
 
-		this.stateDelegate = new BlockState(Blocks.air, properties);
+		this.stateDelegate = new BlockStateContainer(Blocks.AIR, properties);
 		this.properties = (Collection) stateDelegate.getProperties();
 		this.renderStates = stateDelegate.getValidStates().stream()
 			.collect(toMap(Function.identity(), BlockForwardingRenderState::new));
@@ -133,7 +133,7 @@ public class StateManager {
 		@SuppressWarnings("unchecked")
 		public Collection<IProperty<?>> getPropertyNames() {
 
-			return (Collection) delegate.getPropertyNames();
+			return (Collection) delegate.getPropertyKeys();
 		}
 
 		@Override

@@ -7,7 +7,7 @@ define layer5
 define layer6
 define layer7
 
-over 8
+over 4
 {
 shift layer7 -0 +8.000 -0
 shift layer6 -0 +5.714 -0

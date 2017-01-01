@@ -1,4 +1,7 @@
 {
+	"properties": {
+		"shadowsize": 8
+	},
 	"elements": [
 		{
 			"name": "base",

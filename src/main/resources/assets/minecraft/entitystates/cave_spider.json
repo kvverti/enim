@@ -1,0 +1,5 @@
+{
+	"states": {
+		"normal": { "model": "spider", "texture": "entity/spider/cave_spider", "overlay": "entity/spider_eyes", "size": [64,32], "scale": 0.7 }
+	}
+}

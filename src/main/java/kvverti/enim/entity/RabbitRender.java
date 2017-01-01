@@ -6,7 +6,7 @@ import java.util.HashMap;
 import net.minecraft.block.properties.*;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.passive.EntityRabbit;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 import kvverti.enim.entity.state.EnumStringSerializable;
 import kvverti.enim.entity.state.RenderState;
@@ -23,7 +23,7 @@ public class RabbitRender extends LivingRender<EntityRabbit> {
 	@Override
 	public RenderState getStateFromEntity(EntityRabbit entity) {
 
-		String name = EnumChatFormatting.getTextWithoutFormattingCodes(entity.getName());
+		String name = TextFormatting.getTextWithoutFormattingCodes(entity.getName());
 		RabbitType type = "Toast".equals(name) ? RabbitType.TOAST
 			: "Eclipse".equals(name) ? RabbitType.ECLIPSE
 			: RabbitType.fromNbt(entity.getRabbitType());

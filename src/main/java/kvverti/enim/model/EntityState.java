@@ -71,18 +71,8 @@ public class EntityState {
 	/** Binds a texture dynamically. This is needed because the texture may be reloaded many times over the course of a game session. */
 	private static ResourceLocation bindTexture(ResourceLocation loc) {
 
-		try(InputStream istream = Entities.resourceManager().getResource(loc).getInputStream()) {
-
-			ResourceLocation tex = Entities.textureManager().getDynamicTextureLocation(
-				"enim_entity_texture", new DynamicTexture(ImageIO.read(istream)));
-			Entities.textureManager().bindTexture(tex);
-			return tex;
-
-		} catch(IOException e) {
-
-			Logger.error("Could not bind texture for " + loc);
-			return loc;
-		}
+		Entities.textureManager().bindTexture(loc);
+		return loc;
 	}
 
 	/* For use by EntityStateMap */

@@ -1,6 +1,7 @@
 {
 	"properties": {
-		"nameplate": 15
+		"nameplate": 15,
+		"shadowsize": 16
 	},
 	"elements": [
 		{

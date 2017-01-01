@@ -71,9 +71,9 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 		GlStateManager.popMatrix();
 	}
 
-	public void preRender(T tile, EntityInfo info) { }
+	protected void preRender(T tile, EntityInfo info) { }
 
-	public void postRender(T tile, EntityInfo info) { }
+	protected void postRender(T tile, EntityInfo info) { }
 
 	@Override
 	public final void reload(EntityStateMap states) {

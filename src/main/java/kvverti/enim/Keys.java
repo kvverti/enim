@@ -9,6 +9,7 @@ public final class Keys {
 	public static final String PROPERTIES_TAG = "properties";
 //	public static final String PROP_BOUNDING_BOX = "bounds";
 	public static final String PROP_NAMETAG_ORIGIN = "nameplate";
+	public static final String PROP_SHADOW_SIZE = "shadowsize";
 	public static final String PROP_HELD_ITEM_ORIGIN_RIGHT = "righthand";
 	public static final String PROP_HELD_ITEM_ORIGIN_LEFT = "lefthand";
 	public static final String PROP_META_PARENT = "element";

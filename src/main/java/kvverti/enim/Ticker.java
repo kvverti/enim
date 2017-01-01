@@ -50,7 +50,7 @@ public final class Ticker {
 	@SubscribeEvent
 	public void onLivingJump(LivingJumpEvent event) {
 
-		jumpCounters.put(event.entityLiving, new TickCounter(event.entityLiving));
+		jumpCounters.put(event.getEntityLiving(), new TickCounter(event.getEntityLiving()));
 	}
 
 	/**
@@ -60,7 +60,7 @@ public final class Ticker {
 	@SubscribeEvent
 	public void onLivingSetAttackTarget(LivingSetAttackTargetEvent event) {
 
-		attackTargetFlags.computeIfAbsent(event.entityLiving, e -> new AtomicBoolean()).set(event.target != null);
+		attackTargetFlags.computeIfAbsent(event.getEntityLiving(), e -> new AtomicBoolean()).set(event.getTarget() != null);
 	}
 
 	/** Returns the global tick counter for the given entity, optionally scaled for speed */

@@ -26,7 +26,7 @@ public class SlimeRender extends LivingRender<EntitySlime> {
 	}
 
 	@Override
-	public void preRender(EntitySlime entity, EntityInfo info) {
+	protected void preRender(EntitySlime entity, EntityInfo info) {
 
 		super.preRender(entity, info);
 		float squish = 2.0f / (2.0f + entity.squishFactor);
