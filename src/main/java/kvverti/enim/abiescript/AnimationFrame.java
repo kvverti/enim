@@ -13,12 +13,9 @@ public final class AnimationFrame {
 		this.anemes = anemes;
 	}
 
-	public static AnimationFrame compile(StateFrameModifier modifier, Statement[] anemes) {
+	public static AnimationFrame compile(StateFrameModifier modifier, StateAneme[] anemes) {
 
-		StateAneme[] validAnemes = new StateAneme[anemes.length];
-		Util.validate(anemes, Statement::isAneme, state -> new AbieSyntaxException("Not an aneme: " + state));
-		System.arraycopy(anemes, 0, validAnemes, 0, anemes.length);
-		return new AnimationFrame(modifier, validAnemes);
+		return new AnimationFrame(modifier, anemes);
 	}
 
 	public static AnimationFrame compilePause(int duration) {

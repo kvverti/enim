@@ -25,8 +25,13 @@ group = "kvverti.enim" // http://maven.apache.org/guides/mini/guide-naming-conve
 archivesBaseName = "enim-1.11"
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
-compileJava.options.encoding = "UTF-8"
-compileJava.options.compilerArgs = ["-Xlint:deprecation", "-Xlint:unchecked"]
+compileJava {
+	options.encoding = "UTF-8"
+	options.compilerArgs = ["-Xlint:all,-serial,-auxiliaryclass"]
+}
+runClient {
+	jvmArgs = ["-ea:kvverti.enim..."]
+}
 
 minecraft {
     version = "1.11-13.19.1.2189"

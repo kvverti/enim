@@ -25,8 +25,8 @@ public final class Util {
 	public static Field findField(Class<?> declareClass, Class<?> returnType, String... names) {
 
 		Field f = ReflectionHelper.findField(declareClass, names);
-		assertThat(f.getType() == returnType,
-			String.format("Type of field %s was %s, expected %s", f, f.getType(), returnType));
+		assert f.getType() == returnType
+			: String.format("Type of field %s was %s, expected %s", f, f.getType(), returnType);
 		return f;
 	}
 
@@ -61,8 +61,8 @@ public final class Util {
 	public static <T> Method findMethod(Class<T> declareClass, Class<?> returnType, String[] names, Class<?>... params) {
 
 		Method m = ReflectionHelper.findMethod(declareClass, null, names, params);
-		assertThat(m.getReturnType() == returnType,
-			String.format("Type of method %s was %s, expected %s", m, m.getReturnType(), returnType));
+		assert m.getReturnType() == returnType
+			: String.format("Type of method %s was %s, expected %s", m, m.getReturnType(), returnType);
 		return m;
 	}
 
@@ -104,16 +104,6 @@ public final class Util {
 		void validate(E[] arr, Predicate<? super E> check, Function<? super E, X> exc) throws X {
 
 		for(E e : arr) { if(!check.test(e)) throw exc.apply(e); }
-	}
-
-	public static void assertThat(boolean condition, Object message) {
-
-		if(!condition) throw new AssertionError(message);
-	}
-
-	public static void assertFalse(Object message) {
-
-		assertThat(false, message);
 	}
 
 	public static ResourceLocation getResourceLocation(String location, String prefix, String postfix) {

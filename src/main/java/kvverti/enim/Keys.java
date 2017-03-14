@@ -41,6 +41,7 @@ public final class Keys {
 	public static final String ABIE_KEY_FREQ = "freq";
 	public static final String ABIE_KEY_REPEAT = "repeat";
 	public static final String ABIE_KEY_OVER = "over";
+	public static final String ABIE_KEY_INIT = "init";
 	public static final String ABIE_KEY_SHIFT = "shift";
 	public static final String ABIE_KEY_ROTATE = "rotate";
 	public static final String ABIE_KEY_PAUSE = "pause";

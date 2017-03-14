@@ -2,9 +2,6 @@ package kvverti.enim.abiescript;
 
 import java.util.Arrays;
 
-import kvverti.enim.Keys;
-import kvverti.enim.Util;
-
 public abstract class Statement {
 
 	private final StatementType type;
@@ -36,12 +33,13 @@ public abstract class Statement {
 			case SHIFT_NOTIME: return new StateShift(args[0], args[1], args[2], args[3], args[4]);
 			case PAUSE: return new StatePause(args);
 			case REPEAT: return new StateRepeat(args);
+			case INIT: return StateInit.INSTANCE;
 			case OVER: return new StateOver(args);
-			case START_FRAME: return StateStart.INSTANCE;
-			case END_FRAME: return StateEnd.INSTANCE;
+			case START_FRAME: return StateMarker.START;
+			case END_FRAME: return StateMarker.END;
 
-			default: Util.assertFalse("Unknown StatementType: " + type);
-				return null; //never reached
+			default:
+				throw new AssertionError("Unknown StatementType: " + type);
 		}
 	}
 

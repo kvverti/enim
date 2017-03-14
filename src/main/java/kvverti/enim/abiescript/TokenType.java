@@ -15,6 +15,7 @@ public enum TokenType {
 	             + "|" + Keys.ABIE_KEY_PAUSE
 	             + "|" + Keys.ABIE_KEY_REPEAT
 	             + "|" + Keys.ABIE_KEY_OVER
+				 + "|" + Keys.ABIE_KEY_INIT
 	             + "|" + "\\{"
 	             + "|" + "\\}"),
 	ANGLE_TYPE          (Keys.ABIE_KEY_LINEAR + "|" + Keys.ABIE_KEY_SINE + "|" + Keys.ABIE_KEY_COSINE),

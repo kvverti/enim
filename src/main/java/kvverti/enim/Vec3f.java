@@ -1,6 +1,7 @@
 package kvverti.enim;
 
 import java.util.Objects;
+import java.util.function.DoubleUnaryOperator;
 import java.io.IOException;
 
 import com.google.gson.TypeAdapter;
@@ -49,6 +50,27 @@ public final class Vec3f {
 	private static boolean equalsOrNaN(float f1, float f2) {
 
 		return Float.isNaN(f1) ? Float.isNaN(f2) : f1 == f2;
+	}
+
+	public Vec3f add(Vec3f other) {
+
+		return Vec3f.of(x + other.x, y + other.y, z + other.z);
+	}
+
+	public Vec3f scale(float scalar) {
+
+		return Vec3f.of(x * scalar, y * scalar, z * scalar);
+	}
+
+	/** Pairwise scaling */
+	public Vec3f scale(Vec3f other) {
+
+		return Vec3f.of(x * other.x, y * other.y, z * other.z);
+	}
+
+	public Vec3f map(DoubleUnaryOperator mapper) {
+
+		return Vec3f.of((float) mapper.applyAsDouble(x), (float) mapper.applyAsDouble(y), (float) mapper.applyAsDouble(z));
 	}
 
 	@Override

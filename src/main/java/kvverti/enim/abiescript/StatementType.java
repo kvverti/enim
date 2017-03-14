@@ -22,6 +22,7 @@ public enum StatementType {
 	PAUSE            (Keys.ABIE_KEY_PAUSE, UNSIGNED_INTEGER),
 	REPEAT           (Keys.ABIE_KEY_REPEAT, UNSIGNED_INTEGER),
 	OVER             (Keys.ABIE_KEY_OVER, UNSIGNED_INTEGER),
+	INIT             (Keys.ABIE_KEY_INIT),
 	START_FRAME      ("{"),
 	END_FRAME        ("}");
 

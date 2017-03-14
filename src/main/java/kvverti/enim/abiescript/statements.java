@@ -146,23 +146,24 @@ final class StateOver extends StateFrameModifier {
 	}
 }
 
-final class StateStart extends Statement {
+final class StateInit extends StateFrameModifier {
 
-	public static final StateStart INSTANCE = new StateStart();
+	public static final StateInit INSTANCE = new StateInit();
 
-	private StateStart() {
+	private StateInit() {
 
-		super(StatementType.START_FRAME);
+		super(StatementType.INIT, (Token) null);
 	}
 }
 
-final class StateEnd extends Statement {
+final class StateMarker extends Statement {
 
-	public static final StateEnd INSTANCE = new StateEnd();
+	public static final StateMarker START = new StateMarker(StatementType.START_FRAME);
+	public static final StateMarker END = new StateMarker(StatementType.END_FRAME);
 
-	private StateEnd() {
+	private StateMarker(StatementType type) {
 
-		super(StatementType.END_FRAME);
+		super(type);
 	}
 }
 
@@ -173,9 +174,9 @@ abstract class StateAneme extends Statement {
 	private interface AnemeTransformation { DoubleUnaryOperator apply(double a, double b); }
 
 	/**
-	 * Factories for functions of the form dx = f(ωt + φ), where t ranges 0 <= t <= 1.
+	 * Factories for functions of the form f(t) = T(ωt + φ), where t ranges 0 <= t <= 1.
 	 * The results are multiplied by the amplitude Δx corresponding to values in {@link #getTransforms()}.
-	 * Thus, the complete transformation is given by dx = Δxf(ωt + φ).
+	 * Thus, the complete transformation is given by dx = Δxf(t).
 	 */
 	private static final ImmutableMap<String, AnemeTransformation> functionFactories =
 		ImmutableMap.<String, AnemeTransformation>builder()
