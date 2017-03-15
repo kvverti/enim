@@ -189,7 +189,7 @@ public class AnimationParser {
 		if(s.getStatementType() == StatementType.INIT) {
 
 			itr.remove();
-			return getCompoundFrame(itr);
+			return getModifierFrame((StateFrameModifier) s, itr);
 		}
 		return AnimationFrame.compile(null, ANEME_ARR);
 	}
@@ -249,7 +249,8 @@ public class AnimationParser {
 
 		List<AbieScript.Frame> frameList = new ArrayList<>();
 		Map<String, Vec3f[]> frameMap = new HashMap<>();
-		defines.forEach(define -> frameMap.put(define, new Vec3f[] { Vec3f.ORIGIN, Vec3f.ORIGIN }));
+		for(String define : defines)
+			frameMap.put(define, new Vec3f[] { Vec3f.ORIGIN, Vec3f.ORIGIN });
 		fillInit(init, frameMap);
 		for(AnimationFrame frame : frames) {
 
@@ -328,17 +329,17 @@ public class AnimationParser {
 
 		for(StateAneme aneme : frame.anemes()) {
 
-			Vec3f[] angles = new Vec3f[2];
+			Vec3f[] angles = frameMap.get(aneme.getSpecifiedElement()).clone();
 			Vec3f[] trans = aneme.getTransforms();
 			float ft = (float) aneme.getTransformationFunction().applyAsDouble(1.0);
 			float x, y, z;
-			x = trans[0].x * ft;
-			y = trans[0].y * ft;
-			z = trans[0].z * ft;
+			x = trans[0].x == 0.0f ? angles[0].x : trans[0].x * ft;
+			y = trans[0].y == 0.0f ? angles[0].y : trans[0].y * ft;
+			z = trans[0].z == 0.0f ? angles[0].z : trans[0].z * ft;
 			angles[0] = Vec3f.of(x, y, z);
-			x = trans[1].x * ft;
-			y = trans[1].y * ft;
-			z = trans[1].z * ft;
+			x = trans[1].x == 0.0f ? angles[1].x : trans[1].x * ft;
+			y = trans[1].y == 0.0f ? angles[1].y : trans[1].y * ft;
+			z = trans[1].z == 0.0f ? angles[1].z : trans[1].z * ft;
 			angles[1] = Vec3f.of(x, y, z);
 			frameMap.put(aneme.getSpecifiedElement(), angles);
 		}

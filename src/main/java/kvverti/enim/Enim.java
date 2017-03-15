@@ -42,6 +42,7 @@ public final class Enim {
 		EnimRenderingRegistry.registerEntityRender(EntitySpider.class, m -> new BasicLivingRender<>(m, "minecraft", "spider"));
 		EnimRenderingRegistry.registerEntityRender(EntityCaveSpider.class, m -> new BasicLivingRender<>(m, "minecraft", "cave_spider"));
 		EnimRenderingRegistry.registerEntityRender(EntitySilverfish.class, m -> new BasicLivingRender<>(m, "minecraft", "silverfish"));
+		EnimRenderingRegistry.registerEntityRender(EntityBat.class, m -> new BasicLivingRender<>(m, "minecraft", "bat"));
 	}
 
 	@EventHandler
