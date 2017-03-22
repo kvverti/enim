@@ -7,9 +7,9 @@ import net.minecraft.util.math.Vec3d;
 
 public class MinecartRender extends BasicRender<EntityMinecart> {
 
-	public MinecartRender(RenderManager manager, String modDomain, String entityStateName) {
+	public MinecartRender(RenderManager manager) {
 
-		super(manager, modDomain, entityStateName);
+		super(manager);
 	}
 
 	/** Modified from RenderMinecart#doRender */

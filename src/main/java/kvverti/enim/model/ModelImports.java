@@ -15,12 +15,13 @@ import com.google.gson.reflect.TypeToken;
 
 import kvverti.enim.Keys;
 import kvverti.enim.Util;
+import kvverti.enim.entity.animation.AnimType;
 
 /** Class corresponding to the {@value Keys#IMPORTS_TAG} tag of an entity model */
 class ModelImports {
 
 	public final Set<ModelElement> elements;
-	public final Map<Animation.Type, Animation> animations;
+	public final Map<AnimType, Animation> animations;
 
 	/** For Json deserialization */
 	public ModelImports() { elements = new HashSet<>(); animations = new HashMap<>(); }
@@ -35,7 +36,7 @@ class ModelImports {
 	public static class Deserializer implements JsonDeserializer<ModelImports> {
 
 		private static final Type elementsType = new TypeToken<Set<ModelElement>>(){}.getType();
-		private static final Type animationsType = new TypeToken<Map<Animation.Type, Animation>>(){}.getType();
+		private static final Type animationsType = new TypeToken<Map<AnimType, Animation>>(){}.getType();
 
 		@Override
 		public ModelImports deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
@@ -61,7 +62,7 @@ class ModelImports {
 							if(isAnimation) res.animations.putAll(context.deserialize(animations, animationsType));
 							else res.elements.addAll(context.deserialize(elements, elementsType));
 						else	if(isAnimation) res.animations.put(
-								context.deserialize(new JsonPrimitive(str), Animation.Type.class),
+								context.deserialize(new JsonPrimitive(str), AnimType.class),
 								context.deserialize(animations.get(str), Animation.class));
 							else res.elements.add(context.deserialize(getElement(str, elements), ModelElement.class));
 					}

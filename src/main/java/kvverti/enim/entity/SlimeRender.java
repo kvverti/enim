@@ -11,9 +11,9 @@ public class SlimeRender extends LivingRender<EntitySlime> {
 
 	public static final IProperty<Integer> SLIME_SIZE = PropertyInteger.create("size", 0, 3);
 
-	public SlimeRender(RenderManager manager, String modDomain, String entityStateFile) {
+	public SlimeRender(RenderManager manager) {
 
-		super(manager, modDomain, entityStateFile, SLIME_SIZE);
+		super(manager, SLIME_SIZE);
 	}
 
 	@Override

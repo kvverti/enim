@@ -2,8 +2,10 @@ package kvverti.enim;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.Map;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -23,8 +25,12 @@ import com.google.gson.JsonParseException;
 import kvverti.enim.abiescript.AbieParseException;
 import kvverti.enim.entity.ReloadableRender;
 import kvverti.enim.entity.Entities;
+import kvverti.enim.entity.EntityInfo;
+import kvverti.enim.model.Animation;
 import kvverti.enim.model.EntityStateMap;
 import kvverti.enim.model.EntityModel;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Registry for ENIM related rendering features. This includes all entity and tile entity renders as well as armor items
@@ -36,7 +42,7 @@ public final class EnimRenderingRegistry {
 	private static final EnimRenderingRegistry registry = new EnimRenderingRegistry();
 
 	/** Stores all registered renders so they can be reloaded */
-	private final Collection<ReloadableRender> renders = new HashSet<>(20);
+	private final Map<ResourceLocation, ReloadableRender> renders = new HashMap<>(20);
 
 	/** Construction disallowed */
 	private EnimRenderingRegistry() { }
@@ -51,12 +57,15 @@ public final class EnimRenderingRegistry {
 	 * @param factory A factory that returns a reloadable entity render with the given RenderManager
 	 */
 	public static <T extends Entity, R extends Render<? super T> & ReloadableRender>
-		void registerEntityRender(Class<T> cls, Function<? super RenderManager, ? extends R> factory) {
+		void registerEntityRender(Class<T> cls, String modDomain, String entityId, Function<? super RenderManager, ? extends R> factory) {
 
+		checkNotNull(modDomain);
+		checkNotNull(entityId);
+		checkNotNull(factory);
 		RenderingRegistry.registerEntityRenderingHandler(cls, manager -> {
 
-			R r = factory.apply(manager);
-			registry.renders.add(r);
+			R r = checkNotNull(factory.apply(manager));
+			registry.renders.put(new ResourceLocation(modDomain, Keys.STATES_DIR + entityId + Keys.JSON), r);
 			return r;
 		});
 	}
@@ -71,10 +80,13 @@ public final class EnimRenderingRegistry {
 	 * @param render The renderer
 	 */
 	public static <T extends TileEntity, R extends TileEntitySpecialRenderer<? super T> & ReloadableRender>
-		void registerTileEntityRender(Class<T> cls, R render) {
+		void registerTileEntityRender(Class<T> cls, String modDomain, String entityId, R render) {
 
+		checkNotNull(modDomain);
+		checkNotNull(entityId);
+		checkNotNull(render);
 		ClientRegistry.bindTileEntitySpecialRenderer(cls, render);
-		registry.renders.add(render);
+		registry.renders.put(new ResourceLocation(modDomain, Keys.STATES_DIR + entityId + Keys.JSON), render);
 	}
 
 	/** EventHandler - called during init phase */
@@ -87,19 +99,19 @@ public final class EnimRenderingRegistry {
 	private void reloadRenders(IResourceManager manager) {
 
 		Logger.info("Reloading resources...");
-		for(ReloadableRender r : renders) {
+		for(Map.Entry<ResourceLocation, ReloadableRender> entry : renders.entrySet()) {
 
-			ResourceLocation estateLoc = r.getEntityStateFile();
+			ResourceLocation estateLoc = entry.getKey();
 			try(Reader rd = Util.getReaderFor(manager, estateLoc)) {
 
 				EntityStateMap states = EntityModel.GSON.fromJson(rd, EntityStateMap.class);
-				r.reload(states);
+				entry.getValue().reload(states);
 
 			} catch(JsonParseException|IOException|AbieParseException e) {
 
 				Logger.error("Exception when parsing models for " + estateLoc);
 				Logger.error(e);
-				r.setMissingno();
+				entry.getValue().setMissingno();
 			}
 		}
 		Logger.info("Reload complete");

@@ -59,14 +59,12 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 
 	public static final ResourceLocation SHADOW_TEXTURE = new ResourceLocation("minecraft:textures/misc/shadow.png");
 
-	private final ResourceLocation entityStateFile;
 	private final StateManager stateManager;
 	private EntityState currentState;
 
-	protected ENIMRender(RenderManager manager, String modDomain, String entityStateFile, IProperty<?>... properties) {
+	protected ENIMRender(RenderManager manager, IProperty<?>... properties) {
 
 		super(manager);
-		this.entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateFile + Keys.JSON);
 		this.stateManager = new StateManager(properties);
 	}
 
@@ -80,18 +78,6 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 	protected final EntityState getCurrentEntityState() {
 
 		return currentState;
-	}
-
-	@Override
-	public final ResourceLocation getEntityStateFile() {
-
-		return entityStateFile;
-	}
-
-	@Override
-	public final ImmutableSet<String> getEntityStateNames() {
-
-		return stateManager.stateStringNames();
 	}
 
 	@Override

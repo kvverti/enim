@@ -14,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 
 import kvverti.enim.Keys;
 import kvverti.enim.Vec3f;
+import kvverti.enim.entity.animation.AnimType;
 
 /** Class corresponding to entity Json models */
 public class EntityModel {
@@ -26,6 +27,7 @@ public class EntityModel {
 		.registerTypeAdapter(Vec3f.class, new Vec3f.Adapter().nullSafe())
 		.registerTypeAdapter(ModelImports.class, new ModelImports.Deserializer())
 		.registerTypeAdapter(Animation.class, new Animation.Deserializer())
+		.registerTypeAdapter(AnimType.class, new AnimType.Adapter().nullSafe())
 		.registerTypeAdapter(EntityState.class, new EntityState.Deserializer())
 		.registerTypeAdapter(EntityStateMap.class, new EntityStateMap.Deserializer())
 		.registerTypeAdapter(EntityModel.class, new EntityModel.Deserializer())
@@ -48,10 +50,10 @@ public class EntityModel {
 	private final ModelProperties properties;
 	private final ImmutableSet<ModelElement> elements;
 	private final ImmutableMap<String, ModelElement> elementMap;
-	private final ImmutableMap<Animation.Type, Animation> animations;
+	private final ImmutableMap<AnimType, Animation> animations;
 
 	/** For Json deserialization */
-	private EntityModel(ModelProperties properties, Set<ModelElement> elements, Map<Animation.Type, Animation> animations) {
+	private EntityModel(ModelProperties properties, Set<ModelElement> elements, Map<AnimType, Animation> animations) {
 
 		this.properties = properties;
 		this.elements = ImmutableSet.copyOf(elements);
@@ -85,7 +87,7 @@ public class EntityModel {
 	 * @return an immutable map containing this model's animations
 	 * @see Animation
 	 */
-	public ImmutableMap<Animation.Type, Animation> animations() { return animations; }
+	public ImmutableMap<AnimType, Animation> animations() { return animations; }
 
 	/**
 	 * Returns the element in this model with the given name. The name must match exactly with an element in this model. To get all
@@ -114,7 +116,7 @@ public class EntityModel {
 	public static class Deserializer implements JsonDeserializer<EntityModel> {
 
 		private static final Type elementsType = new TypeToken<Set<ModelElement>>(){}.getType();
-		private static final Type animsType = new TypeToken<Map<Animation.Type, Animation>>(){}.getType();
+		private static final Type animsType = new TypeToken<Map<AnimType, Animation>>(){}.getType();
 		private static final Type overridesType = new TypeToken<Map<String, ModelElement.Override>>(){}.getType();
 
 		@Override
@@ -128,7 +130,7 @@ public class EntityModel {
 			Set<ModelElement> elements = obj.has(Keys.ELEMENTS_TAG) ?
 				context.deserialize(obj.get(Keys.ELEMENTS_TAG), elementsType)
 				: new HashSet<>();
-			Map<Animation.Type, Animation> animations = obj.has(Keys.ANIMS_TAG) ?
+			Map<AnimType, Animation> animations = obj.has(Keys.ANIMS_TAG) ?
 				context.deserialize(obj.get(Keys.ANIMS_TAG), animsType)
 				: new HashMap<>();
 
@@ -137,7 +139,7 @@ public class EntityModel {
 
 				ModelImports imports = context.deserialize(obj.get(Keys.IMPORTS_TAG), ModelImports.class);
 				elements.addAll(imports.elements);
-				for(Map.Entry<Animation.Type, Animation> entry : imports.animations.entrySet())
+				for(Map.Entry<AnimType, Animation> entry : imports.animations.entrySet())
 					animations.putIfAbsent(entry.getKey(), entry.getValue());
 			}
 			if(obj.has(Keys.ELEMENTS_OVERRIDES)) {

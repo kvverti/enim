@@ -1,0 +1,19 @@
+define head
+define body
+define lwing
+define lwing_ext
+define rwing
+define rwing_ext
+
+init
+{
+rotate head -0 -0 +180
+rotate body -30 -0 -0
+rotate lwing -0 +73 +5
+shift lwing -4 -0 -0
+rotate lwing_ext -0 +95 -0
+rotate rwing -0 +73 +5
+shift rwing -4 -0 -0
+rotate rwing_ext -0 +95 -0
+}
+pause 1

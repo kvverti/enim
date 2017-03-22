@@ -18,9 +18,9 @@ public class SignLikeRender<T extends TileEntity> extends ENIMTileEntityRender<T
 
 	private final Block floorBlock;
 
-	public SignLikeRender(String modDomain, String entityStateFile, Block floor) {
+	public SignLikeRender(Block floor) {
 
-		super(modDomain, entityStateFile, ROTATION);
+		super(ROTATION);
 		floorBlock = floor;
 	}
 

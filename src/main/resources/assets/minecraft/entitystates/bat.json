@@ -1,0 +1,5 @@
+{
+	"states": {
+		"normal": { "model": "bat", "texture": "entity/bat", "size": [64,64] }
+	}
+}

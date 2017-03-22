@@ -7,9 +7,9 @@ import kvverti.enim.entity.state.RenderState;
 
 public class ChickenRender extends LivingRender<EntityChicken> {
 
-	public ChickenRender(RenderManager manager, String modDomain, String entityStateFile) {
+	public ChickenRender(RenderManager manager) {
 
-		super(manager, modDomain, entityStateFile, BABY);
+		super(manager, BABY);
 	}
 
 	@Override

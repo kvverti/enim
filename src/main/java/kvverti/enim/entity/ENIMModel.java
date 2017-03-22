@@ -2,7 +2,7 @@ package kvverti.enim.entity;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.function.ToIntBiFunction;
@@ -13,6 +13,9 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.tileentity.TileEntity;
 
 import kvverti.enim.abiescript.AbieScript;
+import kvverti.enim.entity.animation.AnimType;
+import kvverti.enim.entity.animation.EntityFrameTimers;
+import kvverti.enim.entity.animation.MinecraftAnimTypes;
 import kvverti.enim.model.EntityModel;
 import kvverti.enim.model.Animation;
 import kvverti.enim.model.ModelElement;
@@ -28,7 +31,7 @@ public class ENIMModel extends ModelBase {
 	private final Map<String, ENIMModelRenderer> boxes = new HashMap<>();
 	private final List<ENIMModelRenderer> opaques = new ArrayList<>();
 	private final List<ENIMModelRenderer> lucents = new ArrayList<>();
-	private final Map<Animation.Type, Animation> anims = new EnumMap<>(Animation.Type.class);
+	private final Map<AnimType, Animation> anims = new LinkedHashMap<>();
 
 	public void render(Entity entity, EntityInfo info) {
 
@@ -50,27 +53,28 @@ public class ENIMModel extends ModelBase {
 
 	public void setRotationAngles(Entity entity, EntityInfo info) {
 
-		//kvverti.enim.Logger.info("Time: %d", randomCounterFor(entity));
-		//kvverti.enim.Logger.info("Tick: %f", info.partialTicks);
-		//kvverti.enim.Logger.info("Speed mult: %f", scalarFromSpeed(info.speedSq));
 		resetAngles(info.headYaw, info.entityPitch);
-		animateLooping(entity, info, Animation.Type.IDLE, true);
-		animateLooping(entity, info, Animation.Type.MOVE, info.speedSq > 0.0025f);
-		animateLooping(entity, info, Animation.Type.AIR, !entity.isInWater() && !entity.onGround);
-		animateLooping(entity, info, Animation.Type.SWIM, entity.isInWater() && !entity.onGround);
-		animateLooping(entity, info, Animation.Type.TRACK, hasAttackTarget(entity));
-		animateNoLooping(entity, info, Animation.Type.JUMP, Entities::jumpTime);
+		for(Map.Entry<AnimType, Animation> entry : anims.entrySet()) {
+
+			AnimType type = entry.getKey();
+			Animation anim = entry.getValue();
+			//cases where we do special things
+			if(type.isLooped() && type.shouldAnimate(entity, info))
+				animateLooping(type, entity, info, anim);
+			else if(!type.isLooped())
+				animateNoLooping(type, entity, info, anim);
+		}
 	}
 
 	public void setRotationAngles(TileEntity tile, EntityInfo info) {
 
 		resetAngles(info.headYaw, info.entityPitch);
-		animateLooping(tile, info, Animation.Type.IDLE, true);
+		animateLooping(tile, info, MinecraftAnimTypes.IDLE, true);
 	}
 
-	private void setAnglesHelper(Animation anim, int frame) {
+	private void setAnglesHelper(Animation anim, int frame, float partialTicks) {
 
-		AbieScript.Frame f = anim.frame(frame);
+		AbieScript.Frame f = anim.frame(frame, partialTicks);
 		for(String define : anim.defines()) {
 
 			Vec3f[] forms = f.getTransforms(define);
@@ -84,44 +88,44 @@ public class ENIMModel extends ModelBase {
 		}
 	}
 
-	private void animateLooping(Entity entity, EntityInfo info, Animation.Type type, boolean predicate) {
+	private void animateLooping(AnimType type, Entity entity, EntityInfo info, Animation anim) {
 
-		if(anims.containsKey(type) && predicate) {
-
-			Animation anim = anims.get(type);
-			int frame = frameWithInterpolation(randomCounterFor(entity, anim.shouldScaleWithMovement()), info.partialTicks);
-			frame = (frame & Integer.MAX_VALUE) % anim.frameCount();
-			//kvverti.enim.Logger.info("Frame: %d", frame);
-			setAnglesHelper(anim, frame);
-		}
+		int frame = (EntityFrameTimers.timeValue(type, entity, anim.shouldScaleWithMovement())
+			& Integer.MAX_VALUE) % anim.frameCount();
+		//kvverti.enim.Logger.info("Frame: %d", frame);
+		setAnglesHelper(anim, frame, info.partialTicks);
 	}
 
-	private void animateLooping(TileEntity tile, EntityInfo info, Animation.Type type, boolean predicate) {
+	private void animateLooping(TileEntity tile, EntityInfo info, AnimType type, boolean predicate) {
 
 		if(anims.containsKey(type) && predicate) {
 
 			Animation anim = anims.get(type);
-			int frame = frameWithInterpolation(randomCounterFor(tile), info.partialTicks) % anim.frameCount();
+			int frame = randomCounterFor(tile) % anim.frameCount();
 			if(frame < 0) frame += anim.frameCount();
-			setAnglesHelper(anim, frame);
+			setAnglesHelper(anim, frame, info.partialTicks);
 		}
 	}
 
-	private void animateNoLooping(Entity entity, EntityInfo info, Animation.Type type, ToIntBiFunction<Entity, Boolean> frameFunc) {
+	private void animateNoLooping(AnimType type, Entity entity, EntityInfo info, Animation anim) {
+
+		if(type.shouldAnimate(entity, info))
+			EntityFrameTimers.restart(type, entity);
+		int frame = EntityFrameTimers.timeValue(type, entity, anim.shouldScaleWithMovement());
+		if(frame >= 0 && frame < anim.frameCount())
+			setAnglesHelper(anim, frame, info.partialTicks);
+	}
+
+	@Deprecated
+	private void animateNoLooping(Entity entity, EntityInfo info, AnimType type, ToIntBiFunction<Entity, Boolean> frameFunc) {
 
 		if(anims.containsKey(type)) {
 
 			Animation anim = anims.get(type);
-			int frame = frameWithInterpolation(frameFunc.applyAsInt(entity, anim.shouldScaleWithMovement()), info.partialTicks);
+			int frame = frameFunc.applyAsInt(entity, anim.shouldScaleWithMovement());
 			if(frame >= 0 && frame < anim.frameCount())
-				setAnglesHelper(anim, frame);
+				setAnglesHelper(anim, frame, info.partialTicks);
 		}
-	}
-
-	private int frameWithInterpolation(int original, float percent) {
-
-		//important: must do integer overflow
-		return original * Keys.INTERPOLATION_TICKS + (int) (percent * Keys.INTERPOLATION_TICKS);
 	}
 
 	private void resetAngles(float headYaw, float pitch) {

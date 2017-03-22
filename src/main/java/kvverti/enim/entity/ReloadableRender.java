@@ -17,20 +17,6 @@ import kvverti.enim.model.EntityStateMap;
 public interface ReloadableRender {
 
 	/**
-	 * Returns the file that associates the client models with render states. This file is in the JSON format and follows the
-	 * requirements for an {@code entitystate} file.
-	 * @return the location of this render's entity state file
-	 */
-	ResourceLocation getEntityStateFile();
-
-	/**
-	 * Returns the set of state names for this render. These are a fixed set of state names that are used as the keys in the
-	 * {@code entitystate} file.
-	 * @return the set of state names for thsi render
-	 */
-	ImmutableSet<String> getEntityStateNames();
-
-	/**
 	 * Reloads this render from the game resources. This enables the render's models to be changed while the game is running.
 	 * @param states the state replacements for this render
 	 */

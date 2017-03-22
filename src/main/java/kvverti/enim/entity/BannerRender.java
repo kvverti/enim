@@ -15,9 +15,9 @@ public class BannerRender extends SignLikeRender<TileEntityBanner> {
 
 	private final TextureByStateCache textureCache = new TextureByStateCache("banner", 255, 5000);
 
-	public BannerRender(String modDomain, String entityStateFile) {
+	public BannerRender() {
 
-		super(modDomain, entityStateFile, Blocks.STANDING_BANNER);
+		super(Blocks.STANDING_BANNER);
 	}
 
 	@Override

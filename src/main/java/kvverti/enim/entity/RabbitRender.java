@@ -15,9 +15,9 @@ public class RabbitRender extends LivingRender<EntityRabbit> {
 
 	public static final IProperty<RabbitType> RABBIT_TYPE = PropertyEnum.create("type", RabbitType.class);
 
-	public RabbitRender(RenderManager manager, String modDomain, String entityStateFile) {
+	public RabbitRender(RenderManager manager) {
 
-		super(manager, modDomain, entityStateFile, RABBIT_TYPE, BABY);
+		super(manager, RABBIT_TYPE, BABY);
 	}
 
 	@Override

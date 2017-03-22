@@ -6,9 +6,9 @@ import net.minecraft.entity.item.EntityBoat;
 
 public class BoatRender extends BasicRender<EntityBoat> {
 
-	public BoatRender(RenderManager manager, String modDomain, String entityStateFile) {
+	public BoatRender(RenderManager manager) {
 
-		super(manager, modDomain, entityStateFile);
+		super(manager);
 	}
 
 	/** Modified from RenderBoat#doRender */

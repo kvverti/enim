@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.client.resources.IResource;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import com.google.gson.annotations.SerializedName;
 
 import kvverti.enim.Keys;
 import kvverti.enim.Util;
@@ -43,31 +43,15 @@ public class Animation {
 
 	public boolean shouldScaleWithMovement() { return scaleWithMovement; }
 
-	public AbieScript.Frame frame(int frame) {
+	public AbieScript.Frame frame(int frame, float partial) {
 
-		return script.frame(frame);
+		return script.frame(frame, partial);
 	}
 
 	@Override
 	public String toString() {
 
 		return "scaled: " + scaleWithMovement + ", elements: " + defines + ", script: [" + script + "]";
-	}
-
-	/** The conditions under which an animation may play */
-	public enum Type {
-
-		//These are arranged in increasing order of precedence
-		@SerializedName("idle") IDLE,
-		@SerializedName("moving") MOVE,
-		@SerializedName("airborne") AIR,
-		@SerializedName("swimming") SWIM,
-		@SerializedName("tracking") TRACK,
-		@SerializedName("jump") JUMP,
-		@SerializedName("attack") ATTACK,
-		@SerializedName("damage") DAMAGE,
-		@SerializedName("greeting") GREET,
-		@SerializedName("parting") PART
 	}
 
 	/** The Json deserializer for instances of {@code Animation}. */

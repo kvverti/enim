@@ -7,9 +7,9 @@ import kvverti.enim.entity.state.RenderState;
 
 public class BasicLivingRender<T extends EntityLivingBase> extends LivingRender<T> {
 
-	public BasicLivingRender(RenderManager manager, String modDomain, String entityStateFile) {
+	public BasicLivingRender(RenderManager manager) {
 
-		super(manager, modDomain, entityStateFile);
+		super(manager);
 	}
 
 	@Override

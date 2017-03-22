@@ -16,13 +16,11 @@ import kvverti.enim.Keys;
 
 public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecialRenderer<T> implements ReloadableRender {
 
-	private final ResourceLocation entityStateFile;
 	private final StateManager stateManager;
 	private EntityState currentState;
 
-	protected ENIMTileEntityRender(String modDomain, String entityStateFile, IProperty<?>... properties) {
+	protected ENIMTileEntityRender(IProperty<?>... properties) {
 
-		this.entityStateFile = new ResourceLocation(modDomain, Keys.STATES_DIR + entityStateFile + Keys.JSON);
 		this.stateManager = new StateManager(properties);
 	}
 
@@ -36,18 +34,6 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 	protected final EntityState getCurrentEntityState() {
 
 		return currentState;
-	}
-
-	@Override
-	public final ResourceLocation getEntityStateFile() {
-
-		return entityStateFile;
-	}
-
-	@Override
-	public final ImmutableSet<String> getEntityStateNames() {
-
-		return stateManager.stateStringNames();
 	}
 
 	@Override

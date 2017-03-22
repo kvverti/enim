@@ -11,9 +11,9 @@ import net.minecraft.util.text.ITextComponent;
 
 public class SignRender extends SignLikeRender<TileEntitySign> {
 
-	public SignRender(String modDomain, String stateFile) {
+	public SignRender() {
 
-		super(modDomain, stateFile, Blocks.STANDING_SIGN);
+		super(Blocks.STANDING_SIGN);
 	}
 
 	@Override

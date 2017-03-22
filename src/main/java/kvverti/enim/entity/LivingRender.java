@@ -13,9 +13,9 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 	public static final float NAMETAG_VISIBILITY_RANGE_SQ = 64.0f * 64.0f;
 	public static final IProperty<Boolean> BABY = PropertyBool.create("baby");
 
-	protected LivingRender(RenderManager manager, String modDomain, String entityStateFile, IProperty<?>... properties) {
+	protected LivingRender(RenderManager manager, IProperty<?>... properties) {
 
-		super(manager, modDomain, entityStateFile, properties);
+		super(manager, properties);
 	}
 
 	@Override

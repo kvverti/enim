@@ -1,0 +1,16 @@
+define head
+define body
+define lwing
+define lwing_ext
+define rwing
+define rwing_ext
+
+over 70
+{
+shift sine +3 head -0 +2 -0
+rotate cosine body +15 -0 -0
+rotate sine +14 lwing -0 +45 -0
+rotate sine +14 rwing -0 +45 -0
+rotate sine +14 lwing_ext -0 +22.5 -0
+rotate sine +14 rwing_ext -0 +22.5 -0
+}

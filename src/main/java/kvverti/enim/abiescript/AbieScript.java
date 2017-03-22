@@ -8,6 +8,7 @@ import java.util.Map;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableList;
 
+import kvverti.enim.Keys;
 import kvverti.enim.Vec3f;
 
 import static java.util.stream.Collectors.joining;
@@ -31,12 +32,15 @@ public class AbieScript {
 
 	public int frameCount() {
 
-		return frames.size();
+		return frames.size() / Keys.INTERPOLATION_TICKS;
 	}
 
-	public Frame frame(int index) {
+	public Frame frame(int index, float partial) {
 
-		return frames.get(index);
+		//intentional integer overflow
+		int idx = index * Keys.INTERPOLATION_TICKS + (int) (partial * Keys.INTERPOLATION_TICKS);
+		assert idx >= 0 && idx < frames.size() : idx;
+		return frames.get(idx);
 	}
 
 	@Override

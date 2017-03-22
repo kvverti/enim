@@ -7,9 +7,9 @@ import kvverti.enim.entity.state.RenderState;
 
 public class CreeperRender extends LivingRender<EntityCreeper> {
 
-	public CreeperRender(RenderManager manager, String modDomain, String entityStateFile) {
+	public CreeperRender(RenderManager manager) {
 
-		super(manager, modDomain, entityStateFile);
+		super(manager);
 	}
 
 	@Override
