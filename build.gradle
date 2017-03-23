@@ -25,6 +25,7 @@ group = "kvverti.enim" // http://maven.apache.org/guides/mini/guide-naming-conve
 archivesBaseName = "enim-1.11"
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
+javadoc.options.encoding = "UTF-8"
 compileJava {
 	options.encoding = "UTF-8"
 	options.compilerArgs = ["-Xlint:all,-serial,-auxiliaryclass"]

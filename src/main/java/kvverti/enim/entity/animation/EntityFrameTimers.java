@@ -54,6 +54,11 @@ public final class EntityFrameTimers {
 		} catch(ExecutionException e) { throw Util.unchecked(e.getCause()); }
 	}
 
+	public static void clearAll() {
+
+		counters.invalidateAll();
+	}
+
 	/** The key type for the counter cache */
 	private static final class TimerKey {
 

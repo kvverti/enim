@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.Mod.*;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import net.minecraftforge.fml.common.registry.RegistryBuilder;
 
@@ -18,6 +19,7 @@ import net.minecraft.util.ResourceLocation;
 
 import kvverti.enim.entity.*;
 import kvverti.enim.entity.animation.AnimType;
+import kvverti.enim.entity.animation.EntityFrameTimers;
 
 import static kvverti.enim.EnimRenderingRegistry.registerEntityRender;
 import static kvverti.enim.EnimRenderingRegistry.registerTileEntityRender;
@@ -76,5 +78,11 @@ public final class Enim {
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent e) {
 
+	}
+
+	@EventHandler
+	public void serverStopped(FMLServerStoppedEvent e) {
+
+		EntityFrameTimers.clearAll();
 	}
 }

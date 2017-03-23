@@ -29,24 +29,9 @@ public final class Entities {
 		return radians * (180.0f / (float) Math.PI);
 	}
 
-	public static int randomCounterFor(Entity entity, boolean scaled) {
-
-		return Ticker.INSTANCE.ticks(entity, scaled);
-	}
-
 	public static int randomCounterFor(TileEntity tile) {
 
 		return Ticker.INSTANCE.ticks(tile);
-	}
-
-	public static int jumpTime(Entity entity, boolean scaled) {
-
-		return Ticker.INSTANCE.jumpTicks(entity, scaled);
-	}
-
-	public static boolean hasAttackTarget(Entity entity) {
-
-		return Ticker.INSTANCE.hasAttackTarget(entity);
 	}
 
 	public static float speedSq(Entity entity) {
