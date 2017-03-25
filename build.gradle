@@ -25,7 +25,14 @@ group = "kvverti.enim" // http://maven.apache.org/guides/mini/guide-naming-conve
 archivesBaseName = "enim-1.11"
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
-javadoc.options.encoding = "UTF-8"
+javadoc {
+	options.encoding = "UTF-8"
+	options.links = [
+		"https://docs.oracle.com/javase/8/docs/api/",
+		"https://google.github.io/guava/releases/18.0/api/docs/",
+		"https://google.github.io/gson/apidocs" //I know this is for v2.6.2 and we use 2.1, but the style looks better
+	]
+}
 compileJava {
 	options.encoding = "UTF-8"
 	options.compilerArgs = ["-Xlint:all,-serial,-auxiliaryclass"]

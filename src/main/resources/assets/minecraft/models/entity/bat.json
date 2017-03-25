@@ -101,7 +101,7 @@
 				"rwing_ext": "right_outer_wing"
 			}
 		},
-		"moving": {
+		"airborne": {
 			"script": "bat_swing",
 			"with": {
 				"head": "head",

@@ -2,7 +2,7 @@ package kvverti.enim.abiescript;
 
 import kvverti.enim.Util;
 
-public final class AnimationFrame {
+final class AnimationFrame {
 
 	private final StateFrameModifier modifier;
 	private final StateAneme[] anemes;

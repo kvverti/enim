@@ -27,9 +27,8 @@ import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import kvverti.enim.entity.Entities;
 
 /** 
- * Tracks world ticks and entity timers. This class subscribes to various Forge events to keep track of the actions of entities.
- * In multiplayer, Forge events are not available, so this class then uses various entity properties on the client to make a
- * "best guess" estimate as to what the entity is doing. Visible effects may differ when playing multiplayer.
+ * Tracks world ticks and entity timers. Most functionality formerly provided by this class has been replaced with the
+ * {@link kvverti.enim.entity.animation} package. This class will be removed when tile entities move to the new system.
  */
 public final class Ticker {
 

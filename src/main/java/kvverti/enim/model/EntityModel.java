@@ -16,7 +16,11 @@ import kvverti.enim.Keys;
 import kvverti.enim.Vec3f;
 import kvverti.enim.entity.animation.AnimType;
 
-/** Class corresponding to entity Json models */
+/**
+ * This class represents the contents of an entity model file, located in the {@value Keys#MODELS_DIR} directory. Properties
+ * of class instances correspond approximately one-to-one with the model format representation, except that imported elements
+ * are resolved and overrides are applied.
+ */
 public class EntityModel {
 
 	/**
@@ -74,7 +78,7 @@ public class EntityModel {
 
 	/**
 	 * This model's elements. The model elements are cuboid and contain data such as size, position, and texture coordinates. To get a
-	 * specific element, the {@code getElement(String)} method should be used instead.
+	 * specific element, the {@link #getElement(String)} method should be used instead.
 	 * @return an immutable set containing this model's elements
 	 * @see ModelElement
 	 * @see #getElement(String)
@@ -91,7 +95,7 @@ public class EntityModel {
 
 	/**
 	 * Returns the element in this model with the given name. The name must match exactly with an element in this model. To get all
-	 * elements, use {@code elements()}.
+	 * elements, use {@link #elements()}.
 	 * @param name the name of the element to return
 	 * @return the element with the given name
 	 * @throws NoSuchElementException if this model does not contain an element with the given name

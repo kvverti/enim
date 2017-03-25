@@ -1,6 +1,6 @@
 package kvverti.enim.abiescript;
 
-public final class Token {
+final class Token {
 
 	private final String value;
 	private final TokenType type;

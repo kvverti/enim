@@ -4,7 +4,7 @@ import java.util.regex.*;
 
 import kvverti.enim.Keys;
 
-public enum TokenType {
+enum TokenType {
 
 	UNSIGNED_INTEGER    ("[1-9]\\d*"),
 	FLOATING_POINT      ("[+-]\\d*\\.?\\d+(?:[eE][+-]?\\d+)?"),

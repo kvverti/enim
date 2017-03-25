@@ -2,7 +2,7 @@ package kvverti.enim.abiescript;
 
 import java.util.Arrays;
 
-public abstract class Statement {
+abstract class Statement {
 
 	private final StatementType type;
 

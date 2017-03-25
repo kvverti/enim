@@ -93,7 +93,8 @@ public final class EntityFrameTimers {
 		@Override
 		public String toString() {
 
-			return "type=" + animType.getName() + ", entityClass=" + entity.getClass().getSimpleName();
+			return String.format("type=%s, entityClass=%s",
+				animType.isLooped() ? "<looped>" : animType.getName(), entity.getClass().getSimpleName());
 		}
 	}
 

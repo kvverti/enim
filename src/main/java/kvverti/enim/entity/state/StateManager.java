@@ -26,7 +26,6 @@ public class StateManager {
 
 	private final Map<String, EntityState> stateMap = new HashMap<>();
 	private final Map<String, ENIMModel> modelMap = new HashMap<>();
-	private final ImmutableSet<String> stateNames;
 	private final Collection<IProperty<?>> properties;
 	private final BlockStateContainer stateDelegate;
 	private final Map<IBlockState, RenderState> renderStates;
@@ -41,7 +40,6 @@ public class StateManager {
 			.collect(toMap(Function.identity(), BlockForwardingRenderState::new));
 		this.defaultState = renderStates.get(stateDelegate.getBaseState());
 		fillRecursive(properties);
-		this.stateNames = ImmutableSet.copyOf(stateMap.keySet());
 	}
 
 	private final void fillRecursive(IProperty<?>[] properties) {
@@ -79,11 +77,6 @@ public class StateManager {
 		if(!properties.containsAll(cp) || !cp.containsAll(properties))
 			throw new IllegalArgumentException("Cannot set default state, properties mismatch");
 		defaultState = state;
-	}
-
-	public ImmutableSet<String> stateStringNames() {
-
-		return stateNames;
 	}
 
 	public void reloadStates(Map<String, EntityState> states) {

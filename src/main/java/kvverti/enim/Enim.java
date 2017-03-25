@@ -70,7 +70,6 @@ public final class Enim {
 	public void init(FMLInitializationEvent e) {
 
 		EnimRenderingRegistry.init(e);
-		MinecraftForge.EVENT_BUS.register(Ticker.INSTANCE);
 		registerTileEntityRender(TileEntitySign.class, "minecraft", "sign", new SignRender());
 		registerTileEntityRender(TileEntityBanner.class, "minecraft", "banner", new BannerRender());
 	}

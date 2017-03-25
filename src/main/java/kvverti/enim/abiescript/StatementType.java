@@ -7,7 +7,7 @@ import kvverti.enim.Keys;
 
 import static kvverti.enim.abiescript.TokenType.*;
 
-public enum StatementType {
+enum StatementType {
 
 	DEFINITION       (Keys.ABIE_KEY_DEFINE, IDENTIFIER),
 	FREQUENCY        (Keys.ABIE_KEY_FREQ, UNSIGNED_INTEGER),

@@ -32,10 +32,10 @@ public final class AnimType extends IForgeRegistryEntry.Impl<AnimType> implement
 	private final AnimPredicate<?> defaultPred;
 
 	/**
-	 * A map containing custom predicates for entities. This is really a map of {@code Class<T extends Entity>, Predicate<T>}
+	 * A map containing custom predicates for entities. This is really a map of {@code Class<T>, AnimPredicate<T>}
 	 * for some type T.
 	 */
-	private final Map<Class<? extends Entity>, AnimPredicate<?>> customPreds = new HashMap<>();
+	private final Map<Class<?>, AnimPredicate<?>> customPreds = new HashMap<>();
 
 	public AnimType(boolean loop, AnimPredicate<Entity> defaultPredicate) {
 
@@ -64,12 +64,12 @@ public final class AnimType extends IForgeRegistryEntry.Impl<AnimType> implement
 	@SuppressWarnings("unchecked")
 	private <T extends Entity> AnimPredicate<T> getAnimPredicate(T entity) {
 
-		Class<? extends Entity> cls = entity.getClass();
+		Class<?> cls = entity.getClass();
 		while(Entity.class.isAssignableFrom(cls))
 			if(customPreds.containsKey(cls))
 				return (AnimPredicate<T>) customPreds.get(cls);
 			else
-				cls = (Class<? extends Entity>) cls.getSuperclass();
+				cls = cls.getSuperclass();
 		return (AnimPredicate<T>) defaultPred;
 	}
 
