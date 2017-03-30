@@ -90,11 +90,14 @@ public final class AnimType extends IForgeRegistryEntry.Impl<AnimType> implement
 	/** Json adapter for Animation.Type */
 	public static class Adapter extends TypeAdapter<AnimType> {
 
+		private static final AnimType NONE = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("null");
+
 		@Override
 		public AnimType read(JsonReader in) throws IOException {
 
 			String name = in.nextString();
-			return ANIM_TYPE_REGISTRY.getValue(new ResourceLocation(name));
+			AnimType type = ANIM_TYPE_REGISTRY.getValue(new ResourceLocation(name));
+			return type == null ? NONE : type;
 		}
 
 		@Override

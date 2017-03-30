@@ -28,7 +28,6 @@ public class AnimationParser {
 
 		this.file = file;
 		this.source = file.getResourceLocation();
-		kvverti.enim.Logger.info("Compiling AbieScript animation " + source);
 		try { return parseFrames(parseTokens(parseSource())); }
 		catch(IndexOutOfBoundsException e) { throw new AbieParseException(source + ": Reached end of file while parsing", e); }
 		finally { this.file = null; this.source = null; }
