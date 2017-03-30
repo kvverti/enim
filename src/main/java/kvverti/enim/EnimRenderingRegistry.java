@@ -104,6 +104,7 @@ public final class EnimRenderingRegistry {
 			ResourceLocation estateLoc = entry.getKey();
 			try(Reader rd = Util.getReaderFor(manager, estateLoc)) {
 
+				Logger.info("Compiling models for " + estateLoc);
 				EntityStateMap states = EntityModel.GSON.fromJson(rd, EntityStateMap.class);
 				entry.getValue().reload(states);
 

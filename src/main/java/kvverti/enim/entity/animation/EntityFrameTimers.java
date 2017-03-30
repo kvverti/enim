@@ -38,8 +38,7 @@ public final class EntityFrameTimers {
 	/** Restarts the counter for the given type and entity */
 	public static void restart(AnimType type, Entity entity) {
 
-		try { counters.get(new TimerKey(type, entity)).resetTime(); }
-		catch(ExecutionException e) { throw Util.unchecked(e.getCause()); }
+		counters.getUnchecked(new TimerKey(type, entity)).resetTime();
 	}
 
 	public static int timeValue(AnimType type, Entity entity, boolean scaled) {
@@ -49,9 +48,7 @@ public final class EntityFrameTimers {
 
 			TickCounter c = counters.getIfPresent(key);
 			return c != null ? c.offsetTickValue(scaled) : -1;
-		} else try {
-			return counters.get(key).tickValue(scaled);
-		} catch(ExecutionException e) { throw Util.unchecked(e.getCause()); }
+		} else return counters.getUnchecked(key).tickValue(scaled);
 	}
 
 	public static void clearAll() {

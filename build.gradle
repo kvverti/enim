@@ -20,7 +20,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "dev-2016.12.31.0"
+version = String.format("dev-%1\$tY.%1\$tm.%1\$td_%1\$tH-%1\$tM-%1\$tS", new GregorianCalendar())
 group = "kvverti.enim" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "enim-1.11"
 sourceCompatibility = "1.8"
@@ -51,7 +51,7 @@ minecraft {
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
     mappings = "snapshot_20161228"
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    makeObfSourceJar = false // because UTF-8
 }
 
 dependencies {

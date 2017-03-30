@@ -27,7 +27,7 @@ import static kvverti.enim.Util.invokeUnchecked;
  * {@link #shouldAnimate(EntityEvent)} and {@link #multiplayerFallback(Entity,EntityInfo)} as needed. Finally, call the
  * {@link #create()} method to obtain an instance of AnimPredicate that implements the functionality described by this class.
  * This instance is automatically registered to the Forge event bus, you do not need to explicitly register anything.
- * <br>
+ * <p>
  * A typical use of this class is as follows.
  * <pre>{@code
  *   AnimPredicate<MyEntity> animPred = new EventBasedPredicate<MyEntity, MyEvent>() {
@@ -67,8 +67,8 @@ public abstract class EventBasedPredicate<T extends Entity, E extends EntityEven
 		new String[] { "onEventWrap" },
 		EntityEvent.class);
 
-	private final Class<?> eventType = new TypeToken<E>(getClass()){}.getRawType();
 	private final Set<Entity> entitiesToAnimate = new HashSet<>(20);
+	private final Class<?> eventType = new TypeToken<E>(getClass()){}.getRawType();
 
 	/** Sole constructor, for use by (usually anonymous) subclasses */
 	protected EventBasedPredicate() { }
@@ -82,10 +82,16 @@ public abstract class EventBasedPredicate<T extends Entity, E extends EntityEven
 	/** Fallback for when event handling is not available. The default implementation returns false. */
 	protected boolean multiplayerFallback(T entity, EntityInfo info) { return false; }
 
-	/* Not private so Forge is happy */
+	/**
+	 * The actual method subscribed to the event bus. This method is package-private because private methods
+	 * do not work with the event system. The actual event passed to this method will always be a subtype of E
+	 * because the class of E is passed to the event bus. However, this forwards the raw type of IGenericEvents.
+	 * This should not be an issue with EntityEvents.
+	 */
 	@SubscribeEvent
 	final void onEventWrap(E event) {
 
+		assert eventType.isInstance(event) : event.getClass();
 		if(shouldAnimate(event))
 			entitiesToAnimate.add(event.getEntity());
 	}

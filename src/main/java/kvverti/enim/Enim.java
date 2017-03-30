@@ -1,5 +1,6 @@
 package kvverti.enim;
 
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.*;
@@ -7,6 +8,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import net.minecraftforge.fml.common.registry.RegistryBuilder;
 
@@ -25,14 +27,14 @@ import static kvverti.enim.EnimRenderingRegistry.registerEntityRender;
 import static kvverti.enim.EnimRenderingRegistry.registerTileEntityRender;
 import static kvverti.enim.entity.animation.MinecraftAnimTypes.*;
 
+@EventBusSubscriber
 @Mod(modid = Enim.ID, name = Enim.NAME, version = Enim.VERSION, acceptedMinecraftVersions = "[1.11,1.12)", clientSideOnly = true)
 public final class Enim {
 
 	public static final String ID = "enim";
 	public static final String NAME = "ENIM";
-	public static final String VERSION = "dev-2016.12.31.0";
-	//dev format: dev-year.month.day.edit
-	//release format: major.minor.fix
+	public static final String VERSION = "indev";
+	//version will stay indev until releases start coming
 
 	@Instance(ID)
 	public static Enim instance;
@@ -43,14 +45,17 @@ public final class Enim {
 		.setIDRange(0, 128)
 		.create();
 
-	static {
-		//register minecraft animation types
-		ANIM_TYPE_REGISTRY.registerAll(IDLE, MOVE, AIR, SWIM, TRACK, JUMP);
+	@SubscribeEvent
+	public static void registerAnimTypes(RegistryEvent.Register<AnimType> event) {
+
+		Logger.info("Registering Minecraft AnimTypes...");
+		event.getRegistry().registerAll(IDLE, MOVE, AIR, SWIM, TRACK, JUMP);
 	}
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
 
+		Logger.info("Registering Minecraft entity renders...");
 	//	registerEntityRender(EntityBoat.class, m -> new BoatRender(m, "minecraft", "boat"));
 		registerEntityRender(EntityLeashKnot.class, "minecraft", "lead", BasicRender::new);
 		registerEntityRender(EntityMinecartEmpty.class, "minecraft", "minecart", MinecartRender::new);
@@ -70,6 +75,7 @@ public final class Enim {
 	public void init(FMLInitializationEvent e) {
 
 		EnimRenderingRegistry.init(e);
+		Logger.info("Regsitering Minecraft tile entity renders...");
 		registerTileEntityRender(TileEntitySign.class, "minecraft", "sign", new SignRender());
 		registerTileEntityRender(TileEntityBanner.class, "minecraft", "banner", new BannerRender());
 	}
