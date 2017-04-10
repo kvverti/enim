@@ -34,8 +34,12 @@ public class EntityStateMap extends ForwardingMap<String, EntityState> {
 			EntityState.Defaults stateDefaults = obj.has(Keys.STATES_DEFAULTS) ?
 				context.deserialize(obj.get(Keys.STATES_DEFAULTS), EntityState.Defaults.class)
 				: new EntityState.Defaults();
-			for(EntityState state : res.states.values())
+			for(EntityState state : res.states.values()) {
+
 				state.replaceDefaults(stateDefaults);
+				for(EntityState layer : state.getLayers())
+					layer.replaceDefaults(stateDefaults);
+			}
 			return res;
 		}
 	}

@@ -4,13 +4,16 @@ import java.lang.reflect.Type;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.IOException;
+import java.util.List;
 import javax.imageio.ImageIO;
 
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 
 import kvverti.enim.Keys;
 import kvverti.enim.Logger;
@@ -27,6 +30,7 @@ public class EntityState {
 	private final int[] size = { -1, -1 };		//invalid value (-1) will be filled with default
 	private float scale = Float.NaN;		//invalid value (NaN) will be filled with default
 	private float y = Float.NaN;			//invalid value (NaN) will be filled with default
+	private ImmutableList<EntityState> layers = ImmutableList.of(); //other layers, such as sheep wool, wolf collars, or armor
 
 	//original texture names, for debugging purposes
 	private String textureName;
@@ -68,6 +72,12 @@ public class EntityState {
 	 */
 	public float y() { return y; }
 
+	/**
+	 * The model layers for this state. Layers specify additonal models with separately bound textures that render with this state.
+	 * For example, layers include armor, wolf collars, and sheep wool.
+	 */
+	public ImmutableList<EntityState> getLayers() { return layers; }
+
 	/** Binds a texture dynamically. This is needed because the texture may be reloaded many times over the course of a game session. */
 	private static ResourceLocation bindTexture(ResourceLocation loc) {
 
@@ -108,8 +118,24 @@ public class EntityState {
 	/** Deserializer for the {@link EntityState} class */
 	public static class Deserializer implements JsonDeserializer<EntityState> {
 
+		private static final Type stateListType = new TypeToken<List<EntityState>>(){}.getType();
+
 		@Override
 		public EntityState deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
+
+			if(json.isJsonArray()) {
+
+				if(json.getAsJsonArray().size() == 0)
+					throw new JsonParseException("Layers list may not be empty");
+				List<EntityState> list = context.deserialize(json, stateListType);
+				EntityState res = list.remove(0);
+				res.layers = ImmutableList.copyOf(list);
+				return res;
+			} else
+				return getSingle(json, context);
+		}
+
+		private EntityState getSingle(JsonElement json, JsonDeserializationContext context) {
 
 			JsonObject jsonObj = json.getAsJsonObject();
 			String modelStr = jsonObj.get(Keys.STATE_MODEL_NAME).getAsString();

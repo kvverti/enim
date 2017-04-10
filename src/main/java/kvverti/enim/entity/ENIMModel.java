@@ -47,13 +47,13 @@ public class ENIMModel extends ModelBase {
 
 	private void renderHelper(EntityInfo info) {
 
-		opaques.forEach(box -> box.render(info.scale));
-		lucents.forEach(box -> box.render(info.scale));
+		opaques.forEach(box -> box.render(info));
+		lucents.forEach(box -> box.render(info));
 	}
 
 	public void setRotationAngles(Entity entity, EntityInfo info) {
 
-		resetAngles(info.headYaw, info.entityPitch);
+		resetAngles();
 		for(Map.Entry<AnimType, Animation> entry : anims.entrySet()) {
 
 			AnimType type = entry.getKey();
@@ -68,7 +68,7 @@ public class ENIMModel extends ModelBase {
 
 	public void setRotationAngles(TileEntity tile, EntityInfo info) {
 
-		resetAngles(info.headYaw, info.entityPitch);
+		resetAngles();
 		animateLooping(tile, info, MinecraftAnimTypes.IDLE, true);
 	}
 
@@ -128,7 +128,7 @@ public class ENIMModel extends ModelBase {
 		}
 	}
 
-	private void resetAngles(float headYaw, float pitch) {
+	private void resetAngles() {
 
 		boxes.values().forEach(box -> {
 
@@ -138,8 +138,6 @@ public class ENIMModel extends ModelBase {
 			box.shiftDistanceX = 0.0f;
 			box.shiftDistanceY = 0.0f;
 			box.shiftDistanceZ = 0.0f;
-			box.headYaw = headYaw;
-			box.pitch = pitch;
 		});
 	}
 

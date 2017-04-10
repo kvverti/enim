@@ -1,6 +1,8 @@
 package kvverti.enim.entity.animation;
 
 import java.io.IOException;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -16,6 +18,7 @@ import com.google.gson.stream.JsonWriter;
 
 import kvverti.enim.entity.EntityInfo;
 
+import static java.util.Collections.newSetFromMap;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static kvverti.enim.Enim.ANIM_TYPE_REGISTRY;
 
@@ -26,8 +29,7 @@ public final class AnimType extends IForgeRegistryEntry.Impl<AnimType> implement
 	private final boolean looped;
 
 	/**
-	 * The default animation predicate for this type. If looped, this determines if the animation should play. If not
-	 * looped, this determines if the animation should restart.
+	 * The default animation predicate for this type.
 	 */
 	private final AnimPredicate<?> defaultPred;
 
@@ -37,10 +39,17 @@ public final class AnimType extends IForgeRegistryEntry.Impl<AnimType> implement
 	 */
 	private final Map<Class<?>, AnimPredicate<?>> customPreds = new HashMap<>();
 
+	/**
+	 * A map containing entities that are currently animating.
+	 * Used for non-looping animations to determine the transition from false to true.
+	 */
+	private final Set<Entity> animatingEntities;
+
 	public AnimType(boolean loop, AnimPredicate<Entity> defaultPredicate) {
 
 		looped = loop;
 		defaultPred = checkNotNull(defaultPredicate);
+		animatingEntities = !loop ? newSetFromMap(new WeakHashMap<>()) : null;
 	}
 
 	@Override
@@ -50,7 +59,8 @@ public final class AnimType extends IForgeRegistryEntry.Impl<AnimType> implement
 
 	/**
 	 * Returns whether the given entity should animate under this type. The entity will be matched with the most specific
-	 * predicate registered in this type, the result of which is queried and returned.
+	 * predicate registered in this type, the result of which is queried and returned. If this instance is of a non-looping
+	 * AnimType, then this method returns returns false on consecutive invocations of the predicate returning true.
 	 * @param entity The entity to possibly animate
 	 * @param info Other entity information
 	 * @return Whether the entity should animate
@@ -58,7 +68,18 @@ public final class AnimType extends IForgeRegistryEntry.Impl<AnimType> implement
 	 */
 	public boolean shouldAnimate(Entity entity, EntityInfo info) {
 
-		return getAnimPredicate(entity).shouldAnimate(entity, info);
+		boolean condition = getAnimPredicate(entity).shouldAnimate(entity, info);
+		if(looped)
+			return condition;
+		else if(condition) {
+			if(!animatingEntities.contains(entity)) {
+
+				animatingEntities.add(entity);
+				return true;
+			}
+		} else
+			animatingEntities.remove(entity);
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -90,7 +111,7 @@ public final class AnimType extends IForgeRegistryEntry.Impl<AnimType> implement
 	/** Json adapter for Animation.Type */
 	public static class Adapter extends TypeAdapter<AnimType> {
 
-		private static final AnimType NONE = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("null");
+		private static final AnimType NONE = new AnimType(true, AnimPredicate.alwaysFalse()).setRegistryName("null");
 
 		@Override
 		public AnimType read(JsonReader in) throws IOException {

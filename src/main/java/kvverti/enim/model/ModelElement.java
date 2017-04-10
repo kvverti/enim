@@ -39,6 +39,9 @@ public final class ModelElement {
 	@SerializedName(Keys.ELEM_HEAD)
 	private boolean head = false;
 
+	@SerializedName(Keys.ELEM_TINTINDEX)
+	private int tintIndex = -1;
+
 	/** For Json deserialization */
 	private ModelElement() { name = ""; }
 
@@ -61,6 +64,8 @@ public final class ModelElement {
 	public boolean isTranslucent() { return translucent; }
 
 	public boolean isHead() { return head; }
+
+	public int tintIndex() { return tintIndex; }
 
 	void applyOverride(Override value) {
 

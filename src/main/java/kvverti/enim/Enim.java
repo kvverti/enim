@@ -49,7 +49,7 @@ public final class Enim {
 	public static void registerAnimTypes(RegistryEvent.Register<AnimType> event) {
 
 		Logger.info("Registering Minecraft AnimTypes...");
-		event.getRegistry().registerAll(IDLE, MOVE, AIR, SWIM, TRACK, JUMP);
+		event.getRegistry().registerAll(IDLE, MOVE, AIR, SWIM, TRACK, JUMP, EAT);
 	}
 
 	@EventHandler
@@ -69,6 +69,7 @@ public final class Enim {
 		registerEntityRender(EntityCaveSpider.class, "minecraft", "cave_spider", BasicLivingRender::new);
 		registerEntityRender(EntitySilverfish.class, "minecraft", "silverfish", BasicLivingRender::new);
 		registerEntityRender(EntityBat.class, "minecraft", "bat", BasicLivingRender::new);
+		registerEntityRender(EntitySheep.class, "minecraft", "sheep", SheepRender::new);
 	}
 
 	@EventHandler

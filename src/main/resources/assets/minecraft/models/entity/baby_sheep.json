@@ -1,0 +1,12 @@
+{
+	"properties": {
+		"nameplate": 30,
+		"shadowsize": 11
+	},
+	"imports": {
+		"sheep": ["*","animations:*"]
+	},
+	"overrides": {
+		"head": { "scale": 2 }
+	}
+}

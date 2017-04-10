@@ -30,7 +30,7 @@ import static kvverti.enim.Util.invokeUnchecked;
  * <p>
  * A typical use of this class is as follows.
  * <pre>{@code
- *   AnimPredicate<MyEntity> animPred = new EventBasedPredicate<MyEntity, MyEvent>() {
+ *   AnimPredicate<MyEntity> animPred = new EventBasedPredicate<MyEntity, MyEvent>(...) {
  *       //override methods as needed
  *   }.create();
  * }</pre>
@@ -42,7 +42,7 @@ import static kvverti.enim.Util.invokeUnchecked;
  * <pre>{@code
  *   public <E extends EntityEvent> EventBasedPredicate<Entity, E> wrong() {
  *       //wrong: E is erased at runtime
- *       return new EventBasedPredicate<Entity, E>(){};
+ *       return new EventBasedPredicate<Entity, E>(false){};
  *   }
  * }</pre>
  * However, the above code is also useless as the methods of this class are meant to be overridden, which cannot be done with a
@@ -69,9 +69,17 @@ public abstract class EventBasedPredicate<T extends Entity, E extends EntityEven
 
 	private final Set<Entity> entitiesToAnimate = new HashSet<>(20);
 	private final Class<?> eventType = new TypeToken<E>(getClass()){}.getRawType();
+	private final boolean toggle;
 
-	/** Sole constructor, for use by (usually anonymous) subclasses */
-	protected EventBasedPredicate() { }
+	/**
+	 * Sole constructor, for use by (usually anonymous) subclasses. The parameter determines whether results from
+	 * {@link #shouldAnimate(EntityEvent)} should be retained until the next result from the same method. Set this to true if your
+	 * event is a toggle for some state; set to false if your event is a signal of some action. A good rule of thumb is to pass
+	 * true if the associated AnimType is looped and false if not.
+	 * @param retainEventResult whether the result of {@link #shouldAnimate(EntityEvent)} should be retained across multiple calls
+	 *   (useful for looping animations).
+	 */
+	protected EventBasedPredicate(boolean retainEventResult) { toggle = retainEventResult; }
 
 	/**
 	 * Determines from the passed event whether the entity specified in the event should be animated.
@@ -94,6 +102,8 @@ public abstract class EventBasedPredicate<T extends Entity, E extends EntityEven
 		assert eventType.isInstance(event) : event.getClass();
 		if(shouldAnimate(event))
 			entitiesToAnimate.add(event.getEntity());
+		else if(toggle)
+			entitiesToAnimate.remove(event.getEntity());
 	}
 
 	/** Returns an instance of AnimPredicate which implements this functionality. You probably should only call this once. */
@@ -115,7 +125,7 @@ public abstract class EventBasedPredicate<T extends Entity, E extends EntityEven
 		@Override
 		protected boolean computeSingleplayer(T entity, EntityInfo info) {
 
-			return entitiesToAnimate.remove(entity);
+			return toggle ? entitiesToAnimate.contains(entity) : entitiesToAnimate.remove(entity);
 		}
 	}
 }

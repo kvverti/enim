@@ -1,6 +1,7 @@
 package kvverti.enim.entity;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -28,6 +29,7 @@ import kvverti.enim.model.EntityState;
 import kvverti.enim.model.EntityStateMap;
 import kvverti.enim.Keys;
 import kvverti.enim.Util;
+import kvverti.enim.Vec3f;
 
 public abstract class ENIMRender<T extends Entity> extends Render<T> implements ReloadableRender {
 
@@ -96,7 +98,6 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 		RenderState renderState = getStateFromEntity(entity);
 		currentState = stateManager.getState(renderState);
 		ENIMModel model = stateManager.getModel(renderState);
-		//bindEntityTexture(entity);
 		bindTexture(currentState.texture());
 		GlStateManager.rotate(currentState.y(), 0.0f, 1.0f, 0.0f);
 		EntityInfo info = new EntityInfo();
@@ -106,29 +107,30 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 		info.headYaw = headYaw(entity, yaw);
 		info.entityPitch = entity.rotationPitch;
 		info.scale = 0.0625f * currentState.scale();
+		info.color = i -> getColorOverlay(entity, info, i);
 		preRender(entity, info);
-		if(shouldRender(entity))
-			model.render(entity, info);
-		//because invisibility doesn't work with your texture layers, Mojang
-		ResourceLocation overlay = currentState.overlay();
-		if(overlay != null) {
+		if(shouldRender(entity)) {
 
-			bindTexture(overlay);
-			GlStateManager.enableBlend();
-			GlStateManager.disableAlpha();
-			GlStateManager.blendFunc(1, 1);
-			//begin magic
-			GlStateManager.depthMask(!entity.isInvisible());
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0f0, 0.0f);
-			//end magic
-			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 			model.render(entity, info);
-			//begin magic
-			int brightness = entity.getBrightnessForRender(partialTicks);
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightness % 0x10000, brightness / 0x10000);
-			//end magic
-			GlStateManager.disableBlend();
-			GlStateManager.enableAlpha();
+			ResourceLocation overlay = currentState.overlay();
+			if(overlay != null)
+				renderOverlay(entity, info, model, overlay);
+			List<EntityState> layers = currentState.getLayers();
+			for(int i = 0; i < layers.size(); i++)
+				renderLayer(entity, info, layers.get(i), stateManager.getLayerModel(renderState, i));
+		} else {
+			//because invisibility doesn't work with your texture layers, Mojang
+			//or model layers, for that matter, but WHOOP-DE-DOO
+			ResourceLocation overlay = currentState.overlay();
+			if(overlay != null)
+				renderOverlay(entity, info, model, overlay);
+			List<EntityState> layers = currentState.getLayers();
+			for(int i = 0; i < layers.size(); i++) {
+
+				overlay = layers.get(i).overlay();
+				if(overlay != null)
+					renderOverlay(entity, info, stateManager.getLayerModel(renderState, i), overlay);
+			}
 		}
 		postRender(entity, info);
 		GlStateManager.popMatrix();
@@ -137,16 +139,68 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 			Util.invokeUnchecked(proxy, renderLeash, entity, x, y, z, yaw, partialTicks);
 	}
 
+	private void renderLayer(T entity, EntityInfo info, EntityState layer, ENIMModel model) {
+
+		GlStateManager.pushMatrix();
+		bindTexture(layer.texture());
+		GlStateManager.rotate(layer.y(), 0.0f, 1.0f, 0.0f);
+		info.scale = 0.0625f * layer.scale();
+		model.render(entity, info);
+		ResourceLocation overlay = layer.overlay();
+		if(overlay != null)
+			renderOverlay(entity, info, model, overlay);
+		GlStateManager.popMatrix();
+	}
+
+	private void renderOverlay(T entity, EntityInfo info, ENIMModel model, ResourceLocation overlay) {
+
+		bindTexture(overlay);
+		GlStateManager.enableBlend();
+		GlStateManager.disableAlpha();
+		GlStateManager.blendFunc(1, 1);
+		//begin magic
+		GlStateManager.depthMask(!entity.isInvisible());
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0f0, 0.0f);
+		//end magic
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+		model.render(entity, info);
+		//begin magic
+		int brightness = entity.getBrightnessForRender(info.partialTicks);
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightness % 0x10000, brightness / 0x10000);
+		//end magic
+		GlStateManager.disableBlend();
+		GlStateManager.enableAlpha();
+	}
+
 	private float headYaw(Entity entity, float bodyYaw) {
 
 		return entity instanceof EntityLivingBase ? ((EntityLivingBase) entity).rotationYawHead - bodyYaw : 0.0f;
 	}
 
+	/**
+	 * Whether the entity should render. The entity model will be rendered only if this method returns true.
+	 * Note that texture overlays will still be rendered if this method returns false, because Mojang.
+	 */
 	public boolean shouldRender(T entity) { return true; }
 
+	/**
+	 * Method called immediately before the main model is rendered.
+	 */
 	protected void preRender(T entity, EntityInfo info) { }
 
+	/**
+	 * Method called immediately after the main model and any layers are rendered.
+	 */
 	protected void postRender(T entity, EntityInfo info) { }
+
+	/**
+	 * Returns the color in RGB format that will be overlayed (multiplied) onto applicable model elements. This method is partially bound
+	 * to the entity being rendered in the EntityInfo structure passed to the render callbacks.
+	 */
+	public Vec3f getColorOverlay(T entity, EntityInfo info, int colorIndex) {
+
+		return Vec3f.IDENTITY;
+	}
 
 	/** Modified from Render#doRenderShadowAndFire */
 	@Override

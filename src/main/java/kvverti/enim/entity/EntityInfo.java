@@ -1,5 +1,9 @@
 package kvverti.enim.entity;
 
+import java.util.function.IntFunction;
+
+import kvverti.enim.Vec3f;
+
 public final class EntityInfo {
 
 	public float speedSq;
@@ -8,4 +12,5 @@ public final class EntityInfo {
 	public float headYaw;
 	public float entityPitch;
 	public float scale = 1.0f;
+	public IntFunction<Vec3f> color = i -> Vec3f.IDENTITY;
 }

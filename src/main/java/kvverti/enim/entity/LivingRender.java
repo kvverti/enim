@@ -1,5 +1,7 @@
 package kvverti.enim.entity;
 
+import java.util.function.IntFunction;
+
 import net.minecraft.block.properties.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
@@ -7,6 +9,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.text.TextFormatting;
+
+import kvverti.enim.Vec3f;
 
 public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 
@@ -33,8 +37,13 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 		if(entity.deathTime > 0)
 			rotateCorpse(entity);
 		//tint red when damaged
-		if(entity.hurtTime > 0 || entity.deathTime > 0)
+		if(entity.hurtTime > 0 || entity.deathTime > 0) {
+
 			GlStateManager.color(1.0f, 0.5f, 0.5f);
+			IntFunction<Vec3f> col = info.color;
+			Vec3f base = Vec3f.of(1.0f, 0.5f, 0.5f);
+			info.color = i -> base.scale(col.apply(i));
+		}
 		//invisible mobs as translucent to players in creative/spectator
 		if(entity.isInvisible() && !entity.isInvisibleToPlayer(Entities.thePlayer())) {
 

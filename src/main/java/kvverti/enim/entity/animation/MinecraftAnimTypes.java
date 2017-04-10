@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityRabbit;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.monster.EntitySlime;
 
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
@@ -40,6 +41,9 @@ public final class MinecraftAnimTypes {
 	/** AnimType for when an entity is damaged. */
 	public static final AnimType DAMAGE;
 
+	/** AnimType for when a living entity is eating. Only used for entities that eat as part of their AI. */
+	public static final AnimType EAT;
+
 	static {
 
 		IDLE = new AnimType(true, AnimPredicate.alwaysTrue()).setRegistryName("minecraft:idle");
@@ -48,7 +52,7 @@ public final class MinecraftAnimTypes {
 		AIR.setCustomAnimPredicate(EntityBat.class, (e, i) -> !e.getIsBatHanging());
 		SWIM = new AnimType(true, (e, i) -> e.isInWater() && !e.onGround).setRegistryName("minecraft:swimming");
 		TRACK = new AnimType(true, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:tracking");
-		TRACK.setCustomAnimPredicate(EntityLivingBase.class, new EventBasedPredicate<EntityLivingBase, LivingSetAttackTargetEvent>() {
+		TRACK.setCustomAnimPredicate(EntityLivingBase.class, new EventBasedPredicate<EntityLivingBase, LivingSetAttackTargetEvent>(true) {
 
 			@Override
 			protected boolean shouldAnimate(LivingSetAttackTargetEvent event) {
@@ -58,7 +62,7 @@ public final class MinecraftAnimTypes {
 		}.create());
 		JUMP = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:jump");
 		JUMP.setCustomAnimPredicate(EntitySlime.class, (e, i) -> e.motionY > 0.20f);
-		JUMP.setCustomAnimPredicate(EntityLivingBase.class, new EventBasedPredicate<EntityLivingBase, LivingJumpEvent>() {
+		JUMP.setCustomAnimPredicate(EntityLivingBase.class, new EventBasedPredicate<EntityLivingBase, LivingJumpEvent>(false) {
 
 			@Override
 			protected boolean multiplayerFallback(EntityLivingBase e, EntityInfo i) {
@@ -68,6 +72,8 @@ public final class MinecraftAnimTypes {
 		}.create());
 		ATTACK = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:attack");
 		DAMAGE = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:damage");
+		EAT = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:eat");
+		EAT.setCustomAnimPredicate(EntitySheep.class, (e, i) -> e.getHeadRotationPointY(i.partialTicks) > 0.0f);
 	}
 
 	private MinecraftAnimTypes() { }

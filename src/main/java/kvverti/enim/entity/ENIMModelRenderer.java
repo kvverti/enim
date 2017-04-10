@@ -23,9 +23,8 @@ public class ENIMModelRenderer extends ModelRenderer {
 	private final float defaultScale;
 	private final boolean translucent;
 	private final boolean head;
+	private final int tintIndex;
 	private boolean compiled = false;
-	public float headYaw;
-	public float pitch;
 	public float shiftDistanceX;
 	public float shiftDistanceY;
 	public float shiftDistanceZ;
@@ -48,6 +47,7 @@ public class ENIMModelRenderer extends ModelRenderer {
 		defaultScale = 1.0f;
 		translucent = false;
 		head = false;
+		tintIndex = -1;
 		addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
 	}
 
@@ -58,6 +58,7 @@ public class ENIMModelRenderer extends ModelRenderer {
 		defaultScale = features.scale();
 		translucent = features.isTranslucent();
 		head = features.isHead();
+		tintIndex = features.tintIndex();
 		Vec3f origin = features.origin(), from = features.from(), to = features.to();
 		int[] uv = features.uv();
 		setTextureOffset(uv[0], uv[1]);
@@ -70,11 +71,11 @@ public class ENIMModelRenderer extends ModelRenderer {
 		(int)	(to.z - from.z));
 	}
 
-	@Override
-	public void render(float scale) {
+	public void render(EntityInfo info) {
 
 		if(!isHidden && showModel) {
 
+			float scale = info.scale;
 			if(!compiled) compileDisplayList(scale * defaultScale);
 			GlStateManager.pushMatrix();
 			//transform element into position
@@ -86,8 +87,8 @@ public class ENIMModelRenderer extends ModelRenderer {
 			//apply special transformations
 			if(head) {
 
-				GlStateManager.rotate(headYaw, 0.0f, 1.0f, 0.0f);
-				GlStateManager.rotate(pitch, 1.0f, 0.0f, 0.0f);
+				GlStateManager.rotate(info.headYaw, 0.0f, 1.0f, 0.0f);
+				GlStateManager.rotate(info.entityPitch, 1.0f, 0.0f, 0.0f);
 			}
 			//apply animations
 			GlStateManager.translate(shiftDistanceX * scale, -shiftDistanceY * scale, -shiftDistanceZ * scale);
@@ -95,6 +96,11 @@ public class ENIMModelRenderer extends ModelRenderer {
 			GlStateManager.rotate(-toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
 			GlStateManager.rotate(+toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
 			//render
+			if(tintIndex >= 0) {
+
+				Vec3f col = info.color.apply(tintIndex);
+				GlStateManager.color(col.x, col.y, col.z);
+			}
 			if(translucent) makeLucent();
 			GlStateManager.callList(displayList());
 			if(translucent) endLucent();
@@ -103,9 +109,18 @@ public class ENIMModelRenderer extends ModelRenderer {
 			GlStateManager.translate(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
 			GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
 			//render children
-			if(childModels != null) childModels.forEach(box -> box.render(scale));
+			if(childModels != null) childModels.forEach(box -> ((ENIMModelRenderer) box).render(info));
 			GlStateManager.popMatrix();
 		}
+	}
+
+	@Override
+	@Deprecated
+	public void render(float scale) {
+
+		EntityInfo info = new EntityInfo();
+		info.scale = scale;
+		render(info);
 	}
 
 	@Override

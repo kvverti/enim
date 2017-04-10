@@ -2,6 +2,8 @@ package kvverti.enim.entity.state;
 
 //import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.function.Function;
@@ -26,6 +28,7 @@ public class StateManager {
 
 	private final Map<String, EntityState> stateMap = new HashMap<>();
 	private final Map<String, ENIMModel> modelMap = new HashMap<>();
+	private final Map<String, List<ENIMModel>> layerMap = new HashMap<>();
 	private final Collection<IProperty<?>> properties;
 	private final BlockStateContainer stateDelegate;
 	private final Map<IBlockState, RenderState> renderStates;
@@ -48,6 +51,7 @@ public class StateManager {
 
 			modelMap.put(Keys.STATE_NORMAL, new ENIMModel());
 			stateMap.put(Keys.STATE_NORMAL, EntityModel.MISSING_STATE);
+			layerMap.put(Keys.STATE_NORMAL, new ArrayList<>());
 		}
 		else fillRecursiveImpl(defaultState, properties, 0);
 	}
@@ -63,6 +67,7 @@ public class StateManager {
 			String str = state.toString();
 			modelMap.put(str, new ENIMModel());
 			stateMap.put(str, EntityModel.MISSING_STATE);
+			layerMap.put(str, new ArrayList<>());
 		}
 	}
 
@@ -89,6 +94,25 @@ public class StateManager {
 			EntityState state = stateMap.get(str);
 			model.reload(state.model(), state.size()[0], state.size()[1]);
 		});
+		layerMap.forEach((str, models) -> {
+
+			List<EntityState> layers = stateMap.get(str).getLayers();
+			//short circuit in the case of no layers
+			if(layers.isEmpty())
+				models.clear();
+			else {
+				//get them to be the same size
+				while(layers.size() > models.size())
+					models.add(new ENIMModel());
+				while(layers.size() < models.size())
+					models.remove(0);
+				for(int i = 0; i < layers.size(); i++) {
+
+					EntityState state = layers.get(i);
+					models.get(i).reload(state.model(), state.size()[0], state.size()[1]);
+				}
+			}
+		});
 	}
 
 	public EntityState getState(RenderState state) {
@@ -107,10 +131,19 @@ public class StateManager {
 		return model;
 	}
 
+	public ENIMModel getLayerModel(RenderState state, int index) {
+
+		List<ENIMModel> list = layerMap.get(state.toString());
+		if(list == null)
+			throw new IllegalArgumentException("State " + state + " is invalid for properties: " + properties);
+		return list.get(index);
+	}
+
 	public void setAllInvalid() {
 
 		modelMap.values().forEach(ENIMModel::setMissingno);
 		stateMap.replaceAll((k, v) -> EntityModel.MISSING_STATE);
+		layerMap.values().forEach(List::clear);
 	}
 
 	private class BlockForwardingRenderState implements RenderState {
