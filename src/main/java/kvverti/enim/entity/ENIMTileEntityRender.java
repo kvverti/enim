@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 
 import kvverti.enim.entity.state.RenderState;
 import kvverti.enim.entity.state.StateManager;
@@ -113,6 +113,12 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 	public int getColorOverlay(T tile, int colorIndex) {
 
 		return 0xffffff;
+	}
+
+	@Override
+	public final ImmutableList<RenderState> getValidStates() {
+
+		return stateManager.getRenderStates();
 	}
 
 	@Override

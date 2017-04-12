@@ -21,7 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.ResourceLocation;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 
 import kvverti.enim.entity.state.RenderState;
 import kvverti.enim.entity.state.StateManager;
@@ -270,6 +270,12 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 	protected final ResourceLocation getEntityTexture(T entity) {
 
 		return stateManager.getState(getStateFromEntity(entity)).texture();
+	}
+
+	@Override
+	public final ImmutableList<RenderState> getValidStates() {
+
+		return stateManager.getRenderStates();
 	}
 
 	@Override

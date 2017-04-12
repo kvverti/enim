@@ -13,7 +13,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import kvverti.enim.entity.ENIMModel;
@@ -74,6 +74,11 @@ public class StateManager {
 	public RenderState getDefaultState() {
 
 		return defaultState;
+	}
+
+	public ImmutableList<RenderState> getRenderStates() {
+
+		return ImmutableList.copyOf(renderStates.values());
 	}
 
 	public void setDefaultState(RenderState state) {

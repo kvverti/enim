@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import javax.imageio.ImageIO;
 
@@ -101,6 +102,19 @@ public class EntityState {
 			scale = defaults.scale;
 		if(Float.isNaN(y))
 			y = defaults.y;
+	}
+
+	EntityState replaceLayers(Collection<? extends EntityState> layers) {
+
+		EntityState res = new EntityState(model);
+		res.texture = texture;
+		res.overlay = overlay;
+		res.size[0] = size[0];
+		res.size[1] = size[1];
+		res.scale = scale;
+		res.y = y;
+		res.layers = ImmutableList.copyOf(layers);
+		return res;
 	}
 
 	@Override

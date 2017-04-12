@@ -102,17 +102,18 @@ public final class EnimRenderingRegistry {
 		for(Map.Entry<ResourceLocation, ReloadableRender> entry : renders.entrySet()) {
 
 			ResourceLocation estateLoc = entry.getKey();
+			ReloadableRender render = entry.getValue();
 			try(Reader rd = Util.getReaderFor(manager, estateLoc)) {
 
 				Logger.info("Compiling models for " + estateLoc);
-				EntityStateMap states = EntityModel.GSON.fromJson(rd, EntityStateMap.class);
-				entry.getValue().reload(states);
+				EntityStateMap states = EntityStateMap.from(rd, render.getValidStates());
+				render.reload(states);
 
 			} catch(JsonParseException|IOException|AbieParseException e) {
 
 				Logger.error("Exception when parsing models for " + estateLoc);
 				Logger.error(e);
-				entry.getValue().setMissingno();
+				render.setMissingno();
 			}
 		}
 		Logger.info("Reload complete");

@@ -15,6 +15,8 @@ import com.google.gson.reflect.TypeToken;
 import kvverti.enim.Keys;
 import kvverti.enim.Vec3f;
 import kvverti.enim.entity.animation.AnimType;
+import kvverti.enim.model.multipart.Condition;
+import kvverti.enim.model.multipart.Rule;
 
 /**
  * This class represents the contents of an entity model file, located in the {@value Keys#MODELS_DIR} directory. Properties
@@ -35,6 +37,8 @@ public class EntityModel {
 		.registerTypeAdapter(EntityState.class, new EntityState.Deserializer())
 		.registerTypeAdapter(EntityStateMap.class, new EntityStateMap.Deserializer())
 		.registerTypeAdapter(EntityModel.class, new EntityModel.Deserializer())
+		.registerTypeAdapter(Condition.class, new Condition.Deserializer())
+		.registerTypeAdapter(Rule.class, new Rule.Deserializer())
 		.create();
 
 	/**

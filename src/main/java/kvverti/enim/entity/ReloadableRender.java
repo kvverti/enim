@@ -2,8 +2,9 @@ package kvverti.enim.entity;
 
 import net.minecraft.util.ResourceLocation;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 
+import kvverti.enim.entity.state.RenderState;
 import kvverti.enim.model.EntityStateMap;
 
 /**
@@ -15,6 +16,11 @@ import kvverti.enim.model.EntityStateMap;
  * @see kvverti.enim.entity.state.StateManager
  */
 public interface ReloadableRender {
+
+	/**
+	 * Returns the list of valid states for this render
+	 */
+	ImmutableList<RenderState> getValidStates();
 
 	/**
 	 * Reloads this render from the game resources. This enables the render's models to be changed while the game is running.

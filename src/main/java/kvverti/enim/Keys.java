@@ -51,6 +51,7 @@ public final class Keys {
 	public static final String ABIE_KEY_COSINE = "cosine";
 
 	public static final String STATES_TAG = "states";
+	public static final String MULTIPART_TAG = "multipart";
 	public static final String STATES_DEFAULTS = "defaults";
 	public static final String STATE_NORMAL = "normal";
 	public static final String STATE_MODEL_NAME = "model";
