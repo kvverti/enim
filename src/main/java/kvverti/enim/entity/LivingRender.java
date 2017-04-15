@@ -28,6 +28,24 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 		return !entity.isInvisible() || !entity.isInvisibleToPlayer(Entities.thePlayer());
 	}
 
+	@Override
+	public Vec3f getBaseColor(T entity, EntityInfo info) {
+
+		//tint red when damaged
+		if(entity.hurtTime > 0 || entity.deathTime > 0)
+			return Vec3f.of(1.0f, 0.5f, 0.5f);
+		return Vec3f.IDENTITY;
+	}
+
+	@Override
+	public float getBaseAlpha(T entity, EntityInfo info) {
+
+		//invisible mobs as translucent to players in creative/spectator
+		if(entity.isInvisible() && !entity.isInvisibleToPlayer(Entities.thePlayer()))
+			return 0.25f;
+		return 1.0f;
+	}
+
 	/* Must call super.preRender(entity, state, info); in subclasses!! */
 	@Override
 	protected void preRender(T entity, EntityInfo info) {
@@ -36,21 +54,6 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 		//fall over when dead
 		if(entity.deathTime > 0)
 			rotateCorpse(entity);
-		//tint red when damaged
-		if(entity.hurtTime > 0 || entity.deathTime > 0) {
-
-			GlStateManager.color(1.0f, 0.5f, 0.5f);
-			IntFunction<Vec3f> col = info.color;
-			Vec3f base = Vec3f.of(1.0f, 0.5f, 0.5f);
-			info.color = i -> base.scale(col.apply(i));
-		}
-		//invisible mobs as translucent to players in creative/spectator
-		if(entity.isInvisible() && !entity.isInvisibleToPlayer(Entities.thePlayer())) {
-
-			GlStateManager.enableBlend();
-			GlStateManager.blendFunc(770, 771);
-			GlStateManager.color(1.0f, 1.0f, 1.0f, 0.25f);
-		}
 		//"Dinnerbone" or "Grumm" mobs render upside down
 		if(entity.hasCustomName()) {
 

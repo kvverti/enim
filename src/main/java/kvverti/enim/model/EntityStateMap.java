@@ -20,6 +20,10 @@ import kvverti.enim.model.multipart.Rule;
 /** An immutable collection of EntityStates for use in deserializing entitystate files. */
 public class EntityStateMap extends ForwardingMap<String, EntityState> {
 
+	private static final EntityState EMPTY = EntityModel.GSON.fromJson(
+		"{\"model\":\"builtin/missingno\",\"texture\":\"builtin/missingno\",\"size\":[64,32],\"y\":0,\"scale\":0}",
+		EntityState.class);
+
 	private final ImmutableMap<String, EntityState> states;
 
 	/** For Json deserialization. */
@@ -52,7 +56,8 @@ public class EntityStateMap extends ForwardingMap<String, EntityState> {
 		for(Rule r : rules)
 			if(r.condition().fulfills(renderState))
 				layers.addAll(r.layers());
-		if(layers.isEmpty()); //todo: handle no matching rules.
+		if(layers.isEmpty())
+			return EMPTY;
 		EntityState base = layers.remove(0);
 		return base.replaceLayers(layers);
 	}

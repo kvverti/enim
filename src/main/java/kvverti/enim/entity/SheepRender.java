@@ -36,13 +36,10 @@ public class SheepRender extends LivingRender<EntitySheep> {
 			int index1 = (entity.ticksExisted / speed + entity.getEntityId()) % len;
 			int index2 = (index1 + 1) % len;
 			float partial = (entity.ticksExisted % speed + info.partialTicks) / speed;
-			float[] color1 = EntitySheep.getDyeRgb(EnumDyeColor.byMetadata(index1));
-			float[] color2 = EntitySheep.getDyeRgb(EnumDyeColor.byMetadata(index2));
-			return Vec3f.of(Entities.interpolate(color1[0], color2[0], partial),
-				Entities.interpolate(color1[1], color2[1], partial),
-				Entities.interpolate(color1[2], color2[2], partial));
+			Vec3f color1 = Vec3f.of(EntitySheep.getDyeRgb(EnumDyeColor.byMetadata(index1)));
+			Vec3f color2 = Vec3f.of(EntitySheep.getDyeRgb(EnumDyeColor.byMetadata(index2)));
+			return color1.interpolate(color2, partial);
 		}
-		float[] color = EntitySheep.getDyeRgb(entity.getFleeceColor());
-		return Vec3f.of(color[0], color[1], color[2]);
+		return Vec3f.of(EntitySheep.getDyeRgb(entity.getFleeceColor()));
 	}
 }

@@ -107,7 +107,8 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 		info.headYaw = headYaw(entity, yaw);
 		info.entityPitch = entity.rotationPitch;
 		info.scale = 0.0625f * currentState.scale();
-		info.color = i -> getColorOverlay(entity, info, i);
+		info.color = i -> i < 0 ? getBaseColor(entity, info) : getBaseColor(entity, info).scale(getColorOverlay(entity, info, i));
+		info.alpha = getBaseAlpha(entity, info);
 		preRender(entity, info);
 		if(shouldRender(entity)) {
 
@@ -192,6 +193,18 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 	 * Method called immediately after the main model and any layers are rendered.
 	 */
 	protected void postRender(T entity, EntityInfo info) { }
+
+	/** Returns the color in RGB format that will be multiplied onto all model elements, regardless of tintindex. */
+	public Vec3f getBaseColor(T entity, EntityInfo info) {
+
+		return Vec3f.IDENTITY;
+	}
+
+	/** Returns the alpha value that will be applied to all model elements, regardless of tintindex. */
+	public float getBaseAlpha(T entity, EntityInfo info) {
+
+		return 1.0f;
+	}
 
 	/**
 	 * Returns the color in RGB format that will be overlayed (multiplied) onto applicable model elements. This method is partially bound

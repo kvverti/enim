@@ -16,6 +16,7 @@ import kvverti.enim.entity.state.StateManager;
 import kvverti.enim.model.EntityState;
 import kvverti.enim.model.EntityStateMap;
 import kvverti.enim.Keys;
+import kvverti.enim.Vec3f;
 
 public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecialRenderer<T> implements ReloadableRender {
 
@@ -54,8 +55,12 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 		EntityInfo info = new EntityInfo();
 		info.partialTicks = partialTicks;
 		info.scale = 0.0625f * currentState.scale();
+		info.color = i -> i < 0 ? getBaseColor(tileEntity, info) : getBaseColor(tileEntity, info).scale(getColorOverlay(tileEntity, info, i));
 		preRender(tileEntity, info);
 		model.render(tileEntity, info);
+		ResourceLocation overlay = currentState.overlay();
+		if(overlay != null)
+			renderOverlay(tileEntity, info, model, overlay);
 		List<EntityState> layers = currentState.getLayers();
 		for(int i = 0; i < layers.size(); i++)
 			renderLayer(tileEntity, info, layers.get(i), stateManager.getLayerModel(renderState, i));
@@ -70,6 +75,9 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 		GlStateManager.rotate(layer.y(), 0.0f, 1.0f, 0.0f);
 		info.scale = 0.0625f * layer.scale();
 		model.render(tile, info);
+		ResourceLocation overlay = currentState.overlay();
+		if(overlay != null)
+			renderOverlay(tile, info, model, overlay);
 		GlStateManager.popMatrix();
 	}
 
@@ -107,12 +115,18 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 	 */
 	protected void postRender(T tile, EntityInfo info) { }
 
+	/** Returns the color in RGB format that will be multiplied onto all model elements, regardless of tintindex. */
+	public Vec3f getBaseColor(T tile, EntityInfo info) {
+
+		return Vec3f.IDENTITY;
+	}
+
 	/**
 	 * Returns the color in RGB format that will be overlayed (multiplied) onto applicable model elements.
 	 */
-	public int getColorOverlay(T tile, int colorIndex) {
+	public Vec3f getColorOverlay(T tile, EntityInfo info, int colorIndex) {
 
-		return 0xffffff;
+		return Vec3f.IDENTITY;
 	}
 
 	@Override

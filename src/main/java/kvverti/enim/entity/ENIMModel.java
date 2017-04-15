@@ -116,18 +116,6 @@ public class ENIMModel extends ModelBase {
 			setAnglesHelper(anim, frame, info.partialTicks);
 	}
 
-	@Deprecated
-	private void animateNoLooping(Entity entity, EntityInfo info, AnimType type, ToIntBiFunction<Entity, Boolean> frameFunc) {
-
-		if(anims.containsKey(type)) {
-
-			Animation anim = anims.get(type);
-			int frame = frameFunc.applyAsInt(entity, anim.shouldScaleWithMovement());
-			if(frame >= 0 && frame < anim.frameCount())
-				setAnglesHelper(anim, frame, info.partialTicks);
-		}
-	}
-
 	private void resetAngles() {
 
 		boxes.values().forEach(box -> {

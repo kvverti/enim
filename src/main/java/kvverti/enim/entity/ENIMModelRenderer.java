@@ -76,7 +76,7 @@ public class ENIMModelRenderer extends ModelRenderer {
 		if(!isHidden && showModel) {
 
 			float scale = info.scale;
-			if(!compiled) compileDisplayList(scale * defaultScale);
+			if(!compiled) compileDisplayList(scale);
 			GlStateManager.pushMatrix();
 			//transform element into position
 			GlStateManager.translate(offsetX, offsetY, offsetZ);
@@ -95,17 +95,14 @@ public class ENIMModelRenderer extends ModelRenderer {
 			GlStateManager.rotate(-toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
 			GlStateManager.rotate(-toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
 			GlStateManager.rotate(+toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
-			//render
-			if(tintIndex >= 0) {
-
-				Vec3f col = info.color.apply(tintIndex);
-				GlStateManager.color(col.x, col.y, col.z);
-			}
-			if(translucent) makeLucent();
-			GlStateManager.callList(displayList());
-			if(translucent) endLucent();
-			//do some transformations so children render properly
 			GlStateManager.scale(defaultScale, defaultScale, defaultScale);
+			//render
+			Vec3f color = info.color.apply(tintIndex);
+			if(translucent || info.alpha < 1.0f) makeLucent();
+			GlStateManager.color(color.x, color.y, color.z, info.alpha);
+			GlStateManager.callList(displayList());
+			if(translucent || info.alpha < 1.0f) endLucent();
+			//do some transformations so children render properly
 			GlStateManager.translate(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
 			GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
 			//render children

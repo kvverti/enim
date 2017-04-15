@@ -13,4 +13,5 @@ public final class EntityInfo {
 	public float entityPitch;
 	public float scale = 1.0f;
 	public IntFunction<Vec3f> color = i -> Vec3f.IDENTITY;
+	public float alpha = 1.0f;
 }

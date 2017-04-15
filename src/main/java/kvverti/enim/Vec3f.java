@@ -2,6 +2,7 @@ package kvverti.enim;
 
 import java.util.Objects;
 import java.util.function.DoubleUnaryOperator;
+import java.util.function.DoubleBinaryOperator;
 import java.io.IOException;
 
 import com.google.gson.TypeAdapter;
@@ -42,6 +43,11 @@ public final class Vec3f {
 			: new Vec3f(x, y, z);
 	}
 
+	public static Vec3f of(float[] values) {
+
+		return of(values[0], values[1], values[2]);
+	}
+
 	private static boolean equals(Vec3f vec, float x, float y, float z) {
 
 		return equalsOrNaN(vec.x, x) && equalsOrNaN(vec.y, y) && equalsOrNaN(vec.z, z);
@@ -52,31 +58,59 @@ public final class Vec3f {
 		return Float.isNaN(f1) ? Float.isNaN(f2) : f1 == f2;
 	}
 
+	/** Returns the result of adding the given Vec3f to this Vec3f. */
 	public Vec3f add(Vec3f other) {
 
 		return Vec3f.of(x + other.x, y + other.y, z + other.z);
 	}
 
+	/** Returns the result of scaling this Vec3f by the given amount. */
 	public Vec3f scale(float scalar) {
 
 		return Vec3f.of(x * scalar, y * scalar, z * scalar);
 	}
 
-	/** Pairwise scaling */
+	/** Returns the result of scaling this Vec3f by the corresponding elements of the given Vec3f. */
 	public Vec3f scale(Vec3f other) {
 
 		return Vec3f.of(x * other.x, y * other.y, z * other.z);
 	}
 
+	/** Returns the result of applying the given mapping function to this Vec3f. */
 	public Vec3f map(DoubleUnaryOperator mapper) {
 
 		return Vec3f.of((float) mapper.applyAsDouble(x), (float) mapper.applyAsDouble(y), (float) mapper.applyAsDouble(z));
 	}
 
+	/** Returns the result of combining this Vec3f with the given Vec3f, using the given combiner. */
+	public Vec3f combine(Vec3f other, DoubleBinaryOperator mapper) {
+
+		return Vec3f.of(
+			(float) mapper.applyAsDouble(x, other.x),
+			(float) mapper.applyAsDouble(y, other.y),
+			(float) mapper.applyAsDouble(z, other.z));
+	}
+
+	/** Returns the result of interpolating the given amount between this Vec3f and the given Vec3f. */
+	public Vec3f interpolate(Vec3f to, float percent) {
+
+		float oneMinusPercent = 1.0f - percent;
+		return Vec3f.of(
+			x * oneMinusPercent + to.x * percent,
+			y * oneMinusPercent + to.y * percent,
+			z * oneMinusPercent + to.z * percent);
+	}
+
+	/** Returns the value of this Vec3f as a float[] of length 3. */
+	public float[] toFloatArray() {
+
+		return new float[] { x, y, z };
+	}
+
 	@Override
 	public String toString() {
 
-		return String.format("[%f, %f, %f]", x, y, z);
+		return String.format("[%s, %s, %s]", x, y, z);
 	}
 
 	@Override
