@@ -12,6 +12,7 @@ public final class Keys {
 	public static final String PROP_SHADOW_SIZE = "shadowsize";
 	public static final String PROP_HELD_ITEM_ORIGIN_RIGHT = "righthand";
 	public static final String PROP_HELD_ITEM_ORIGIN_LEFT = "lefthand";
+	public static final String PROP_HELMET_ORIGIN = "helmet";
 	public static final String PROP_META_PARENT = "element";
 	public static final String PROP_META_ORIGIN = "position";
 	public static final String PROP_META_ROTATION = "rotation";

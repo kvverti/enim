@@ -1,0 +1,71 @@
+{
+	"properties": {
+		"nameplate": 19,
+		"shadowsize": 11
+	},
+	"elements": [
+		{
+			"name": "body",
+			"from": [3,-2,16],
+			"to": [13,14,24],
+			"uv": [28,8],
+			"origin": [8,14,16],
+			"rotation": [90,0,0]
+		},
+		{
+			"name": "head",
+			"from": [4,8,14],
+			"to": [12,16,22],
+			"uv": [0,0],
+			"origin": [8,8,14],
+			"head": true
+		},
+		{
+			"name": "snout",
+			"parent": "head",
+			"from": [6,9,22],
+			"to": [10,12,23],
+			"uv": [16,16]
+		},
+		{
+			"name": "left_foreleg",
+			"from": [9,0,11],
+			"to": [13,6,15],
+			"uv": [0,16],
+			"origin": [11,6,13]
+		},
+		{
+			"name": "right_foreleg",
+			"from": [3,0,11],
+			"to": [7,6,15],
+			"uv": [0,16],
+			"origin": [5,6,13]
+		},
+		{
+			"name": "left_hindleg",
+			"from": [9,0,-1],
+			"to": [13,6,3],
+			"uv": [0,16],
+			"origin": [11,6,1]
+		},
+		{
+			"name": "right_hindleg",
+			"from": [3,0,-1],
+			"to": [7,6,3],
+			"uv": [0,16],
+			"origin": [5,6,1]
+		}
+	],
+	"animations": {
+		"moving": {
+			"scaled": true,
+			"script": "quadruped_swing",
+			"with": {
+				"front_left": "left_foreleg",
+				"front_right": "right_foreleg",
+				"rear_left": "left_hindleg",
+				"rear_right": "right_hindleg"
+			}
+		}
+	}
+}

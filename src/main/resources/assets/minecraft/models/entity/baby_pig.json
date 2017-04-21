@@ -1,0 +1,12 @@
+{
+	"properties": {
+		"nameplate": 24,
+		"shadowsize": 11
+	},
+	"imports": {
+		"pig": ["*","animations:*"]
+	},
+	"overrides": {
+		"head": { "scale": 2 }
+	}
+}

@@ -1,16 +1,20 @@
 package kvverti.enim.entity;
 
-import java.util.function.IntFunction;
-
 import net.minecraft.block.properties.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.text.TextFormatting;
 
 import kvverti.enim.Vec3f;
+import kvverti.enim.model.ModelProperties;
 
 public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 
@@ -64,6 +68,53 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 				GlStateManager.rotate(180.0f, 0.0f, 0.0f, 1.0f);
 			}
 		}
+	}
+
+	@Override
+	protected void postRender(T entity, EntityInfo info) {
+
+		//render held/worn items
+		boolean leftHanded = entity.getPrimaryHand() == EnumHandSide.LEFT;
+		ItemStack right, left, head;
+		right = leftHanded ? entity.getHeldItemOffhand() : entity.getHeldItemMainhand();
+		left = leftHanded ? entity.getHeldItemMainhand() : entity.getHeldItemOffhand();
+		head = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+		//test
+		//right = new ItemStack(net.minecraft.init.Items.FLINT, 1, 0);
+		//left = new ItemStack(net.minecraft.init.Items.DIAMOND, 1, 0);
+		//head = new ItemStack(net.minecraft.init.Blocks.GLASS, 1, 0);
+		ModelProperties properties = getCurrentEntityState().model().properties();
+		renderItem(entity, info, right, TransformType.THIRD_PERSON_RIGHT_HAND, properties.rightHand());
+		renderItem(entity, info, left, TransformType.THIRD_PERSON_LEFT_HAND, properties.leftHand());
+		if(!(head.getItem() instanceof ItemArmor) //prevent armor rendering as an item
+			|| ((ItemArmor) head.getItem()).getEquipmentSlot() != EntityEquipmentSlot.HEAD)
+			renderItem(entity, info, head, TransformType.HEAD, properties.helmet());
+		super.postRender(entity, info);
+	}
+
+	private void renderItem(T entity, EntityInfo info, ItemStack stack, TransformType type, ModelProperties.OriginPoint origin) {
+
+		if(stack.isEmpty())
+			return;
+		GlStateManager.pushMatrix();
+		//transform to the parent's position, if applicable
+		if(!origin.parent().isEmpty()) {
+
+			ENIMModelRenderer parent = getStateManager().getModel(getStateFromEntity(entity)).getBox(origin.parent());
+			parent.transformWithoutRendering(info);
+		}
+		//apply specified transformations
+		float scale = info.scale;
+		Vec3f coords = origin.coords();
+		GlStateManager.translate((coords.x - 8.0f) * scale, -coords.y * scale, (8.0f - coords.z) * scale);
+		Vec3f rot = origin.rotation();
+		GlStateManager.rotate(-rot.z, 0.0f, 0.0f, 1.0f);
+		GlStateManager.rotate(-rot.y, 0.0f, 1.0f, 0.0f);
+		GlStateManager.rotate(+rot.x, 1.0f, 0.0f, 0.0f);
+		//render
+		boolean leftHand = type == TransformType.THIRD_PERSON_LEFT_HAND;
+		Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, stack, type, leftHand);
+		GlStateManager.popMatrix();
 	}
 
 	protected void rotateCorpse(T entity) {

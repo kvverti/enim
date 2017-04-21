@@ -1,14 +1,17 @@
 {
+	"defaults": {
+		"texture": "entity/sheep/sheep"
+	},
 	"states": {
 		"baby=false,shorn=false": [
-			{ "model": "sheep", "texture": "entity/sheep/sheep" },
+			{ "model": "sheep" },
 			{ "model": "sheep_wool", "texture": "entity/sheep/sheep_fur" }
 		],
 		"baby=true,shorn=false": [
-			{ "model": "baby_sheep", "texture": "entity/sheep/sheep", "scale": 0.5 },
+			{ "model": "baby_sheep", "scale": 0.5 },
 			{ "model": "baby_sheep_wool", "texture": "entity/sheep/sheep_fur", "scale": 0.5 }
 		],
-		"baby=false,shorn=true": { "model": "sheep", "texture": "entity/sheep/sheep" },
-		"baby=true,shorn=true": { "model": "baby_sheep", "texture": "entity/sheep/sheep", "scale": 0.5 }
+		"baby=false,shorn=true": { "model": "sheep" },
+		"baby=true,shorn=true": { "model": "baby_sheep", "scale": 0.5 }
 	}
 }

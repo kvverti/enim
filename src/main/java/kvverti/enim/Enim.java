@@ -2,6 +2,7 @@ package kvverti.enim;
 
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.*;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -17,6 +18,7 @@ import net.minecraft.entity.passive.*;
 import net.minecraft.entity.item.*;
 import net.minecraft.entity.monster.*;
 import net.minecraft.tileentity.*;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 
 import kvverti.enim.entity.*;
@@ -42,7 +44,7 @@ public final class Enim {
 	public static final IForgeRegistry<AnimType> ANIM_TYPE_REGISTRY = new RegistryBuilder<AnimType>()
 		.setName(new ResourceLocation(ID, "animations"))
 		.setType(AnimType.class)
-		.setIDRange(0, 128)
+		.setIDRange(0, 4095)
 		.create();
 
 	@SubscribeEvent
@@ -55,6 +57,8 @@ public final class Enim {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
 
+		//the null armor material
+		EnumHelper.addArmorMaterial("ENIM_NONE", "none", 0, new int[4], 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
 		Logger.info("Registering Minecraft entity renders...");
 	//	registerEntityRender(EntityBoat.class, m -> new BoatRender(m, "minecraft", "boat"));
 		registerEntityRender(EntityLeashKnot.class, "minecraft", "lead", BasicRender::new);
@@ -70,6 +74,7 @@ public final class Enim {
 		registerEntityRender(EntitySilverfish.class, "minecraft", "silverfish", BasicLivingRender::new);
 		registerEntityRender(EntityBat.class, "minecraft", "bat", BasicLivingRender::new);
 		registerEntityRender(EntitySheep.class, "minecraft", "sheep", SheepRender::new);
+		registerEntityRender(EntityPig.class, "minecraft", "pig", PigRender::new);
 	}
 
 	@EventHandler

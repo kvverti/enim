@@ -71,6 +71,12 @@ public class ENIMModelRenderer extends ModelRenderer {
 		(int)	(to.z - from.z));
 	}
 
+	public void transformWithoutRendering(EntityInfo info) {
+
+		moveIntoPosition(info);
+		fixTransformsForChildren(info.scale);
+	}
+
 	public void render(EntityInfo info) {
 
 		if(!isHidden && showModel) {
@@ -78,37 +84,48 @@ public class ENIMModelRenderer extends ModelRenderer {
 			float scale = info.scale;
 			if(!compiled) compileDisplayList(scale);
 			GlStateManager.pushMatrix();
-			//transform element into position
-			GlStateManager.translate(offsetX, offsetY, offsetZ);
-			GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-			GlStateManager.rotate(-defaultRotations.z, 0.0f, 0.0f, 1.0f);
-			GlStateManager.rotate(-defaultRotations.y, 0.0f, 1.0f, 0.0f);
-			GlStateManager.rotate(+defaultRotations.x, 1.0f, 0.0f, 0.0f);
-			//apply special transformations
-			if(head) {
-
-				GlStateManager.rotate(info.headYaw, 0.0f, 1.0f, 0.0f);
-				GlStateManager.rotate(info.entityPitch, 1.0f, 0.0f, 0.0f);
-			}
-			//apply animations
-			GlStateManager.translate(shiftDistanceX * scale, -shiftDistanceY * scale, -shiftDistanceZ * scale);
-			GlStateManager.rotate(-toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
-			GlStateManager.rotate(-toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
-			GlStateManager.rotate(+toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
-			GlStateManager.scale(defaultScale, defaultScale, defaultScale);
 			//render
+			moveIntoPosition(info);
 			Vec3f color = info.color.apply(tintIndex);
 			if(translucent || info.alpha < 1.0f) makeLucent();
 			GlStateManager.color(color.x, color.y, color.z, info.alpha);
 			GlStateManager.callList(displayList());
 			if(translucent || info.alpha < 1.0f) endLucent();
-			//do some transformations so children render properly
-			GlStateManager.translate(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
-			GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
 			//render children
+			fixTransformsForChildren(scale);
 			if(childModels != null) childModels.forEach(box -> ((ENIMModelRenderer) box).render(info));
 			GlStateManager.popMatrix();
 		}
+	}
+
+	private void moveIntoPosition(EntityInfo info) {
+
+		float scale = info.scale;
+		//transform element into position
+		GlStateManager.translate(offsetX, offsetY, offsetZ);
+		GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+		GlStateManager.rotate(-defaultRotations.z, 0.0f, 0.0f, 1.0f);
+		GlStateManager.rotate(-defaultRotations.y, 0.0f, 1.0f, 0.0f);
+		GlStateManager.rotate(+defaultRotations.x, 1.0f, 0.0f, 0.0f);
+		//apply special transformations
+		if(head) {
+
+			GlStateManager.rotate(info.headYaw, 0.0f, 1.0f, 0.0f);
+			GlStateManager.rotate(info.entityPitch, 1.0f, 0.0f, 0.0f);
+		}
+		//apply animations
+		GlStateManager.translate(shiftDistanceX * scale, -shiftDistanceY * scale, -shiftDistanceZ * scale);
+		GlStateManager.rotate(-toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
+		GlStateManager.rotate(-toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
+		GlStateManager.rotate(+toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
+		GlStateManager.scale(defaultScale, defaultScale, defaultScale);
+	}
+
+	private void fixTransformsForChildren(float scale) {
+
+		//do some transformations so children render properly
+		GlStateManager.translate(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
+		GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
 	}
 
 	@Override

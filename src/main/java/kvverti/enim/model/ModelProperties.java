@@ -22,6 +22,9 @@ public class ModelProperties {
 	@SerializedName(Keys.PROP_HELD_ITEM_ORIGIN_RIGHT)
 	private final OriginPoint heldItemRight;
 
+	@SerializedName(Keys.PROP_HELMET_ORIGIN)
+	private final OriginPoint helmet;
+
 	/** For Json deserialization */
 	private ModelProperties() {
 
@@ -29,6 +32,7 @@ public class ModelProperties {
 		shadowSize = 0.0f;
 		heldItemLeft = OriginPoint.DEFAULT;
 		heldItemRight = OriginPoint.DEFAULT;
+		helmet = OriginPoint.DEFAULT;
 	}
 
 	/**
@@ -54,6 +58,12 @@ public class ModelProperties {
 	 */
 	public OriginPoint rightHand() { return heldItemRight; }
 
+	/**
+	 * The position of the entity's head, for helmet rendering purposes. Items worn on the head (both normal items and armor) will be
+	 * rendered at this position and will move with the element specified as the parent.
+	 */
+	public OriginPoint helmet() { return helmet; }
+
 	@Override
 	public String toString() {
 
@@ -63,7 +73,7 @@ public class ModelProperties {
 			Keys.PROP_HELD_ITEM_ORIGIN_RIGHT, heldItemRight);
 	}
 
-	/** A point in entity space associated with a ModelElement */
+	/** A point in entity space associated with a ModelElement, with optional rotation. */
 	public static class OriginPoint {
 
 		public static final OriginPoint DEFAULT =
@@ -81,10 +91,13 @@ public class ModelProperties {
 		/** For Json deserialization */
 		private OriginPoint() { parent = ""; coords = Vec3f.ORIGIN; rotation = Vec3f.ORIGIN; }
 
+		/** Returns the parent element for this point, or the empty string if there is no parent element. */
 		public String parent() { return parent; }
 
+		/** Returns the position of this point relative to the origin of the block space. */
 		public Vec3f coords() { return coords; }
 
+		/** Returns the rotation of this point. */
 		public Vec3f rotation() { return rotation; }
 
 		@Override

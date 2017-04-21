@@ -172,6 +172,13 @@ public class ENIMModel extends ModelBase {
 		anims.clear();
 	}
 
+	public ENIMModelRenderer getBox(String name) {
+
+		if(!boxes.containsKey(name))
+			throw new IllegalArgumentException(name);
+		return boxes.get(name);
+	}
+
 	/** @deprecated Replaced by {@link #render(Entity, EntityInfo)} */
 	@Override
 	@Deprecated
