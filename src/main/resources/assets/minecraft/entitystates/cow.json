@@ -1,0 +1,9 @@
+{
+	"defaults": {
+		"texture": "entity/cow/cow"
+	},
+	"states": {
+		"baby=false": { "model": "cow" },
+		"baby=true": { "model": "baby_cow", "scale": 0.5 }
+	}
+}

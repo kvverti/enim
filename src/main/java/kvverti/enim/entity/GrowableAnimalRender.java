@@ -1,19 +1,19 @@
 package kvverti.enim.entity;
 
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.passive.EntityChicken;
+import net.minecraft.entity.EntityLivingBase;
 
 import kvverti.enim.entity.state.RenderState;
 
-public class ChickenRender extends LivingRender<EntityChicken> {
+public class GrowableAnimalRender<T extends EntityLivingBase> extends LivingRender<T> {
 
-	public ChickenRender(RenderManager manager) {
+	public GrowableAnimalRender(RenderManager manager) {
 
 		super(manager, BABY);
 	}
 
 	@Override
-	public RenderState getStateFromEntity(EntityChicken entity) {
+	public RenderState getStateFromEntity(T entity) {
 
 		return getStateManager().getDefaultState()
 			.withProperty(BABY, entity.isChild());

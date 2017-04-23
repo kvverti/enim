@@ -67,7 +67,7 @@ public final class Enim {
 		registerEntityRender(EntityMagmaCube.class, "minecraft", "magma_cube", SlimeRender::new);
 		registerEntityRender(EntityCreeper.class, "minecraft", "creeper", CreeperRender::new);
 		registerEntityRender(EntityRabbit.class, "minecraft", "rabbit", RabbitRender::new);
-		registerEntityRender(EntityChicken.class, "minecraft", "chicken", ChickenRender::new);
+		registerEntityRender(EntityChicken.class, "minecraft", "chicken", GrowableAnimalRender::new);
 		registerEntityRender(EntityBlaze.class, "minecraft", "blaze", BasicLivingRender::new);
 		registerEntityRender(EntitySpider.class, "minecraft", "spider", BasicLivingRender::new);
 		registerEntityRender(EntityCaveSpider.class, "minecraft", "cave_spider", BasicLivingRender::new);
@@ -75,6 +75,7 @@ public final class Enim {
 		registerEntityRender(EntityBat.class, "minecraft", "bat", BasicLivingRender::new);
 		registerEntityRender(EntitySheep.class, "minecraft", "sheep", SheepRender::new);
 		registerEntityRender(EntityPig.class, "minecraft", "pig", PigRender::new);
+		registerEntityRender(EntityCow.class, "minecraft", "cow", GrowableAnimalRender::new);
 	}
 
 	@EventHandler
