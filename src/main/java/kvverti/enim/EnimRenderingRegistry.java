@@ -26,6 +26,7 @@ import kvverti.enim.abiescript.AbieParseException;
 import kvverti.enim.entity.ReloadableRender;
 import kvverti.enim.entity.Entities;
 import kvverti.enim.entity.EntityInfo;
+import kvverti.enim.entity.color.CustomDyeColor;
 import kvverti.enim.model.Animation;
 import kvverti.enim.model.EntityStateMap;
 import kvverti.enim.model.EntityModel;
@@ -99,6 +100,7 @@ public final class EnimRenderingRegistry {
 	private void reloadRenders(IResourceManager manager) {
 
 		Logger.info("Reloading resources...");
+		//reload models
 		for(Map.Entry<ResourceLocation, ReloadableRender> entry : renders.entrySet()) {
 
 			ResourceLocation estateLoc = entry.getKey();
@@ -109,13 +111,16 @@ public final class EnimRenderingRegistry {
 				EntityStateMap states = EntityStateMap.from(rd, render.getValidStates());
 				render.reload(states);
 
-			} catch(JsonParseException|IOException|AbieParseException e) {
+			} catch(JsonParseException|IOException e) {
 
 				Logger.error("Exception when parsing models for " + estateLoc);
 				Logger.error(e);
 				render.setMissingno();
 			}
 		}
+		//reload custom dye colors
+		for(CustomDyeColor colors : Enim.DYE_COLOR_REGISTRY.getValues())
+			colors.reloadColors(manager);
 		Logger.info("Reload complete");
 	}
 }

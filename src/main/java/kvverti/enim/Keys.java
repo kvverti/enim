@@ -2,6 +2,7 @@ package kvverti.enim;
 
 import java.util.regex.*;
 
+/** Contains constants used in the ENIM entity model format and the AbieScript specification. */
 public final class Keys {
 
 	public static final int INTERPOLATION_TICKS = 3;
@@ -67,6 +68,7 @@ public final class Keys {
 	public static final String MODELS_DIR = "models/entity/";
 	public static final String ANIMS_DIR = "models/entity/animations/";
 	public static final String TEXTURES_DIR = "textures/";
+	public static final String COLORS_DIR = "colors/";
 
 	public static final String MISSING_DEFINITION = "builtin/missingno";
 

@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import kvverti.enim.entity.properties.PropertyArmor;
 import kvverti.enim.entity.state.RenderState;
 
+/** Base for entities that may wear armor. */
 public class ArmorLivingRender<T extends EntityLivingBase> extends LivingRender<T> {
 
 	public static final IProperty<ArmorMaterial> ARMOR_HEAD = PropertyArmor.create("armor_head");
@@ -20,6 +21,7 @@ public class ArmorLivingRender<T extends EntityLivingBase> extends LivingRender<
 	public static final IProperty<ArmorMaterial> ARMOR_LEGS = PropertyArmor.create("armor_legs");
 	public static final IProperty<ArmorMaterial> ARMOR_FEET = PropertyArmor.create("armor_feet");
 
+	/** Construct an instance with the given additional properties. Do not include the armor properties in the array. */
 	public ArmorLivingRender(RenderManager manager, IProperty<?>... properties) {
 
 		super(manager, plusArmor(properties));
@@ -36,6 +38,10 @@ public class ArmorLivingRender<T extends EntityLivingBase> extends LivingRender<
 		return res;
 	}
 
+	/**
+	 * Calculates the armor states for the given entity. Subclasses with additional properties should override this method to apply
+	 * additional properties to the returned result by first calling {@code super.getStateFromEntity(entity)}.
+	 */
 	@Override
 	public RenderState getStateFromEntity(T entity) {
 

@@ -16,6 +16,7 @@ import net.minecraft.util.text.TextFormatting;
 import kvverti.enim.Vec3f;
 import kvverti.enim.model.ModelProperties;
 
+/** Base class for ENIM reloadable living entity (mob) renders. */
 public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 
 	public static final float NAMETAG_VISIBILITY_RANGE_SQ = 64.0f * 64.0f;

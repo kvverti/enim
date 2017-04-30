@@ -31,6 +31,7 @@ import kvverti.enim.Keys;
 import kvverti.enim.Util;
 import kvverti.enim.Vec3f;
 
+/** Base class for ENIM reloadable entity renders. */
 public abstract class ENIMRender<T extends Entity> extends Render<T> implements ReloadableRender {
 
 //	protected final RenderManager renderManager;

@@ -4,6 +4,7 @@ import net.minecraftforge.fml.common.FMLLog;
 
 import org.apache.logging.log4j.Level;
 
+/** Static logging utility */
 public final class Logger {
 
 	private Logger() { }

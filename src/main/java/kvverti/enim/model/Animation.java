@@ -1,10 +1,14 @@
 package kvverti.enim.model;
 
+import java.io.InputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.client.resources.IResource;
+import net.minecraft.client.resources.SimpleResource;
+import net.minecraft.client.resources.data.MetadataSerializer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
@@ -12,9 +16,11 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 import kvverti.enim.Keys;
+import kvverti.enim.Logger;
 import kvverti.enim.Util;
 import kvverti.enim.abiescript.AbieScript;
 import kvverti.enim.abiescript.AnimationParser;
+import kvverti.enim.abiescript.AbieParseException;
 import kvverti.enim.entity.Entities;
 
 public class Animation {
@@ -59,6 +65,17 @@ public class Animation {
 
 		private static final java.lang.reflect.Type definesType = new TypeToken<Map<String, String>>(){}.getType();
 		private static final AnimationParser parser = new AnimationParser();
+		private static final Animation NOOP;
+		static {
+
+			final String script = "pause 1\n"; //empty AbieScript animation
+			@SuppressWarnings("deprecation")
+			InputStream input = new java.io.StringBufferInputStream(script);
+			ResourceLocation loc = new ResourceLocation("enim:noop");
+			IResource rsc = new SimpleResource("default", loc, input, null, new MetadataSerializer());
+			AbieScript abiescript = parser.parse(rsc);
+			NOOP = new Animation(abiescript, Collections.emptyMap(), false);
+		}
 
 		public Animation deserialize(JsonElement json, java.lang.reflect.Type type, JsonDeserializationContext context) {
 
@@ -72,9 +89,21 @@ public class Animation {
 				boolean scaleWithMovement = obj.has(Keys.ANIM_SCALE_WITH_MOVEMENT) ?
 					obj.getAsJsonPrimitive(Keys.ANIM_SCALE_WITH_MOVEMENT).getAsBoolean()
 					: false;
+				validate(script, defines);
 				return new Animation(script, defines, scaleWithMovement);
 
-			} catch(IOException e) { throw new JsonIOException("IO-error parsing animation", e); }
+			} catch(IOException|AbieParseException e) {
+
+				Logger.error(e);
+				return NOOP;
+			}
+		}
+
+		private void validate(AbieScript script, Map<String, String> defines) {
+
+			//make sure defines contains mappings for all keys in the script
+			if(!script.defines().equals(defines.keySet()))
+				throw new JsonParseException("Defines in script and defines in model do not match");
 		}
 	}
 }

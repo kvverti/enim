@@ -18,6 +18,8 @@ import kvverti.enim.entity.animation.AnimType;
 import kvverti.enim.model.multipart.Condition;
 import kvverti.enim.model.multipart.Rule;
 
+import static java.util.stream.Collectors.toSet;
+
 /**
  * This class represents the contents of an entity model file, located in the {@value Keys#MODELS_DIR} directory. Properties
  * of class instances correspond approximately one-to-one with the model format representation, except that imported elements
@@ -157,7 +159,36 @@ public class EntityModel {
 				for(ModelElement element : elements)
 					element.applyOverride(overrides.get(element.name()));
 			}
+			validate(properties, elements, animations);
 			return new EntityModel(properties, elements, animations);
+		}
+
+		private void validate(ModelProperties properties, Set<ModelElement> elements, Map<AnimType, Animation> animations) {
+
+			Set<String> elementNames = elements.stream().map(ModelElement::name).collect(toSet());
+			//make sure element parents reference valid elements, and validate elements
+			for(ModelElement elem : elements) {
+
+				elem.verify();
+				ensureContains(elem.parent(), elementNames);
+			}
+			//make sure properties reference valid elements
+			ensureContains(properties.helmet().parent(), elementNames);
+			ensureContains(properties.leftHand().parent(), elementNames);
+			ensureContains(properties.rightHand().parent(), elementNames);
+			//make sure animations defines reference valid elements
+			for(Animation anim : animations.values()) {
+
+				Set<String> elemNames = anim.defines().stream().map(anim::toElementName).collect(toSet());
+				for(String name : elemNames)
+					ensureContains(name, elementNames);
+			}
+		}
+
+		private void ensureContains(String name, Set<String> names) {
+
+			if(name != null && !name.isEmpty() && !names.contains(name))
+				throw new JsonParseException(String.format("Element %s does not exist", name));
 		}
 	}
 }

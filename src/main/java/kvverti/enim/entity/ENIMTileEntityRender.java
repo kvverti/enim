@@ -18,6 +18,7 @@ import kvverti.enim.model.EntityStateMap;
 import kvverti.enim.Keys;
 import kvverti.enim.Vec3f;
 
+/** Base class for ENIM reloadable tile entity renders. */
 public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecialRenderer<T> implements ReloadableRender {
 
 	private final StateManager stateManager;
