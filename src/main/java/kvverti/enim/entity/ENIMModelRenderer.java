@@ -24,6 +24,9 @@ public class ENIMModelRenderer extends ModelRenderer {
 	private final boolean translucent;
 	private final boolean head;
 	private final int tintIndex;
+	private final float pivotDeltaX;
+	private final float pivotDeltaY;
+	private final float pivotDeltaZ;
 	private boolean compiled = false;
 	public float shiftDistanceX;
 	public float shiftDistanceY;
@@ -48,6 +51,9 @@ public class ENIMModelRenderer extends ModelRenderer {
 		translucent = false;
 		head = false;
 		tintIndex = -1;
+		pivotDeltaX = 0.0f;
+		pivotDeltaY = 0.0f;
+		pivotDeltaZ = 0.0f;
 		addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
 	}
 
@@ -59,7 +65,7 @@ public class ENIMModelRenderer extends ModelRenderer {
 		translucent = features.isTranslucent();
 		head = features.isHead();
 		tintIndex = features.tintIndex();
-		Vec3f origin = features.origin(), from = features.from(), to = features.to();
+		Vec3f origin = features.origin(), pivot = features.pivot(), from = features.from(), to = features.to();
 		int[] uv = features.uv();
 		setTextureOffset(uv[0], uv[1]);
 		setRotationPoint(origin.x - 8.0f, -origin.y, 8.0f - origin.z);
@@ -69,6 +75,9 @@ public class ENIMModelRenderer extends ModelRenderer {
 		(int)	(to.x - from.x),
 		(int)	(to.y - from.y),
 		(int)	(to.z - from.z));
+		pivotDeltaX = pivot.x - origin.x;
+		pivotDeltaY = origin.y - pivot.y;
+		pivotDeltaZ = origin.z - pivot.z;
 	}
 
 	public void transformWithoutRendering(EntityInfo info) {
@@ -104,6 +113,7 @@ public class ENIMModelRenderer extends ModelRenderer {
 		//transform element into position
 		GlStateManager.translate(offsetX, offsetY, offsetZ);
 		GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+		GlStateManager.translate(pivotDeltaX * scale, pivotDeltaY * scale, pivotDeltaZ * scale);
 		GlStateManager.rotate(-defaultRotations.z, 0.0f, 0.0f, 1.0f);
 		GlStateManager.rotate(-defaultRotations.y, 0.0f, 1.0f, 0.0f);
 		GlStateManager.rotate(+defaultRotations.x, 1.0f, 0.0f, 0.0f);
@@ -118,6 +128,7 @@ public class ENIMModelRenderer extends ModelRenderer {
 		GlStateManager.rotate(-toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
 		GlStateManager.rotate(-toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
 		GlStateManager.rotate(+toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
+		GlStateManager.translate(-pivotDeltaX * scale, -pivotDeltaY * scale, -pivotDeltaZ * scale);
 		GlStateManager.scale(defaultScale, defaultScale, defaultScale);
 	}
 

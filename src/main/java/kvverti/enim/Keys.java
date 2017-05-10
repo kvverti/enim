@@ -29,6 +29,7 @@ public final class Keys {
 	public static final String ELEM_FROM = "from";
 	public static final String ELEM_TO = "to";
 	public static final String ELEM_ROTPOINT = "origin";
+	public static final String ELEM_PIVOT_POINT = "pivot";
 	public static final String ELEM_DEFROT = "rotation";
 	public static final String ELEM_SCALE = "scale";
 	public static final String ELEM_TRANSLUCENT = "translucent";

@@ -9,8 +9,10 @@ import kvverti.enim.Vec3f;
 /** Class representing a model element in the "elements" tag */
 public final class ModelElement {
 
+	private static int nameIdx = 0;
+
 	@SerializedName(Keys.ELEM_NAME)
-	private final String name;
+	private String name = "element" + nameIdx++;
 
 	@SerializedName(Keys.ELEM_TEXCOORDS)
 	private final int[] uv = { 0, 0 };
@@ -23,6 +25,9 @@ public final class ModelElement {
 
 	@SerializedName(Keys.ELEM_ROTPOINT)
 	private Vec3f origin = Vec3f.ORIGIN;
+
+	@SerializedName(Keys.ELEM_PIVOT_POINT)
+	private Vec3f pivot = null; //defaults to value of origin
 
 	@SerializedName(Keys.ELEM_DEFROT)
 	private Vec3f rotation = Vec3f.ORIGIN;
@@ -43,28 +48,42 @@ public final class ModelElement {
 	private int tintIndex = -1;
 
 	/** For Json deserialization */
-	private ModelElement() { name = ""; }
+	private ModelElement() { }
 
+	/** The name of this element. */
 	public String name() { return name; }
 
+	/** The parent element to this element, or null if there is no parent. */
 	public String parent() { return parent; }
 
+	/** The lower vertex of this cuboid element. */
 	public Vec3f from() { return from; }
 
+	/** The upper vertex of this cuboid element. */
 	public Vec3f to() { return to; }
 
+	/** The texture coordinates for this element. */
 	public int[] uv() { return uv.clone(); }
 
+	/** The origin of transformation for this element. */
 	public Vec3f origin() { return origin; }
 
+	/** The rotation origin of this element. Defaults to the value of {@link #origin()}. */
+	public Vec3f pivot() { return pivot != null ? pivot : origin; }
+
+	/** The rotation of this element about its pivot. */
 	public Vec3f rotation() { return rotation; }
 
+	/** The scale of this element relative to its origin. */
 	public float scale() { return scale; }
 
+	/** Whether this element supports partial alpha. */
 	public boolean isTranslucent() { return translucent; }
 
+	/** Whether this element represents a head. */
 	public boolean isHead() { return head; }
 
+	/** The index of the colormap to multiply onto this element. Returns -1 if not colored. */
 	public int tintIndex() { return tintIndex; }
 
 	void applyOverride(Override value) {

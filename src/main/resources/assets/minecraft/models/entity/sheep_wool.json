@@ -2,10 +2,11 @@
 	"elements": [
 		{
 			"name": "body",
-			"from": [4,6,15],
-			"to": [12,19,21],
+			"from": [4,3,16],
+			"to": [12,16,22],
 			"uv": [28,8],
-			"origin": [8,18,16],
+			"origin": [8,10,19],
+			"pivot": [8,18,16],
 			"rotation": [90,0,0],
 			"scale": 1.5,
 			"tintindex": 0
