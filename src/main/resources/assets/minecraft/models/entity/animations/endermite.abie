@@ -1,0 +1,18 @@
+define center
+define front1
+define front2
+define back1
+
+over 7
+{
+shift  sine +1 -0.125 front2 +0.3 -0 -0
+rotate sine +1 -0.125 front2 -0  -4 -0
+
+shift  sine +1 -0 front1 +0.3 -0 -0
+rotate sine +1 -0 front1 -0  -4 -0
+
+rotate sine +1 -0.25 center -0 +4 -0
+
+shift  sine +1 -0 back1 +0.3 -0 -0
+rotate sine +1 -0 back1 -0  +4 -0
+}

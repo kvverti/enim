@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.ResourceLocation;
@@ -232,8 +233,21 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 			if(weightedOpacity > 0.0f)
 				renderShadow(entity, x, y, z, shadowSize, weightedOpacity, partialTicks);
 		}
-		//render fire: TODO
+		//render fire
+		//seems like the second half of this conditional could be added to the EntityPlayer class,
+		//but oh well, I'm not Mojang
+		if(entity.canRenderOnFire() && !(entity instanceof EntityPlayer && ((EntityPlayer) entity).isSpectator()))
+			Util.invokeUnchecked(this, renderEntityOnFire, entity, x, y, z, partialTicks);
 	}
+
+	private static final Method renderEntityOnFire = Util.findMethod(Render.class,
+		void.class,
+		new String[] { "func_76977_a", "renderEntityOnFire" },
+		Entity.class,
+		double.class,
+		double.class,
+		double.class,
+		float.class);
 
 	private static final Method mapShadowOnBlock = Util.findMethod(Render.class,
 		void.class,
@@ -249,7 +263,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 		double.class,
 		double.class);
 
-	/** Modified from Render#renderShadow */
+	/** Modified from Render#renderShadow to accept custom shadow size */
 	private void renderShadow(Entity entity, double x, double y, double z, float size, float opacity, float partialTicks) {
 
 		GlStateManager.enableBlend();

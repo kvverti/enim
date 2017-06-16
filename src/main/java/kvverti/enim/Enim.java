@@ -87,6 +87,7 @@ public final class Enim {
 		registerEntityRender(EntitySpider.class, "minecraft", "spider", BasicLivingRender::new);
 		registerEntityRender(EntityCaveSpider.class, "minecraft", "cave_spider", BasicLivingRender::new);
 		registerEntityRender(EntitySilverfish.class, "minecraft", "silverfish", BasicLivingRender::new);
+		registerEntityRender(EntityEndermite.class, "minecraft", "endermite", BasicLivingRender::new);
 		registerEntityRender(EntityBat.class, "minecraft", "bat", BasicLivingRender::new);
 		registerEntityRender(EntitySheep.class, "minecraft", "sheep", SheepRender::new);
 		registerEntityRender(EntityPig.class, "minecraft", "pig", PigRender::new);
@@ -100,6 +101,7 @@ public final class Enim {
 		Logger.info("Regsitering Minecraft tile entity renders...");
 		registerTileEntityRender(TileEntitySign.class, "minecraft", "sign", new SignRender());
 		registerTileEntityRender(TileEntityBanner.class, "minecraft", "banner", new BannerRender());
+		registerTileEntityRender(TileEntityChest.class, "minecraft", "chest", new ChestRender(0));
 	}
 
 	@EventHandler

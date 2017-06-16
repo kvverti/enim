@@ -80,6 +80,7 @@ public class CustomDyeColor extends IForgeRegistryEntry.Impl<CustomDyeColor> {
 	}
 
 	private static final Type colormapType = new TypeToken<Map<String, String>>(){}.getType();
+	private static final Gson lolGson = new Gson();
 
 	/** Reloads the colors from resources. Note that this does <em>not</em> reload fallback colors. */
 	public void reloadColors(IResourceManager manager) {
@@ -88,7 +89,7 @@ public class CustomDyeColor extends IForgeRegistryEntry.Impl<CustomDyeColor> {
 		ResourceLocation location = getResourceLocation();
 		try(Reader reader = Util.getReaderFor(manager, location)) {
 
-			Map<String, String> initColorMap = new Gson().fromJson(reader, colormapType);
+			Map<String, String> initColorMap = lolGson.fromJson(reader, colormapType);
 			Map<EnumDyeColor, Vec3f> finalColorMap = new EnumMap<>(EnumDyeColor.class);
 			for(Map.Entry<String, String> entry : initColorMap.entrySet()) {
 

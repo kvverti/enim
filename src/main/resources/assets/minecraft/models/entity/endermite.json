@@ -1,0 +1,50 @@
+{
+	"properties": {
+		"nameplate": 6,
+		"shadowsize": 4.5
+	},
+	"elements": [
+		{
+			"name": "body",
+			"parent": "tail1",
+			"from": [5,0,5.5],
+			"to": [11,4,10.5],
+			"uv": [0,5],
+			"origin": [8,0,8]
+		},
+		{
+			"name": "head",
+			"parent": "body",
+			"from": [6,0,10.5],
+			"to": [10,3,12.5],
+			"uv": [0,0],
+			"origin": [8,0,11.5]
+		},
+		{
+			"name": "tail1",
+			"from": [6.5,0,4.5],
+			"to": [9.5,3,5.5],
+			"uv": [0,14],
+			"origin": [8,0,5]
+		},
+		{
+			"name": "tail2",
+			"parent": "tail1",
+			"from": [7.5,0,3.5],
+			"to": [8.5,2,4.5],
+			"uv": [0,18],
+			"origin": [8,0,4]
+		}
+	],
+	"animations": {
+		"idle": {
+			"script": "endermite",
+			"with": {
+				"center": "tail1",
+				"front1": "body",
+				"front2": "head",
+				"back1": "tail2"
+			}
+		}
+	}
+}

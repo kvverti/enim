@@ -1,0 +1,7 @@
+{
+	"states": {
+		"normal": [
+			{ "model": "endermite", "texture": "entity/endermite" }
+		]
+	}
+}

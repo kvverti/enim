@@ -58,13 +58,27 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 		info.scale = 0.0625f * currentState.scale();
 		info.color = i -> i < 0 ? getBaseColor(tileEntity, info) : getBaseColor(tileEntity, info).scale(getColorOverlay(tileEntity, info, i));
 		preRender(tileEntity, info);
-		model.render(tileEntity, info);
-		ResourceLocation overlay = currentState.overlay();
-		if(overlay != null)
-			renderOverlay(tileEntity, info, model, overlay);
-		List<EntityState> layers = currentState.getLayers();
-		for(int i = 0; i < layers.size(); i++)
-			renderLayer(tileEntity, info, layers.get(i), stateManager.getLayerModel(renderState, i));
+		if(shouldRender(tileEntity)) {
+
+			model.render(tileEntity, info);
+			ResourceLocation overlay = currentState.overlay();
+			if(overlay != null)
+				renderOverlay(tileEntity, info, model, overlay);
+			List<EntityState> layers = currentState.getLayers();
+			for(int i = 0; i < layers.size(); i++)
+				renderLayer(tileEntity, info, layers.get(i), stateManager.getLayerModel(renderState, i));
+		} else {
+			ResourceLocation overlay = currentState.overlay();
+			if(overlay != null)
+				renderOverlay(tileEntity, info, model, overlay);
+			List<EntityState> layers = currentState.getLayers();
+			for(int i = 0; i < layers.size(); i++) {
+
+				overlay = layers.get(i).overlay();
+				if(overlay != null)
+					renderOverlay(tileEntity, info, stateManager.getLayerModel(renderState, i), overlay);
+			}
+		}
 		postRender(tileEntity, info);
 		GlStateManager.popMatrix();
 	}
@@ -105,6 +119,8 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 		GlStateManager.disableBlend();
 		GlStateManager.enableAlpha();
 	}
+
+	public boolean shouldRender(T tile) { return true; }
 
 	/**
 	 * Method called immediately before the main model is rendered.

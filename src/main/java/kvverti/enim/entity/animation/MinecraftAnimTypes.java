@@ -44,6 +44,12 @@ public final class MinecraftAnimTypes {
 	/** AnimType for when a living entity is eating. Only used for entities that eat as part of their AI. */
 	public static final AnimType EAT;
 
+	/** AnimType for when a chest opens. */
+	public static final AnimType OPEN;
+
+	/** AnimType for when a chest closes. */
+	public static final AnimType CLOSE;
+
 	static {
 
 		IDLE = new AnimType(true, AnimPredicate.alwaysTrue()).setRegistryName("minecraft:idle");
@@ -74,6 +80,8 @@ public final class MinecraftAnimTypes {
 		DAMAGE = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:damage");
 		EAT = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:eat");
 		EAT.setCustomAnimPredicate(EntitySheep.class, (e, i) -> e.getHeadRotationPointY(i.partialTicks) > 0.0f);
+		OPEN = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:open");
+		CLOSE = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:close");
 	}
 
 	private MinecraftAnimTypes() { }
