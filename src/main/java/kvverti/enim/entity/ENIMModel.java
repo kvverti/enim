@@ -33,25 +33,14 @@ public class ENIMModel extends ModelBase {
 	private final List<ENIMModelRenderer> lucents = new ArrayList<>();
 	private final Map<AnimType, Animation> anims = new LinkedHashMap<>();
 
-	public void render(Entity entity, EntityInfo info) {
+	public void render(GEntity entity, EntityInfo info) {
 
 		setRotationAngles(entity, info);
-		renderHelper(info);
-	}
-
-	public void render(TileEntity tile, EntityInfo info) {
-
-		setRotationAngles(tile, info);
-		renderHelper(info);
-	}
-
-	private void renderHelper(EntityInfo info) {
-
 		opaques.forEach(box -> box.render(info));
 		lucents.forEach(box -> box.render(info));
 	}
 
-	public void setRotationAngles(Entity entity, EntityInfo info) {
+	public void setRotationAngles(GEntity entity, EntityInfo info) {
 
 		resetAngles();
 		for(Map.Entry<AnimType, Animation> entry : anims.entrySet()) {
@@ -64,12 +53,6 @@ public class ENIMModel extends ModelBase {
 			else if(!type.isLooped())
 				animateNoLooping(type, entity, info, anim);
 		}
-	}
-
-	public void setRotationAngles(TileEntity tile, EntityInfo info) {
-
-		resetAngles();
-		animateLooping(tile, info, MinecraftAnimTypes.IDLE, true);
 	}
 
 	private void setAnglesHelper(Animation anim, int frame, float partialTicks) {
@@ -88,7 +71,7 @@ public class ENIMModel extends ModelBase {
 		}
 	}
 
-	private void animateLooping(AnimType type, Entity entity, EntityInfo info, Animation anim) {
+	private void animateLooping(AnimType type, GEntity entity, EntityInfo info, Animation anim) {
 
 		int frame = (EntityFrameTimers.timeValue(type, entity, anim.shouldScaleWithMovement())
 			& Integer.MAX_VALUE) % anim.frameCount();
@@ -96,18 +79,7 @@ public class ENIMModel extends ModelBase {
 		setAnglesHelper(anim, frame, info.partialTicks);
 	}
 
-	private void animateLooping(TileEntity tile, EntityInfo info, AnimType type, boolean predicate) {
-
-		if(anims.containsKey(type) && predicate) {
-
-			Animation anim = anims.get(type);
-			int frame = randomCounterFor(tile) % anim.frameCount();
-			if(frame < 0) frame += anim.frameCount();
-			setAnglesHelper(anim, frame, info.partialTicks);
-		}
-	}
-
-	private void animateNoLooping(AnimType type, Entity entity, EntityInfo info, Animation anim) {
+	private void animateNoLooping(AnimType type, GEntity entity, EntityInfo info, Animation anim) {
 
 		if(type.shouldAnimate(entity, info))
 			EntityFrameTimers.restart(type, entity);

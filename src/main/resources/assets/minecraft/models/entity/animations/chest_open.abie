@@ -1,0 +1,6 @@
+define lid
+
+init
+rotate lid +90 -0 -0
+over 12
+rotate sine +0.25 lid -90 -0 -0

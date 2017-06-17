@@ -6,11 +6,13 @@ import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.monster.EntitySlime;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.TileEntityEnderChest;
 
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 
-import kvverti.enim.Ticker;
 import kvverti.enim.entity.Entities;
 import kvverti.enim.entity.EntityInfo;
 
@@ -53,12 +55,13 @@ public final class MinecraftAnimTypes {
 	static {
 
 		IDLE = new AnimType(true, AnimPredicate.alwaysTrue()).setRegistryName("minecraft:idle");
+		IDLE.addAnimPredicate(TileEntity.class, AnimPredicate.alwaysTrue());
 		MOVE = new AnimType(true, (e, i) -> i.speedSq > 0.0025f).setRegistryName("minecraft:moving");
 		AIR = new AnimType(true, (e, i) -> !e.isInWater() && !e.onGround).setRegistryName("minecraft:airborne");
-		AIR.setCustomAnimPredicate(EntityBat.class, (e, i) -> !e.getIsBatHanging());
+		AIR.addAnimPredicate(EntityBat.class, (e, i) -> !e.getIsBatHanging());
 		SWIM = new AnimType(true, (e, i) -> e.isInWater() && !e.onGround).setRegistryName("minecraft:swimming");
-		TRACK = new AnimType(true, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:tracking");
-		TRACK.setCustomAnimPredicate(EntityLivingBase.class, new EventBasedPredicate<EntityLivingBase, LivingSetAttackTargetEvent>(true) {
+		TRACK = new AnimType(true).setRegistryName("minecraft:tracking");
+		TRACK.addAnimPredicate(EntityLivingBase.class, new EventBasedPredicate<EntityLivingBase, LivingSetAttackTargetEvent>(true) {
 
 			@Override
 			protected boolean shouldAnimate(LivingSetAttackTargetEvent event) {
@@ -66,9 +69,9 @@ public final class MinecraftAnimTypes {
 				return event.getTarget() != null;
 			}
 		}.create());
-		JUMP = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:jump");
-		JUMP.setCustomAnimPredicate(EntitySlime.class, (e, i) -> e.motionY > 0.20f);
-		JUMP.setCustomAnimPredicate(EntityLivingBase.class, new EventBasedPredicate<EntityLivingBase, LivingJumpEvent>(false) {
+		JUMP = new AnimType(false).setRegistryName("minecraft:jump");
+		JUMP.addAnimPredicate(EntitySlime.class, (e, i) -> e.motionY > 0.20f);
+		JUMP.addAnimPredicate(EntityLivingBase.class, new EventBasedPredicate<EntityLivingBase, LivingJumpEvent>(false) {
 
 			@Override
 			protected boolean multiplayerFallback(EntityLivingBase e, EntityInfo i) {
@@ -76,12 +79,16 @@ public final class MinecraftAnimTypes {
 				return e.motionY > 0.42f || (e instanceof EntityRabbit && e.motionY > 0.10f);
 			}
 		}.create());
-		ATTACK = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:attack");
-		DAMAGE = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:damage");
-		EAT = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:eat");
-		EAT.setCustomAnimPredicate(EntitySheep.class, (e, i) -> e.getHeadRotationPointY(i.partialTicks) > 0.0f);
-		OPEN = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:open");
-		CLOSE = new AnimType(false, AnimPredicate.alwaysFalse()).setRegistryName("minecraft:close");
+		ATTACK = new AnimType(false).setRegistryName("minecraft:attack");
+		DAMAGE = new AnimType(false).setRegistryName("minecraft:damage");
+		EAT = new AnimType(false).setRegistryName("minecraft:eat");
+		EAT.addAnimPredicate(EntitySheep.class, (e, i) -> e.getHeadRotationPointY(i.partialTicks) > 0.0f);
+		OPEN = new AnimType(false).setRegistryName("minecraft:open");
+		OPEN.addAnimPredicate(TileEntityChest.class, (e, i) -> e.lidAngle - e.prevLidAngle > 0.0f);
+		OPEN.addAnimPredicate(TileEntityEnderChest.class, (e, i) -> e.lidAngle - e.prevLidAngle > 0.0f);
+		CLOSE = new AnimType(false).setRegistryName("minecraft:close");
+		CLOSE.addAnimPredicate(TileEntityChest.class, (e, i) -> e.lidAngle - e.prevLidAngle < 0.0f);
+		CLOSE.addAnimPredicate(TileEntityEnderChest.class, (e, i) -> e.lidAngle - e.prevLidAngle < 0.0f);
 	}
 
 	private MinecraftAnimTypes() { }

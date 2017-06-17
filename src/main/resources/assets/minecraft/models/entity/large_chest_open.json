@@ -1,0 +1,9 @@
+{
+	"imports": {
+		"large_chest": ["*"],
+		"chest_open": ["animations:*"]
+	},
+	"overrides": {
+		"lid": { "rotation": [-90,0,0] }
+	}
+}

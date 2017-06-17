@@ -2,6 +2,7 @@ package kvverti.enim.entity;
 
 import java.util.Calendar;
 
+import net.minecraft.block.BlockChest;
 import net.minecraft.block.properties.*;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
@@ -14,6 +15,7 @@ public class ChestRender extends ENIMTileEntityRender<TileEntityChest> {
 	public static final IProperty<EnumFacing> FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	public static final IProperty<Boolean> DOUBLE = PropertyBool.create("double");
 	public static final IProperty<Boolean> OPEN = PropertyBool.create("open");
+	public static final IProperty<Boolean> TRAPPED = PropertyBool.create("trapped");
 
 	private static final ResourceLocation XMAS = new ResourceLocation("textures/entity/chest/christmas.png");
 	private static final ResourceLocation XMAS_DOUBLE = new ResourceLocation("textures/entity/chest/christmas_double.png");
@@ -22,7 +24,7 @@ public class ChestRender extends ENIMTileEntityRender<TileEntityChest> {
 
 	public ChestRender() {
 
-		super(FACING, DOUBLE, OPEN);
+		super(FACING, DOUBLE, OPEN, TRAPPED);
 		Calendar c = Calendar.getInstance();
 		if(c.get(Calendar.MONTH) == Calendar.DECEMBER) {
 
@@ -34,13 +36,14 @@ public class ChestRender extends ENIMTileEntityRender<TileEntityChest> {
 
 	public ChestRender(int unused) {
 
-		super(FACING, DOUBLE, OPEN);
+		super(FACING, DOUBLE, OPEN, TRAPPED);
 		xmas = true;
 	}
 
 	{
 		RenderState state = getStateManager().getDefaultState();
 		getStateManager().setDefaultState(state
+			.withProperty(TRAPPED, false)
 			.withProperty(FACING, EnumFacing.SOUTH)
 			.withProperty(DOUBLE, false)
 			.withProperty(OPEN, false));
@@ -49,9 +52,11 @@ public class ChestRender extends ENIMTileEntityRender<TileEntityChest> {
 	@Override
 	public RenderState getStateFromTile(TileEntityChest tile) {
 
+		RenderState state = getStateManager().getDefaultState()
+			.withProperty(TRAPPED, tile.getChestType() == BlockChest.Type.TRAP);
 		if(!tile.hasWorld())
-			return getStateManager().getDefaultState();
-		return getStateManager().getDefaultState()
+			return state;
+		return state
 			.withProperty(DOUBLE, tile.adjacentChestZPos != null || tile.adjacentChestXPos != null
 				|| tile.adjacentChestXNeg != null || tile.adjacentChestZNeg != null)
 			.withProperty(FACING, EnumFacing.getFront(tile.getBlockMetadata()))

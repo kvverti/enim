@@ -7,16 +7,16 @@ import kvverti.enim.entity.EntityInfo;
 
 /** A function which returns whether an entity should animate given its circumstances. */
 @FunctionalInterface
-public interface AnimPredicate<T extends Entity> {
+public interface AnimPredicate<T> {
 
 	boolean shouldAnimate(T entity, EntityInfo info);
 
-	static <T extends Entity> AnimPredicate<T> alwaysTrue() { return (e, i) -> true; }
+	static <T> AnimPredicate<T> alwaysTrue() { return (e, i) -> true; }
 
-	static <T extends Entity> AnimPredicate<T> alwaysFalse() { return (e, i) -> false; }
+	static <T> AnimPredicate<T> alwaysFalse() { return (e, i) -> false; }
 
 	/** AnimPredicate that uses different computations depending on whether the integrated server is avaliable. */
-	abstract class ServerDependentPredicate<T extends Entity> implements AnimPredicate<T> {
+	abstract class ServerDependentPredicate<T> implements AnimPredicate<T> {
 
 		/** Sole constructor, for use by (usually anonymous) subclasses */
 		protected ServerDependentPredicate() { }

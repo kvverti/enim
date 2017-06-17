@@ -8,8 +8,6 @@ import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
-import kvverti.enim.Ticker;
-
 /** 
  * Utility class for working with {@link Entity}s and {@link TileEntity}s. Also contains convenience methods for common objects
  * found in the {@link Minecraft} class.
@@ -27,11 +25,6 @@ public final class Entities {
 	public static float toDegrees(float radians) {
 
 		return radians * (180.0f / (float) Math.PI);
-	}
-
-	public static int randomCounterFor(TileEntity tile) {
-
-		return Ticker.INSTANCE.ticks(tile);
 	}
 
 	public static float speedSq(Entity entity) {

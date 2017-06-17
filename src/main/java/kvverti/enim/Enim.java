@@ -61,7 +61,7 @@ public final class Enim {
 	public static void registerAnimTypes(RegistryEvent.Register<AnimType> event) {
 
 		Logger.info("Registering Minecraft AnimTypes...");
-		event.getRegistry().registerAll(IDLE, MOVE, AIR, SWIM, TRACK, JUMP, EAT);
+		event.getRegistry().registerAll(IDLE, MOVE, AIR, SWIM, TRACK, JUMP, EAT, OPEN, CLOSE);
 	}
 
 	@SubscribeEvent
@@ -97,11 +97,12 @@ public final class Enim {
 	@EventHandler
 	public void init(FMLInitializationEvent e) {
 
-		EnimRenderingRegistry.init(e);
-		Logger.info("Regsitering Minecraft tile entity renders...");
+		Logger.info("Registering Minecraft tile entity renders...");
 		registerTileEntityRender(TileEntitySign.class, "minecraft", "sign", new SignRender());
 		registerTileEntityRender(TileEntityBanner.class, "minecraft", "banner", new BannerRender());
-		registerTileEntityRender(TileEntityChest.class, "minecraft", "chest", new ChestRender(0));
+		registerTileEntityRender(TileEntityChest.class, "minecraft", "chest", new ChestRender());
+		registerTileEntityRender(TileEntityEnderChest.class, "minecraft", "ender_chest", new EnderChestRender());
+		EnimRenderingRegistry.init(e);
 	}
 
 	@EventHandler

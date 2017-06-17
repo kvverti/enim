@@ -17,6 +17,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import kvverti.enim.entity.EntityInfo;
+import kvverti.enim.entity.GEntity;
 
 import static java.util.Collections.newSetFromMap;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -29,11 +30,6 @@ public final class AnimType extends IForgeRegistryEntry.Impl<AnimType> implement
 	private final boolean looped;
 
 	/**
-	 * The default animation predicate for this type.
-	 */
-	private final AnimPredicate<?> defaultPred;
-
-	/**
 	 * A map containing custom predicates for entities. This is really a map of {@code Class<T>, AnimPredicate<T>}
 	 * for some type T.
 	 */
@@ -43,13 +39,18 @@ public final class AnimType extends IForgeRegistryEntry.Impl<AnimType> implement
 	 * A map containing entities that are currently animating.
 	 * Used for non-looping animations to determine the transition from false to true.
 	 */
-	private final Set<Entity> animatingEntities;
+	private final Set<GEntity> animatingEntities;
+
+	public AnimType(boolean loop) {
+
+		looped = loop;
+		animatingEntities = !loop ? newSetFromMap(new WeakHashMap<>()) : null;
+	}
 
 	public AnimType(boolean loop, AnimPredicate<Entity> defaultPredicate) {
 
-		looped = loop;
-		defaultPred = checkNotNull(defaultPredicate);
-		animatingEntities = !loop ? newSetFromMap(new WeakHashMap<>()) : null;
+		this(loop);
+		customPreds.put(Entity.class, checkNotNull(defaultPredicate));
 	}
 
 	@Override
@@ -66,9 +67,9 @@ public final class AnimType extends IForgeRegistryEntry.Impl<AnimType> implement
 	 * @return Whether the entity should animate
 	 * @throws NullPointerException If entity is null, or if info is null and the predicate used does not accept null.
 	 */
-	public boolean shouldAnimate(Entity entity, EntityInfo info) {
+	public boolean shouldAnimate(GEntity entity, EntityInfo info) {
 
-		boolean condition = getAnimPredicate(entity).shouldAnimate(entity, info);
+		boolean condition = getAnimPredicate(entity).shouldAnimate(entity.getValue(), info);
 		if(looped)
 			return condition;
 		else if(condition) {
@@ -82,20 +83,22 @@ public final class AnimType extends IForgeRegistryEntry.Impl<AnimType> implement
 		return false;
 	}
 
+	/* This is type safe so far as generics haven't been broken anywhere else */
 	@SuppressWarnings("unchecked")
-	private <T extends Entity> AnimPredicate<T> getAnimPredicate(T entity) {
+	private <T> AnimPredicate<T> getAnimPredicate(GEntity entity) {
 
-		Class<?> cls = entity.getClass();
-		while(Entity.class.isAssignableFrom(cls))
+		Class<?> cls = entity.getEntityClass();
+		Class<?> root = entity.getRootClass();
+		while(root.isAssignableFrom(cls))
 			if(customPreds.containsKey(cls))
 				return (AnimPredicate<T>) customPreds.get(cls);
 			else
 				cls = cls.getSuperclass();
-		return (AnimPredicate<T>) defaultPred;
+		return AnimPredicate.alwaysFalse();
 	}
 
 	/**
-	 * Registers a custom animation predicate for the given animation and entity types. This allows one to customize
+	 * Registers an animation predicate for the given animation and entity types. This allows one to customize
 	 * animation conditions to a particular entity type. For example, one could use fields specific to one entity class
 	 * to determine whether entities of that class are animated.
 	 * @param <T> The type of entity
@@ -103,7 +106,7 @@ public final class AnimType extends IForgeRegistryEntry.Impl<AnimType> implement
 	 * @param predicate The predicate
 	 * @throws NullPointerException If any of the parameters are null
 	 */
-	public <T extends Entity> void setCustomAnimPredicate(Class<T> cls, AnimPredicate<? super T> predicate) {
+	public <T> void addAnimPredicate(Class<T> cls, AnimPredicate<? super T> predicate) {
 
 		customPreds.put(checkNotNull(cls), checkNotNull(predicate));
 	}

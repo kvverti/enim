@@ -57,33 +57,34 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 		info.partialTicks = partialTicks;
 		info.scale = 0.0625f * currentState.scale();
 		info.color = i -> i < 0 ? getBaseColor(tileEntity, info) : getBaseColor(tileEntity, info).scale(getColorOverlay(tileEntity, info, i));
+		GEntity e = new GEntity(tileEntity);
 		preRender(tileEntity, info);
 		if(shouldRender(tileEntity)) {
 
-			model.render(tileEntity, info);
+			model.render(e, info);
 			ResourceLocation overlay = currentState.overlay();
 			if(overlay != null)
-				renderOverlay(tileEntity, info, model, overlay);
+				renderOverlay(e, info, model, overlay);
 			List<EntityState> layers = currentState.getLayers();
 			for(int i = 0; i < layers.size(); i++)
-				renderLayer(tileEntity, info, layers.get(i), stateManager.getLayerModel(renderState, i));
+				renderLayer(e, info, layers.get(i), stateManager.getLayerModel(renderState, i));
 		} else {
 			ResourceLocation overlay = currentState.overlay();
 			if(overlay != null)
-				renderOverlay(tileEntity, info, model, overlay);
+				renderOverlay(e, info, model, overlay);
 			List<EntityState> layers = currentState.getLayers();
 			for(int i = 0; i < layers.size(); i++) {
 
 				overlay = layers.get(i).overlay();
 				if(overlay != null)
-					renderOverlay(tileEntity, info, stateManager.getLayerModel(renderState, i), overlay);
+					renderOverlay(e, info, stateManager.getLayerModel(renderState, i), overlay);
 			}
 		}
 		postRender(tileEntity, info);
 		GlStateManager.popMatrix();
 	}
 
-	private void renderLayer(T tile, EntityInfo info, EntityState layer, ENIMModel model) {
+	private void renderLayer(GEntity tile, EntityInfo info, EntityState layer, ENIMModel model) {
 
 		GlStateManager.pushMatrix();
 		bindTexture(layer.texture());
@@ -96,7 +97,7 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 		GlStateManager.popMatrix();
 	}
 
-	private void renderOverlay(T tile, EntityInfo info, ENIMModel model, ResourceLocation overlay) {
+	private void renderOverlay(GEntity tile, EntityInfo info, ENIMModel model, ResourceLocation overlay) {
 
 		bindTexture(overlay);
 		GlStateManager.enableBlend();
@@ -109,8 +110,8 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		model.render(tile, info);
 		//begin magic
-		net.minecraft.util.math.BlockPos pos = tile.getPos();
-		net.minecraft.world.World world = tile.getWorld();
+		net.minecraft.util.math.BlockPos pos = tile.getTileEntity().getPos();
+		net.minecraft.world.World world = tile.getTileEntity().getWorld();
 		int brightness = world != null && world.isBlockLoaded(pos) ?
 			world.getCombinedLight(pos, 0)
 			: 0;

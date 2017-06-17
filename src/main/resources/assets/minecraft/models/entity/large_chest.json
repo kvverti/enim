@@ -1,0 +1,28 @@
+{
+	"imports": {
+		"chest": ["animations:*"]
+	},
+	"elements": [
+		{
+			"name": "body",
+			"from": [1,0,1],
+			"to": [31,10,15],
+			"uv": [0,19]
+		},
+		{
+			"name": "lid",
+			"parent": "body",
+			"from": [1,9,1],
+			"to": [31,14,15],
+			"uv": [0,0],
+			"origin": [16,9,1]
+		},
+		{
+			"name": "latch",
+			"parent": "lid",
+			"from": [15,7,15],
+			"to": [17,11,16],
+			"uv": [0,0]
+		}
+	]
+}

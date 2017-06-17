@@ -112,27 +112,28 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 		info.color = i -> i < 0 ? getBaseColor(entity, info) : getBaseColor(entity, info).scale(getColorOverlay(entity, info, i));
 		info.alpha = getBaseAlpha(entity, info);
 		preRender(entity, info);
+		GEntity e = new GEntity(entity);
 		if(shouldRender(entity)) {
 
-			model.render(entity, info);
+			model.render(e, info);
 			ResourceLocation overlay = currentState.overlay();
 			if(overlay != null)
-				renderOverlay(entity, info, model, overlay);
+				renderOverlay(e, info, model, overlay);
 			List<EntityState> layers = currentState.getLayers();
 			for(int i = 0; i < layers.size(); i++)
-				renderLayer(entity, info, layers.get(i), stateManager.getLayerModel(renderState, i));
+				renderLayer(e, info, layers.get(i), stateManager.getLayerModel(renderState, i));
 		} else {
 			//because invisibility doesn't work with your texture layers, Mojang
 			//or model layers, for that matter, but WHOOP-DE-DOO
 			ResourceLocation overlay = currentState.overlay();
 			if(overlay != null)
-				renderOverlay(entity, info, model, overlay);
+				renderOverlay(e, info, model, overlay);
 			List<EntityState> layers = currentState.getLayers();
 			for(int i = 0; i < layers.size(); i++) {
 
 				overlay = layers.get(i).overlay();
 				if(overlay != null)
-					renderOverlay(entity, info, stateManager.getLayerModel(renderState, i), overlay);
+					renderOverlay(e, info, stateManager.getLayerModel(renderState, i), overlay);
 			}
 		}
 		postRender(entity, info);
@@ -142,7 +143,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 			Util.invokeUnchecked(proxy, renderLeash, entity, x, y, z, yaw, partialTicks);
 	}
 
-	private void renderLayer(T entity, EntityInfo info, EntityState layer, ENIMModel model) {
+	private void renderLayer(GEntity entity, EntityInfo info, EntityState layer, ENIMModel model) {
 
 		GlStateManager.pushMatrix();
 		bindTexture(layer.texture());
@@ -155,20 +156,20 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 		GlStateManager.popMatrix();
 	}
 
-	private void renderOverlay(T entity, EntityInfo info, ENIMModel model, ResourceLocation overlay) {
+	private void renderOverlay(GEntity entity, EntityInfo info, ENIMModel model, ResourceLocation overlay) {
 
 		bindTexture(overlay);
 		GlStateManager.enableBlend();
 		GlStateManager.disableAlpha();
 		GlStateManager.blendFunc(1, 1);
 		//begin magic
-		GlStateManager.depthMask(!entity.isInvisible());
+		GlStateManager.depthMask(!entity.getEntity().isInvisible());
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0f0, 0.0f);
 		//end magic
 		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		model.render(entity, info);
 		//begin magic
-		int brightness = entity.getBrightnessForRender(info.partialTicks);
+		int brightness = entity.getEntity().getBrightnessForRender(info.partialTicks);
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightness % 0x10000, brightness / 0x10000);
 		//end magic
 		GlStateManager.disableBlend();

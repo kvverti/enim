@@ -5,7 +5,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.entity.Entity;
 
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.CacheLoader;
@@ -13,6 +12,7 @@ import com.google.common.cache.CacheBuilder;
 
 import kvverti.enim.Util;
 import kvverti.enim.entity.Entities;
+import kvverti.enim.entity.GEntity;
 
 public final class EntityFrameTimers {
 
@@ -36,12 +36,12 @@ public final class EntityFrameTimers {
 		});
 
 	/** Restarts the counter for the given type and entity */
-	public static void restart(AnimType type, Entity entity) {
+	public static void restart(AnimType type, GEntity entity) {
 
 		counters.getUnchecked(new TimerKey(type, entity)).resetTime();
 	}
 
-	public static int timeValue(AnimType type, Entity entity, boolean scaled) {
+	public static int timeValue(AnimType type, GEntity entity, boolean scaled) {
 
 		TimerKey key = new TimerKey(type, entity);
 		if(!type.isLooped()) {
@@ -63,9 +63,9 @@ public final class EntityFrameTimers {
 		public final AnimType animType;
 
 		/** A reference to the entity */
-		public final Entity entity;
+		public final GEntity entity;
 
-		public TimerKey(AnimType a, Entity e) {
+		public TimerKey(AnimType a, GEntity e) {
 
 			animType = a;
 			entity = e;
@@ -78,7 +78,7 @@ public final class EntityFrameTimers {
 			if(!(o instanceof TimerKey))
 				return false;
 			TimerKey k = (TimerKey) o;
-			return entity == k.entity && (animType.isLooped() ? k.animType.isLooped() : animType == k.animType);
+			return entity.equals(k.entity) && (animType.isLooped() ? k.animType.isLooped() : animType == k.animType);
 		}
 
 		@Override
@@ -91,7 +91,7 @@ public final class EntityFrameTimers {
 		public String toString() {
 
 			return String.format("type=%s, entityClass=%s",
-				animType.isLooped() ? "<looped>" : animType.getName(), entity.getClass().getSimpleName());
+				animType.isLooped() ? "<looped>" : animType.getName(), entity.getEntityClass().getSimpleName());
 		}
 	}
 
@@ -110,11 +110,11 @@ public final class EntityFrameTimers {
 		private int speedAccTick;
 
 		/** A reference to the entity for which this counter was created. */
-		private final Entity entity;
+		private final GEntity entity;
 
-		public TickCounter(Entity e) {
+		public TickCounter(GEntity e) {
 
-			tickOffsetSeed = Objects.hash(e.getUniqueID());
+			tickOffsetSeed = e.getCounterSeed();
 			initWorldTime = worldTime();
 			prevWorldTime = initWorldTime;
 			speedAccTick = 0;
@@ -142,13 +142,13 @@ public final class EntityFrameTimers {
 		private int prevWorldTime;
 
 		/** Updates and accumulates the speed counter. */
-		private int updateSpeedAcc(Entity e) {
+		private int updateSpeedAcc(GEntity e) {
 
 			int worldTime = worldTime();
 			if(worldTime - prevWorldTime > 0) {
 
 				prevWorldTime = worldTime;
-				float speed = Entities.speedSq(e);
+				float speed = !e.isTileEntity() ? Entities.speedSq(e.getEntity()) : 0.0f;
 				if(speed <= 0.0025f)
 					speed = 0.0f;
 				float scalar = Entities.interpolate(1.0f, 4.0f, speed * 100); //magic :o

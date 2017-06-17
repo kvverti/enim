@@ -1,0 +1,4 @@
+define lid
+
+over 12
+rotate cosine +0.25 lid +180 -0 -0
