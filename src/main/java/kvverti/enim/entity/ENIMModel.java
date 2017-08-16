@@ -151,17 +151,17 @@ public class ENIMModel extends ModelBase {
 		return boxes.get(name);
 	}
 
-	/** @deprecated Replaced by {@link #render(Entity, EntityInfo)} */
+	/** @deprecated Replaced by {@link #render(GEntity, EntityInfo)} */
 	@Override
 	@Deprecated
 	public void render(Entity entity, float f1, float f2, float f3, float f4, float f5, float f6) { }
 
-	/** @deprecated Replaced by {@link #setRotationAngles(Entity, EntityInfo)} */
+	/** @deprecated Replaced by {@link #setRotationAngles(GEntity, EntityInfo)} */
 	@Override
 	@Deprecated
 	public void setRotationAngles(float f1, float f2, float f3, float f4, float f5, float f6, Entity entity) { }
 
-	/** @deprecated Replaced by {@link #setRotationAngles(Entity, EntityInfo)} */
+	/** @deprecated Replaced by {@link #setRotationAngles(GEntity, EntityInfo)} */
 	@Override
 	@Deprecated
 	public void setLivingAnimations(net.minecraft.entity.EntityLivingBase entity, float f1, float f2, float f3) { }

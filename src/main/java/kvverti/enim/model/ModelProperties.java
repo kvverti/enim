@@ -59,7 +59,7 @@ public class ModelProperties {
 	public OriginPoint rightHand() { return heldItemRight; }
 
 	/**
-	 * The position of the entity's head, for helmet rendering purposes. Items worn on the head (both normal items and armor) will be
+	 * The position of the entity's head, for helmet rendering purposes. Items worn on the head will be
 	 * rendered at this position and will move with the element specified as the parent.
 	 */
 	public OriginPoint helmet() { return helmet; }

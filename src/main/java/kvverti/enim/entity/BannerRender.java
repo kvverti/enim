@@ -13,7 +13,8 @@ import kvverti.enim.entity.state.RenderState;
 
 public class BannerRender extends SignLikeRender<TileEntityBanner> {
 
-	private final TextureByStateCache textureCache = new TextureByStateCache("banner", 255, 5000);
+	private static final String BANNER_PATTERNS = "minecraft:textures/entity/banner/";
+	private final BannerTextures textureCache = new BannerTextures("b", BANNER_PATTERNS);
 
 	public BannerRender() {
 
@@ -24,7 +25,7 @@ public class BannerRender extends SignLikeRender<TileEntityBanner> {
 	protected void preRender(TileEntityBanner tile, EntityInfo info) {
 
 		super.preRender(tile, info);
-		bindTexture(textureCache.getLocation(tile, getCurrentEntityState()));
+		bindTexture(textureCache.getTexture(tile, getCurrentEntityState()));
 	}
 
 	@Override

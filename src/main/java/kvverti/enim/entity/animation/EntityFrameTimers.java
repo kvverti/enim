@@ -1,7 +1,6 @@
 package kvverti.enim.entity.animation;
 
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import net.minecraft.client.multiplayer.WorldClient;
