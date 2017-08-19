@@ -61,6 +61,7 @@ public final class Enim {
 	public static void registerAnimTypes(RegistryEvent.Register<AnimType> event) {
 
 		Logger.info("Registering Minecraft AnimTypes...");
+		Logger.info("Warnings follow, please ignore");
 		event.getRegistry().registerAll(IDLE, MOVE, AIR, SWIM, TRACK, JUMP, EAT, OPEN, CLOSE);
 	}
 
@@ -68,6 +69,7 @@ public final class Enim {
 	public static void registerCustomDyeColors(RegistryEvent.Register<CustomDyeColor> event) {
 
 		Logger.info("Registering Minecraft CustomDyeColors...");
+		Logger.info("Warnings follow, please ignore");
 		event.getRegistry().register(DEFAULT);
 	}
 
@@ -92,6 +94,7 @@ public final class Enim {
 		registerEntityRender(EntitySheep.class, "minecraft", "sheep", SheepRender::new);
 		registerEntityRender(EntityPig.class, "minecraft", "pig", PigRender::new);
 		registerEntityRender(EntityCow.class, "minecraft", "cow", GrowableAnimalRender::new);
+		registerEntityRender(EntityVillager.class, "minecraft", "villager", VillagerRender::new);
 	}
 
 	@EventHandler
@@ -103,11 +106,6 @@ public final class Enim {
 		registerTileEntityRender(TileEntityChest.class, "minecraft", "chest", new ChestRender());
 		registerTileEntityRender(TileEntityEnderChest.class, "minecraft", "ender_chest", new EnderChestRender());
 		EnimRenderingRegistry.init(e);
-	}
-
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent e) {
-
 	}
 
 	@EventHandler

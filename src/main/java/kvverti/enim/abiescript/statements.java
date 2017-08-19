@@ -183,6 +183,7 @@ abstract class StateAneme extends Statement {
 		.put(Keys.ABIE_KEY_LINEAR, (ω, φ) -> t -> ω * t + φ)
 		.put(Keys.ABIE_KEY_SINE, (ω, φ) -> t -> Math.sin(2.0 * Math.PI * (ω * t + φ)))
 		.put(Keys.ABIE_KEY_COSINE, (ω, φ) -> t -> 0.5 * (1.0 - Math.cos(2.0 * Math.PI * (ω * t + φ))))
+		.put(Keys.ABIE_KEY_CUBIC, (ω, φ) -> t -> Math.pow(ω * t + φ, 3))
 		.build();
 
 	private final String element;

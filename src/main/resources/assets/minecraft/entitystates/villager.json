@@ -1,0 +1,19 @@
+{
+	"defaults": {
+		"size": [64,64]
+	},
+	"states": {
+		"baby=false,profession=farmer": { "model": "villager", "texture": "entity/villager/farmer", "scale": 0.941 },
+		"baby=false,profession=librarian": { "model": "villager", "texture": "entity/villager/librarian", "scale": 0.941 },
+		"baby=false,profession=priest": { "model": "villager", "texture": "entity/villager/priest", "scale": 0.941 },
+		"baby=false,profession=smith": { "model": "villager", "texture": "entity/villager/smith", "scale": 0.941 },
+		"baby=false,profession=butcher": { "model": "villager", "texture": "entity/villager/butcher", "scale": 0.941 },
+		"baby=false,profession=nitwit": { "model": "villager", "texture": "entity/villager/villager", "scale": 0.941 },
+		"baby=true,profession=farmer": { "model": "villager", "texture": "entity/villager/farmer", "scale": 0.471 },
+		"baby=true,profession=librarian": { "model": "villager", "texture": "entity/villager/librarian", "scale": 0.471 },
+		"baby=true,profession=priest": { "model": "villager", "texture": "entity/villager/priest", "scale": 0.471 },
+		"baby=true,profession=smith": { "model": "villager", "texture": "entity/villager/smith", "scale": 0.471 },
+		"baby=true,profession=butcher": { "model": "villager", "texture": "entity/villager/butcher", "scale": 0.471 },
+		"baby=true,profession=nitwit": { "model": "villager", "texture": "entity/villager/villager", "scale": 0.471 }
+	}
+}

@@ -18,7 +18,7 @@ enum TokenType {
 				 + "|" + Keys.ABIE_KEY_INIT
 	             + "|" + "\\{"
 	             + "|" + "\\}"),
-	ANGLE_TYPE          (Keys.ABIE_KEY_LINEAR + "|" + Keys.ABIE_KEY_SINE + "|" + Keys.ABIE_KEY_COSINE),
+	ANGLE_TYPE          (Keys.ABIE_KEY_LINEAR + "|" + Keys.ABIE_KEY_SINE + "|" + Keys.ABIE_KEY_COSINE + "|" + Keys.ABIE_KEY_CUBIC),
 	IDENTIFIER          ("[a-z_][a-z_0-9]*");
 
 	private final Pattern regex;

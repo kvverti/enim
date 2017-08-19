@@ -13,6 +13,8 @@ import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+import com.google.common.util.concurrent.UncheckedExecutionException;
+
 import kvverti.enim.entity.Entities;
 
 /** Utility class */
@@ -91,7 +93,7 @@ public final class Util {
 			throw (RuntimeException) e;
 		else if(e instanceof Error)
 			throw (Error) e;
-		else throw new WrappedCheckedException(e);
+		else throw new UncheckedExecutionException(e);
 	}
 
 	public static <E, X extends Exception>
@@ -124,28 +126,5 @@ public final class Util {
 	public static Reader getReaderFor(ResourceLocation location) throws IOException {
 
 		return getReaderFor(Entities.resourceManager(), location);
-	}
-
-	public static class WrappedCheckedException extends RuntimeException {
-
-		private final Class<? extends Throwable> wrapType;
-
-		WrappedCheckedException(Throwable cause) {
-
-			super(cause);
-			wrapType = cause.getClass();
-		}
-
-		public <X extends Throwable> WrappedCheckedException ifInstance(Class<X> cls) throws X {
-
-			if(cls.isAssignableFrom(wrapType))
-				throw cls.cast(getCause());
-			return this;
-		}
-
-		public <X extends Throwable> X orElseWrap(Function<? super Throwable, X> ctor) {
-
-			return ctor.apply(getCause());
-		}
 	}
 }

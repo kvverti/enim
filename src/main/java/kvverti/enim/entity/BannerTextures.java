@@ -31,15 +31,15 @@ public final class BannerTextures {
 	 */
 	private final LoadingCache<TextureKey, ResourceLocation> textures;
 
-	/** Cache id - to prevent collisions */
+	/** Cache id - should be short */
 	private final String id;
 
-	/** Pattern directory */
+	/** Pattern directory in resource location format */
 	private final String patterns;
 
 	public BannerTextures(String id, String patternDir) {
 
-		this(id, patternDir, 255, 5000);
+		this(id, patternDir, 255, 3000);
 	}
 
 	public BannerTextures(String id, String patternDir, int maxSize, int millisPersistance) {
@@ -116,7 +116,7 @@ public final class BannerTextures {
 		@Override
 		public int hashCode() {
 
-			return baseTexture.hashCode();
+			return 31 * bannerPatterns.hashCode() + baseTexture.hashCode();
 		}
 	}
 }

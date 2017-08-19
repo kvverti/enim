@@ -3,4 +3,4 @@ define lid
 init
 rotate lid -90 -0 -0
 over 12
-rotate cosine +0.25 lid +180 -0 -0
+rotate cubic lid +90 -0 -0

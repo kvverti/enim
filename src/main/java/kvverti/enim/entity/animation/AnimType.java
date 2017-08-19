@@ -121,7 +121,12 @@ public final class AnimType extends IForgeRegistryEntry.Impl<AnimType> implement
 
 			String name = in.nextString();
 			AnimType type = ANIM_TYPE_REGISTRY.getValue(new ResourceLocation(name));
-			return type == null ? NONE : type;
+			if(type == null) {
+
+				kvverti.enim.Logger.warn("Unknown AnimType '%s', maybe misspelled or from another mod?", name);
+				return NONE;
+			}
+			return type;
 		}
 
 		@Override

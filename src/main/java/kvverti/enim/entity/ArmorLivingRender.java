@@ -53,6 +53,7 @@ public class ArmorLivingRender<T extends EntityLivingBase> extends LivingRender<
 	}
 
 	private static final ArmorMaterial NONE = ArmorMaterial.valueOf("ENIM_NONE");
+	static { assert NONE != null; }
 
 	private ArmorMaterial getMaterial(T entity, EntityEquipmentSlot slot) {
 

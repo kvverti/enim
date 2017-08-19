@@ -56,21 +56,21 @@ public final class Logger {
 
 	public static void debug(String message, Object... args) {
 
-		log(Level.DEBUG, message, args);
+		log(Level.INFO, "[DEBUG] " + message, args);
 	}
 
 	public static void debug(Object obj) {
 
-		log(Level.DEBUG, String.valueOf(obj));
+		log(Level.INFO, "[DEBUG] " + String.valueOf(obj));
 	}
 
 	public static void trace(String message, Object... args) {
 
-		log(Level.TRACE, message, args);
+		log(Level.INFO, "[TRACE] " + message, args);
 	}
 
 	public static void trace(Object obj) {
 
-		log(Level.TRACE, String.valueOf(obj));
+		log(Level.INFO, "[TRACE] " + String.valueOf(obj));
 	}
 }
