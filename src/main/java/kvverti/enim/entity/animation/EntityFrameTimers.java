@@ -20,7 +20,7 @@ public final class EntityFrameTimers {
 	 * while nonlooping animation types have separate counters.
 	 */
 	private static final LoadingCache<TimerKey, TickCounter> counters = CacheBuilder.newBuilder()
-		.expireAfterAccess(5, TimeUnit.SECONDS)
+		.expireAfterAccess(3, TimeUnit.SECONDS)
 		.initialCapacity(100)
 		.maximumSize(500)
 		.removalListener(note -> kvverti.enim.Logger.info("Removed counter for entity: %s", note.getKey()))
@@ -40,14 +40,14 @@ public final class EntityFrameTimers {
 		counters.getUnchecked(new TimerKey(type, entity)).resetTime();
 	}
 
-	public static int timeValue(AnimType type, GEntity entity, boolean scaled) {
+	public static int timeValue(AnimType type, GEntity entity, float tuning) {
 
 		TimerKey key = new TimerKey(type, entity);
 		if(!type.isLooped()) {
 
 			TickCounter c = counters.getIfPresent(key);
-			return c != null ? c.offsetTickValue(scaled) : -1;
-		} else return counters.getUnchecked(key).tickValue(scaled);
+			return c != null ? c.offsetTickValue(tuning) : -1;
+		} else return counters.getUnchecked(key).tickValue(tuning);
 	}
 
 	public static void clearAll() {
@@ -83,7 +83,7 @@ public final class EntityFrameTimers {
 		@Override
 		public int hashCode() {
 
-			return entity.hashCode() + (animType.isLooped() ? 1 : animType.hashCode());
+			return 31 * entity.hashCode() + (animType.isLooped() ? 1 : animType.hashCode());
 		}
 
 		@Override
@@ -121,15 +121,15 @@ public final class EntityFrameTimers {
 		}
 
 		/** Returns the tick value for the entity, optionally scaled with movement */
-		public int tickValue(boolean scaled) {
+		public int tickValue(float tuning) {
 
-			return tickOffsetSeed + (scaled ? updateSpeedAcc(entity) : worldTime());
+			return tickOffsetSeed + (tuning != 0.0f ? updateSpeedAcc(entity, tuning) : worldTime());
 		}
 
 		/** Returns the tick value for the entity, optionally scaled with movement, relative to the initial time. */
-		public int offsetTickValue(boolean scaled) {
+		public int offsetTickValue(float tuning) {
 
-			return scaled ? updateSpeedAcc(entity) : worldTime() - initWorldTime;
+			return tuning != 0.0f ? updateSpeedAcc(entity, tuning) : worldTime() - initWorldTime;
 		}
 
 		public void resetTime() {
@@ -141,7 +141,7 @@ public final class EntityFrameTimers {
 		private int prevWorldTime;
 
 		/** Updates and accumulates the speed counter. */
-		private int updateSpeedAcc(GEntity e) {
+		private int updateSpeedAcc(GEntity e, float tuning) {
 
 			int worldTime = worldTime();
 			if(worldTime - prevWorldTime > 0) {
@@ -150,7 +150,7 @@ public final class EntityFrameTimers {
 				float speed = !e.isTileEntity() ? Entities.speedSq(e.getEntity()) : 0.0f;
 				if(speed <= 0.0025f)
 					speed = 0.0f;
-				float scalar = Entities.interpolate(1.0f, 4.0f, speed * 100); //magic :o
+				float scalar = Entities.interpolate(1.0f, 4.0f, tuning * speed * 100); //magic :o
 				return speedAccTick += (int) scalar;
 			}
 			return speedAccTick;

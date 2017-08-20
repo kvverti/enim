@@ -51,7 +51,7 @@
 	],
 	"animations": {
 		"moving": {
-			"scaled": true,
+			"scaling": 5,
 			"script": "quadruped_swing",
 			"with": {
 				"front_right": "right_foreleg",

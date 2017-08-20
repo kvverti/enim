@@ -27,13 +27,18 @@ public class Animation {
 
 	private final AbieScript script;
 	private final Map<String, String> defines;
+	@Deprecated
 	private final boolean scaleWithMovement;
+	private final float scaling;
+	private final float tuning;
 
-	private Animation(AbieScript script, Map<String, String> defines, boolean scaleWithMovement) {
+	private Animation(AbieScript script, Map<String, String> defines, float scaling, float tuning) {
 
 		this.script = script;
 		this.defines = defines;
-		this.scaleWithMovement = scaleWithMovement;
+		this.scaleWithMovement = false;
+		this.scaling = scaling;
+		this.tuning = tuning;
 	}
 
 	public Set<String> defines() { return script.defines(); }
@@ -47,7 +52,14 @@ public class Animation {
 		return result;
 	}
 
+	@Deprecated
 	public boolean shouldScaleWithMovement() { return scaleWithMovement; }
+
+	/** Scaling controls the animation's amplitude. Returns 0 if no scaling */
+	public float scaling() { return scaling; }
+
+	/** Tuning controls the animation's speed. Returns 0 if no tuning */
+	public float tuning() { return tuning; }
 
 	public AbieScript.Frame frame(int frame, float partial) {
 
@@ -74,7 +86,7 @@ public class Animation {
 			ResourceLocation loc = new ResourceLocation("enim:noop");
 			IResource rsc = new SimpleResource("default", loc, input, null, new MetadataSerializer());
 			AbieScript abiescript = parser.parse(rsc);
-			NOOP = new Animation(abiescript, Collections.emptyMap(), false);
+			NOOP = new Animation(abiescript, Collections.emptyMap(), 0.0f, 0.0f);
 		}
 
 		public Animation deserialize(JsonElement json, java.lang.reflect.Type type, JsonDeserializationContext context) {
@@ -86,11 +98,17 @@ public class Animation {
 				IResource scriptFile = Entities.resourceManager().getResource(scriptLoc);
 				AbieScript script = parser.parse(scriptFile);
 				Map<String, String> defines = context.deserialize(obj.getAsJsonObject(Keys.ANIM_DEFINES), definesType);
-				boolean scaleWithMovement = obj.has(Keys.ANIM_SCALE_WITH_MOVEMENT) ?
-					obj.getAsJsonPrimitive(Keys.ANIM_SCALE_WITH_MOVEMENT).getAsBoolean()
-					: false;
+				//boolean scaleWithMovement = obj.has(Keys.ANIM_SCALE_WITH_MOVEMENT) ?
+				//	obj.getAsJsonPrimitive(Keys.ANIM_SCALE_WITH_MOVEMENT).getAsBoolean()
+				//	: false;
+				float scaling = obj.has(Keys.ANIM_VALUE_SCALE_WEIGHT) ?
+					obj.getAsJsonPrimitive(Keys.ANIM_VALUE_SCALE_WEIGHT).getAsFloat()
+					: 0.0f;
+				float tuning = obj.has(Keys.ANIM_SPEED_SCALE_WEIGHT) ?
+					obj.getAsJsonPrimitive(Keys.ANIM_SPEED_SCALE_WEIGHT).getAsFloat()
+					: 0.0f;
 				validate(script, defines);
-				return new Animation(script, defines, scaleWithMovement);
+				return new Animation(script, defines, scaling, tuning);
 
 			} catch(IOException|AbieParseException e) {
 

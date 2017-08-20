@@ -55,37 +55,38 @@ public class ENIMModel extends ModelBase {
 		}
 	}
 
-	private void setAnglesHelper(Animation anim, int frame, float partialTicks) {
+	private void setAnglesHelper(Animation anim, int frame, EntityInfo info) {
 
-		AbieScript.Frame f = anim.frame(frame, partialTicks);
+		AbieScript.Frame f = anim.frame(frame, info.partialTicks);
+		float speedScale = anim.scaling() == 0.0f ? 1.0f : anim.scaling() * (float) Math.sqrt(info.speedSq);
 		for(String define : anim.defines()) {
 
 			Vec3f[] forms = f.getTransforms(define);
 			ENIMModelRenderer box = boxes.get(anim.toElementName(define));
-			box.rotateAngleX = toRadians(forms[0].x);
-			box.rotateAngleY = toRadians(forms[0].y);
-			box.rotateAngleZ = toRadians(forms[0].z);
-			box.shiftDistanceX = forms[1].x;
-			box.shiftDistanceY = forms[1].y;
-			box.shiftDistanceZ = forms[1].z;
+			box.rotateAngleX = toRadians(forms[0].x) * speedScale;
+			box.rotateAngleY = toRadians(forms[0].y) * speedScale;
+			box.rotateAngleZ = toRadians(forms[0].z) * speedScale;
+			box.shiftDistanceX = forms[1].x * speedScale;
+			box.shiftDistanceY = forms[1].y * speedScale;
+			box.shiftDistanceZ = forms[1].z * speedScale;
 		}
 	}
 
 	private void animateLooping(AnimType type, GEntity entity, EntityInfo info, Animation anim) {
 
-		int frame = (EntityFrameTimers.timeValue(type, entity, anim.shouldScaleWithMovement())
+		int frame = (EntityFrameTimers.timeValue(type, entity, anim.tuning())
 			& Integer.MAX_VALUE) % anim.frameCount();
 		//kvverti.enim.Logger.info("Frame: %d", frame);
-		setAnglesHelper(anim, frame, info.partialTicks);
+		setAnglesHelper(anim, frame, info);
 	}
 
 	private void animateNoLooping(AnimType type, GEntity entity, EntityInfo info, Animation anim) {
 
 		if(type.shouldAnimate(entity, info))
 			EntityFrameTimers.restart(type, entity);
-		int frame = EntityFrameTimers.timeValue(type, entity, anim.shouldScaleWithMovement());
+		int frame = EntityFrameTimers.timeValue(type, entity, anim.tuning());
 		if(frame >= 0 && frame < anim.frameCount())
-			setAnglesHelper(anim, frame, info.partialTicks);
+			setAnglesHelper(anim, frame, info);
 	}
 
 	private void resetAngles() {

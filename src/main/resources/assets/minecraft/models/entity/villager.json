@@ -77,7 +77,7 @@
 	],
 	"animations": {
 		"moving": {
-			"scaled": true,
+			"scaling": 5,
 			"script": "biped_swing",
 			"with": {
 				"left": "left_leg",

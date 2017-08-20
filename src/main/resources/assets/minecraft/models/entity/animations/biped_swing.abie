@@ -1,7 +1,7 @@
 define left
 define right
 
-over 60
+over 20
 {
 rotate sine left  -30 -0 -0
 rotate sine right +30 -0 -0

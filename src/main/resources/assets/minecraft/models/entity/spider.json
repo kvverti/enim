@@ -99,7 +99,7 @@
 	],
 	"animations": {
 		"moving": {
-			"scaled": true,
+			"scaling": 5,
 			"script": "spider_legs",
 			"with": {
 				"left1": "left_leg_1",
