@@ -1,0 +1,36 @@
+define t0
+define t1
+define t2
+define t3
+define t4
+define t5
+define t6
+define t7
+define b
+
+over 15
+{
+rotate t0 -35 -0 -0
+rotate t1 -35 -0 -0
+rotate t2 -0 -0 -35
+rotate t3 +35 -0 -0
+rotate t4 +35 -0 -0
+rotate t5 +35 -0 -0
+rotate t6 -0 -0 +35
+rotate t7 -35 -0 -0
+}
+pause 2
+over 7
+{
+rotate cubic b -0 +45 -0
+rotate t0 +35 -0 -0
+rotate t1 +35 -0 -0
+rotate t2 -0 -0 +35
+rotate t3 -35 -0 -0
+rotate t4 -35 -0 -0
+rotate t5 -35 -0 -0
+rotate t6 -0 -0 -35
+rotate t7 +35 -0 -0
+}
+over 49
+rotate sine +0.25 b -0 +315 -0

@@ -95,6 +95,7 @@ public final class Enim {
 		registerEntityRender(EntityPig.class, "minecraft", "pig", PigRender::new);
 		registerEntityRender(EntityCow.class, "minecraft", "cow", GrowableAnimalRender::new);
 		registerEntityRender(EntityVillager.class, "minecraft", "villager", VillagerRender::new);
+		registerEntityRender(EntitySquid.class, "minecraft", "squid", SquidRender::new);
 	}
 
 	@EventHandler

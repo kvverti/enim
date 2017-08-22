@@ -59,7 +59,7 @@ public final class MinecraftAnimTypes {
 		MOVE = new AnimType(true, (e, i) -> i.speedSq > 0.0025f).setRegistryName("minecraft:moving");
 		AIR = new AnimType(true, (e, i) -> !e.isInWater() && !e.onGround).setRegistryName("minecraft:airborne");
 		AIR.addAnimPredicate(EntityBat.class, (e, i) -> !e.getIsBatHanging());
-		SWIM = new AnimType(true, (e, i) -> e.isInWater() && !e.onGround).setRegistryName("minecraft:swimming");
+		SWIM = new AnimType(true, (e, i) -> e.isInWater()).setRegistryName("minecraft:swimming");
 		TRACK = new AnimType(true).setRegistryName("minecraft:tracking");
 		TRACK.addAnimPredicate(EntityLivingBase.class, new EventBasedPredicate<EntityLivingBase, LivingSetAttackTargetEvent>(true) {
 
