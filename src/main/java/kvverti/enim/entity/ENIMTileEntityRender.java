@@ -42,7 +42,7 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 	}
 
 	@Override
-	public final void renderTileEntityAt(T tileEntity, double x, double y, double z, float partialTicks, int destroyStage) {
+	public final void render(T tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 
 		GlStateManager.pushMatrix();
 		GlStateManager.translate((float) x + 0.5f, (float) y, (float) z + 0.5f);

@@ -60,12 +60,17 @@ public final class Util {
 		}
 	}
 
-	public static <T> Method findMethod(Class<T> declareClass, Class<?> returnType, String[] names, Class<?>... params) {
+	public static Method findMethod(Class<?> declareClass, Class<?> returnType, String name, String obfName, Class<?>... params) {
 
-		Method m = ReflectionHelper.findMethod(declareClass, null, names, params);
+		Method m = ReflectionHelper.findMethod(declareClass, name, obfName, params);
 		assert m.getReturnType() == returnType
 			: String.format("Type of method %s was %s, expected %s", m, m.getReturnType(), returnType);
 		return m;
+	}
+
+	public static Method findMethod(Class<?> declareClass, Class<?> returnType, String name, Class<?>... params) {
+
+		return findMethod(declareClass, returnType, name, name, params);
 	}
 
 	@SuppressWarnings("unchecked")

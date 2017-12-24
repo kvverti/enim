@@ -54,7 +54,7 @@ public abstract class EventBasedPredicate<T extends Entity, E extends EntityEven
 	private static final Method registerImpl = findMethod(
 		EventBus.class,
 		void.class,
-		new String[] { "register" },
+		"register",
 		Class.class,
 		Object.class,
 		Method.class,
@@ -64,7 +64,7 @@ public abstract class EventBasedPredicate<T extends Entity, E extends EntityEven
 	private static final Method eventMethod = findMethod(
 		EventBasedPredicate.class,
 		void.class,
-		new String[] { "onEventWrap" },
+		"onEventWrap",
 		EntityEvent.class);
 
 	private final Set<Entity> entitiesToAnimate = new HashSet<>(20);

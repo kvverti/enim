@@ -8,7 +8,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -54,7 +54,8 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 
 		renderLeash = Util.findMethod(RenderLiving.class,
 			void.class,
-			new String[] { "func_110827_b", "renderLeash" },
+			"renderLeash",
+			"func_110827_b",
 			EntityLiving.class,
 			double.class,
 			double.class,
@@ -171,7 +172,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		model.render(entity, info);
 		//begin magic
-		int brightness = entity.getEntity().getBrightnessForRender(info.partialTicks);
+		int brightness = entity.getEntity().getBrightnessForRender();
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightness % 0x10000, brightness / 0x10000);
 		//end magic
 		GlStateManager.disableBlend();
@@ -251,7 +252,8 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 
 	private static final Method renderEntityOnFire = Util.findMethod(Render.class,
 		void.class,
-		new String[] { "func_76977_a", "renderEntityOnFire" },
+		"renderEntityOnFire",
+		"func_76977_a",
 		Entity.class,
 		double.class,
 		double.class,
@@ -260,7 +262,8 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 
 	private static final Method mapShadowOnBlock = Util.findMethod(Render.class,
 		void.class,
-		new String[] { "func_180549_a", "renderShadowSingle" },
+		"renderShadowSingle",
+		"func_180549_a",
 		IBlockState.class,
 		double.class,
 		double.class,
@@ -280,7 +283,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 		GlStateManager.depthMask(false);
 		bindTexture(SHADOW_TEXTURE);
 		Tessellator tez = Tessellator.getInstance();
-		VertexBuffer renderer = tez.getBuffer();
+		BufferBuilder renderer = tez.getBuffer();
 		renderer.begin(7, net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX_COLOR);
 		double px = Entities.interpolate((float) entity.lastTickPosX, (float) entity.posX, partialTicks);
 		double py = Entities.interpolate((float) entity.lastTickPosY, (float) entity.posY, partialTicks);

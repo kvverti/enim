@@ -6,7 +6,7 @@ import java.util.WeakHashMap;
 import java.util.Map;
 import java.util.HashMap;
 
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.IStringSerializable;

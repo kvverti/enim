@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.EnumMap;
 
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.item.EnumDyeColor;
@@ -68,7 +68,7 @@ public class CustomDyeColor extends IForgeRegistryEntry.Impl<CustomDyeColor> {
 		else if(fallback != null)
 			return fallback.getColor(color);
 		else 
-			return getColor(color.getMapColor().colorValue);
+			return Vec3f.of(color.getColorComponentValues());
 	}
 
 	private Vec3f getColor(int rgb) {

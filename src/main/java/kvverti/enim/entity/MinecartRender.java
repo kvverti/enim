@@ -31,11 +31,11 @@ public class MinecartRender extends BasicRender<EntityMinecart> {
 				weightedMax = fallback;
 			if(weightedMin == null)
 				weightedMin = fallback;
-			Vec3d rotation = weightedMin.addVector(-weightedMax.xCoord, -weightedMax.yCoord, -weightedMax.zCoord);
+			Vec3d rotation = weightedMin.addVector(-weightedMax.x, -weightedMax.y, -weightedMax.z);
 			if(rotation.lengthVector() != 0.0) {
 
-				info.entityYaw = Entities.toDegrees((float) Math.atan2(rotation.zCoord, rotation.xCoord));
-				info.entityPitch = (float) (Math.atan(rotation.yCoord) * 73.0);
+				info.entityYaw = Entities.toDegrees((float) Math.atan2(rotation.z, rotation.x));
+				info.entityPitch = (float) (Math.atan(rotation.y) * 73.0);
 			}
 		}
 		GlStateManager.rotate(info.entityYaw, 0.0f, 1.0f, 0.0f);

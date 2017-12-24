@@ -36,7 +36,8 @@ public class ENIMModelRenderer extends ModelRenderer {
 
 		compileDisplayList = Util.findMethod(ModelRenderer.class,
 			void.class,
-			new String[] { "func_78788_d", "compileDisplayList" },
+			"compileDisplayList",
+			"func_78788_d",
 			float.class);
 
 		displayList = Util.findField(ModelRenderer.class, int.class, "field_78811_r", "displayList");

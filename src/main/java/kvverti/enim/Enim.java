@@ -10,8 +10,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.IForgeRegistry;
-import net.minecraftforge.fml.common.registry.RegistryBuilder;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegistryBuilder;
 
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.*;
@@ -32,7 +32,7 @@ import static kvverti.enim.entity.animation.MinecraftAnimTypes.*;
 import static kvverti.enim.entity.color.MinecraftCustomDyeColors.*;
 
 @EventBusSubscriber
-@Mod(modid = Enim.ID, name = Enim.NAME, version = Enim.VERSION, acceptedMinecraftVersions = "[1.11,1.12)", clientSideOnly = true)
+@Mod(modid = Enim.ID, name = Enim.NAME, version = Enim.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", clientSideOnly = true)
 public final class Enim {
 
 	public static final String ID = "enim";
@@ -76,6 +76,7 @@ public final class Enim {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
 
+		Logger.setLog(e.getModLog());
 		Logger.info("Registering Minecraft entity renders...");
 	//	registerEntityRender(EntityBoat.class, m -> new BoatRender(m, "minecraft", "boat"));
 		registerEntityRender(EntityLeashKnot.class, "minecraft", "lead", BasicRender::new);

@@ -7,70 +7,75 @@ import org.apache.logging.log4j.Level;
 /** Static logging utility */
 public final class Logger {
 
+	private static org.apache.logging.log4j.Logger enimLog;
+
 	private Logger() { }
 
-	public static void log(Level level, String message, Object... args) {
+	static void setLog(org.apache.logging.log4j.Logger log) {
 
-		FMLLog.log(Enim.NAME, level, message, args);
+		if(enimLog == null)
+			enimLog = log;
+		else
+			throw new IllegalStateException("Mod log already set");
 	}
 
 	public static void info(String message, Object... args) {
 
-		log(Level.INFO, message, args);
+		enimLog.info(String.format(message, args));
 	}
 
 	public static void info(Object obj) {
 
-		log(Level.INFO, String.valueOf(obj));
+		enimLog.info(String.valueOf(obj));
 	}
 
 	public static void warn(String message, Object... args) {
 
-		log(Level.WARN, message, args);
+		enimLog.warn(String.format(message, args));
 	}
 
 	public static void warn(Object obj) {
 
-		log(Level.WARN, String.valueOf(obj));
+		enimLog.warn(String.valueOf(obj));
 	}
 
 	public static void error(String message, Object... args) {
 
-		log(Level.ERROR, message, args);
+		enimLog.error(String.format(message, args));
 	}
 
 	public static void error(Throwable error, String message, Object... args) {
 
-		FMLLog.log(Enim.NAME, Level.ERROR, error, message, args);
+		enimLog.error(String.format(message, args), error);
 	}
 
 	public static void error(Throwable error) {
 
-		FMLLog.log(Enim.NAME, Level.ERROR, error, "");
+		enimLog.error("", error);
 	}
 
 	public static void error(Object obj) {
 
-		log(Level.ERROR, String.valueOf(obj));
+		enimLog.error(String.valueOf(obj));
 	}
 
 	public static void debug(String message, Object... args) {
 
-		log(Level.INFO, "[DEBUG] " + message, args);
+		enimLog.debug(String.format(message, args));
 	}
 
 	public static void debug(Object obj) {
 
-		log(Level.INFO, "[DEBUG] " + String.valueOf(obj));
+		enimLog.debug(String.valueOf(obj));
 	}
 
 	public static void trace(String message, Object... args) {
 
-		log(Level.INFO, "[TRACE] " + message, args);
+		enimLog.trace(String.format(message, args));
 	}
 
 	public static void trace(Object obj) {
 
-		log(Level.INFO, "[TRACE] " + String.valueOf(obj));
+		enimLog.trace(String.valueOf(obj));
 	}
 }
