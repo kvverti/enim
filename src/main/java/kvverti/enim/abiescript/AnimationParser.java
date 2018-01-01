@@ -1,6 +1,7 @@
 package kvverti.enim.abiescript;
 
 import java.io.*;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
@@ -15,12 +16,15 @@ import net.minecraft.util.ResourceLocation;
 import kvverti.enim.Vec3f;
 import kvverti.enim.Util;
 import kvverti.enim.Keys;
+import kvverti.enim.entity.Entities;
 
 public class AnimationParser {
 
 	/** The AbieScript file that is being parsed */
 	private IResource file;
 	private ResourceLocation source;
+	private final Map<String, StateAneme.AnemeTransformation> globalFunctions = new HashMap<>();
+	private final Map<String, StateAneme.AnemeTransformation> localFunctions = new HashMap<>();
 
 	public AnimationParser() { }
 
@@ -29,8 +33,40 @@ public class AnimationParser {
 		this.file = file;
 		this.source = file.getResourceLocation();
 		try { return parseFrames(parseTokens(parseSource())); }
-		catch(IndexOutOfBoundsException e) { throw new AbieParseException(source + ": Reached end of file while parsing", e); }
-		finally { this.file = null; this.source = null; }
+		catch(IndexOutOfBoundsException e) {
+			throw new AbieParseException(source + ": Reached end of file while parsing", e);
+		} finally {
+			this.file = null;
+			this.source = null;
+		}
+	}
+
+	public void parseGlobalFunctions(Collection<String> modDomains) {
+
+		globalFunctions.clear();
+		//linear is the default, so it's always defined
+		globalFunctions.put("minecraft:linear", (ω, φ) -> t -> ω * t + φ);
+		for(String dom : modDomains) {
+			//get functions.abie file
+			ResourceLocation functions = new ResourceLocation(dom, Keys.ANIMS_DIR + "functions.abie");
+			IResource frsc;
+			try { frsc = Entities.resourceManager().getResource(functions); }
+			catch(IOException e) { continue; }
+			this.file = frsc;
+			this.source = functions;
+			try {
+				//parse just the functions
+				List<Statement> state = parseTokens(parseSource());
+				globalFunctions.putAll(getFunctions(state));
+				if(!state.isEmpty())
+					kvverti.enim.Logger.warn("Mod " + dom + " defines frames in functions.abie");
+			} catch(IndexOutOfBoundsException e) {
+				throw new AbieParseException(source + ": Reached end of file while parsing", e);
+			} finally {
+				this.file = null;
+				this.source = null;
+			}
+		}
 	}
 
 	/**
@@ -56,6 +92,14 @@ public class AnimationParser {
 
 					if(s.length() != 0) {
 
+						if(s.indexOf("=>") == 0 && s.charAt(s.length() - 1) != ';') {
+							//it's a function
+							while((charValue = input.read()) != -1) {
+								s.append((char) charValue);
+								if(charValue == ';')
+									break;
+							}
+						}
 						tokens.add(Token.compile(s.toString()));
 						s.delete(0, s.length());
 					}
@@ -110,12 +154,16 @@ public class AnimationParser {
 
 		//does not do bounds checking
 		Set<String> defines = getDefines(statements);
+		localFunctions.putAll(globalFunctions);
+		localFunctions.putAll(getFunctions(statements));
 		int freq = getFreq(statements);
 		assert freq > 0 : freq;
         AnimationFrame init = getInitFrame(statements);
 		List<AnimationFrame> frames = getFrames(statements);
 		assert statements.isEmpty() : statements;
-		return compile(init, frames, defines, freq);
+		AbieScript res = compile(init, frames, defines, freq);
+		localFunctions.clear();
+		return res;
 	}
 
 	/** Returns the defines from the given list. The defines must be contiguous. */
@@ -128,6 +176,31 @@ public class AnimationParser {
 			if(s.getStatementType() == StatementType.DEFINITION) {
 
 				res.add(((StateDefine) s).getDefine());
+				itr.remove();
+			} else break;
+		}
+		return res;
+	}
+
+	private Map<String, StateFunction> getFunctions(List<Statement> statements) {
+
+		Map<String, StateFunction> res = new HashMap<>();
+		for(Iterator<Statement> itr = statements.iterator(); itr.hasNext(); ) {
+
+			Statement s = itr.next();
+			if(s.getStatementType() == StatementType.FUNCTION) {
+
+				//kvverti.enim.Logger.info(s);
+				StateFunction f = (StateFunction) s;
+				f.init(globalFunctions);
+				//debug
+				// java.util.function.DoubleUnaryOperator duo =
+					// f.apply(1, 0);
+				// kvverti.enim.Logger.info("Begin: " + duo.applyAsDouble(0.0));
+				// kvverti.enim.Logger.info("Middle: " + duo.applyAsDouble(0.5));
+				// kvverti.enim.Logger.info("End: " + duo.applyAsDouble(1.0));
+				//end debug
+				res.put(source.getResourceDomain() + ":" + f.getName(), f);
 				itr.remove();
 			} else break;
 		}
@@ -284,7 +357,7 @@ public class AnimationParser {
 		} else fillOver(frames, animFrame, trueFrame, 1, freq);
 	}
 
-	private static void fillRepeat(List<AbieScript.Frame> frames,
+	private void fillRepeat(List<AbieScript.Frame> frames,
 		AnimationFrame animFrame,
 		Map<String, Vec3f[]> prevFrame,
 		int repeats,
@@ -294,7 +367,7 @@ public class AnimationParser {
 			fillOver(frames, animFrame, prevFrame, 1, freq);
 	}
 
-	private static void fillOver(List<AbieScript.Frame> frames,
+	private void fillOver(List<AbieScript.Frame> frames,
 		AnimationFrame animFrame,
 		Map<String, Vec3f[]> prevFrame,
 		int duration,
@@ -306,6 +379,8 @@ public class AnimationParser {
 
 			for(StateAneme aneme : animFrame.anemes()) {
 
+				if(n == 1)
+					aneme.init(localFunctions);
 				Vec3f[] original = prevCopy.get(aneme.getSpecifiedElement());
 				Vec3f[] angles = prevFrame.get(aneme.getSpecifiedElement()).clone();
 				Vec3f[] trans = aneme.getTransforms();
@@ -325,10 +400,11 @@ public class AnimationParser {
 		}
 	}
 
-	private static void fillInit(AnimationFrame frame, Map<String, Vec3f[]> frameMap) {
+	private void fillInit(AnimationFrame frame, Map<String, Vec3f[]> frameMap) {
 
 		for(StateAneme aneme : frame.anemes()) {
 
+			aneme.init(localFunctions);
 			Vec3f[] angles = frameMap.get(aneme.getSpecifiedElement()).clone();
 			Vec3f[] trans = aneme.getTransforms();
 			float ft = (float) aneme.getTransformationFunction().applyAsDouble(1.0);

@@ -1,0 +1,3 @@
+function sine => sin(2 * pi * t);
+function cosine => 0.5 * (1 - cos(2 * pi * t));
+function cubic => t ** 3;

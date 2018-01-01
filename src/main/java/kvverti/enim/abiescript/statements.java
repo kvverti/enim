@@ -1,5 +1,7 @@
 package kvverti.enim.abiescript;
 
+import java.util.Map;
+import java.util.HashMap;
 import java.util.function.DoubleUnaryOperator;
 
 import com.google.common.collect.ImmutableMap;
@@ -171,29 +173,32 @@ abstract class StateAneme extends Statement {
 
 	/** Primitive specialization of BiFunction for double parameters and returning DoubleUnaryOperator. */
 	@FunctionalInterface
-	private interface AnemeTransformation { DoubleUnaryOperator apply(double a, double b); }
-
-	/**
-	 * Factories for functions of the form f(t) = T(ωt + φ), where t ranges 0 <= t <= 1.
-	 * The results are multiplied by the amplitude Δx corresponding to values in {@link #getTransforms()}.
-	 * Thus, the complete transformation is given by dx = Δxf(t).
-	 */
-	private static final ImmutableMap<String, AnemeTransformation> functionFactories =
-		ImmutableMap.<String, AnemeTransformation>builder()
-		.put(Keys.ABIE_KEY_LINEAR, (ω, φ) -> t -> ω * t + φ)
-		.put(Keys.ABIE_KEY_SINE, (ω, φ) -> t -> Math.sin(2.0 * Math.PI * (ω * t + φ)))
-		.put(Keys.ABIE_KEY_COSINE, (ω, φ) -> t -> 0.5 * (1.0 - Math.cos(2.0 * Math.PI * (ω * t + φ))))
-		.put(Keys.ABIE_KEY_CUBIC, (ω, φ) -> t -> Math.pow(ω * t + φ, 3))
-		.build();
+	interface AnemeTransformation { DoubleUnaryOperator apply(double a, double b); }
 
 	private final String element;
-	private final DoubleUnaryOperator function;
+	private final String functionName;
+	private final float time, offset;
+	private DoubleUnaryOperator function;
 
 	StateAneme(StatementType type, String aType, float time, float offset, String elem) {
 
 		super(type);
-		element = elem;
-		function = functionFactories.get(aType).apply(time, offset);
+		this.element = elem;
+		this.functionName = aType;
+		this.time = time;
+		this.offset = offset;
+		//function = functionFactories.get(aType).apply(time, offset);
+	}
+
+	final void init(Map<? super String, ? extends AnemeTransformation> functionFactories) {
+
+		AnemeTransformation t = functionFactories.get(functionName);
+		if(t == null) {
+			t = functionFactories.get("minecraft:" + functionName);
+			if(t == null)
+				throw new AbieParseException("Function not found: " + functionName);
+		}
+		function = t.apply(time, offset);
 	}
 
 	@Override

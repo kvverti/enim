@@ -76,7 +76,8 @@ public class Animation {
 	public static class Deserializer implements JsonDeserializer<Animation> {
 
 		private static final java.lang.reflect.Type definesType = new TypeToken<Map<String, String>>(){}.getType();
-		private static final AnimationParser parser = new AnimationParser();
+		@SuppressWarnings("deprecation")
+		private static final AnimationParser parser = kvverti.enim.EnimRenderingRegistry.getGlobalParser();
 		private static final Animation NOOP;
 		static {
 
@@ -98,9 +99,6 @@ public class Animation {
 				IResource scriptFile = Entities.resourceManager().getResource(scriptLoc);
 				AbieScript script = parser.parse(scriptFile);
 				Map<String, String> defines = context.deserialize(obj.getAsJsonObject(Keys.ANIM_DEFINES), definesType);
-				//boolean scaleWithMovement = obj.has(Keys.ANIM_SCALE_WITH_MOVEMENT) ?
-				//	obj.getAsJsonPrimitive(Keys.ANIM_SCALE_WITH_MOVEMENT).getAsBoolean()
-				//	: false;
 				float scaling = obj.has(Keys.ANIM_VALUE_SCALE_WEIGHT) ?
 					obj.getAsJsonPrimitive(Keys.ANIM_VALUE_SCALE_WEIGHT).getAsFloat()
 					: 0.0f;

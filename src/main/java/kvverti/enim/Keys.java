@@ -51,10 +51,7 @@ public final class Keys {
 	public static final String ABIE_KEY_SHIFT = "shift";
 	public static final String ABIE_KEY_ROTATE = "rotate";
 	public static final String ABIE_KEY_PAUSE = "pause";
-	public static final String ABIE_KEY_LINEAR = "linear";
-	public static final String ABIE_KEY_SINE = "sine";
-	public static final String ABIE_KEY_COSINE = "cosine";
-	public static final String ABIE_KEY_CUBIC = "cubic";
+	public static final String ABIE_KEY_FUNCTION = "function";
 
 	public static final String STATES_TAG = "states";
 	public static final String MULTIPART_TAG = "multipart";

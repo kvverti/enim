@@ -31,6 +31,7 @@ abstract class Statement {
 			case SHIFT: return new StateShift(args[0], args[1], args[2], args[3], args[4], args[5]);
 			case SHIFT_LINEAR: return new StateShift(args[0], args[1], args[2], args[3]);
 			case SHIFT_NOTIME: return new StateShift(args[0], args[1], args[2], args[3], args[4]);
+			case FUNCTION: return new StateFunction(args[0], args[1]);
 			case PAUSE: return new StatePause(args);
 			case REPEAT: return new StateRepeat(args);
 			case INIT: return StateInit.INSTANCE;
@@ -57,9 +58,12 @@ abstract class Statement {
 		if(type.tokenCount() != args.length)
 			return false;
 		TokenType[] tokenTypes = type.getTokenTypes();
-		for(int i = 0; i < args.length; i++)
-			if(tokenTypes[i] != args[i].getTokenType())
+		for(int i = 0; i < args.length; i++) {
+			TokenType tt = tokenTypes[i];
+			Token arg = args[i];
+			if(tt != arg.getTokenType() && !tt.matcher(arg.getValue()).matches())
 				return false;
+		}
 		return true;
 	}
 

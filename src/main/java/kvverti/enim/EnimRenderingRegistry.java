@@ -5,6 +5,8 @@ import java.io.Reader;
 import java.util.Map;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -23,6 +25,7 @@ import net.minecraft.tileentity.TileEntity;
 import com.google.gson.JsonParseException;
 
 import kvverti.enim.abiescript.AbieParseException;
+import kvverti.enim.abiescript.AnimationParser;
 import kvverti.enim.entity.ReloadableRender;
 import kvverti.enim.entity.Entities;
 import kvverti.enim.entity.EntityInfo;
@@ -45,6 +48,12 @@ public final class EnimRenderingRegistry {
 	/** Stores all registered renders so they can be reloaded */
 	private final Map<ResourceLocation, ReloadableRender> renders = new HashMap<>(20);
 
+	/** The one AnimationParser to rule them all. In seriousness, it stores all the functions. */
+	private final AnimationParser animParser = new AnimationParser();
+
+	/** Stores all domains registered with Enim. */
+	private final Set<String> domains = new HashSet<>(5);
+
 	/** Construction disallowed */
 	private EnimRenderingRegistry() { }
 
@@ -63,6 +72,7 @@ public final class EnimRenderingRegistry {
 		checkNotNull(modDomain);
 		checkNotNull(entityId);
 		checkNotNull(factory);
+		registry.domains.add(modDomain);
 		RenderingRegistry.registerEntityRenderingHandler(cls, manager -> {
 
 			R r = checkNotNull(factory.apply(manager));
@@ -86,9 +96,16 @@ public final class EnimRenderingRegistry {
 		checkNotNull(modDomain);
 		checkNotNull(entityId);
 		checkNotNull(render);
+		registry.domains.add(modDomain);
 		ClientRegistry.bindTileEntitySpecialRenderer(cls, render);
 		registry.renders.put(new ResourceLocation(modDomain, Keys.STATES_DIR + entityId + Keys.JSON), render);
 	}
+
+	/**
+	 * @deprecated Only exists so Animation deserializer can access the parser.
+	 */
+	@Deprecated
+	public static AnimationParser getGlobalParser() { return registry.animParser; }
 
 	/** EventHandler - called during init phase */
 	static void init(FMLInitializationEvent e) {
@@ -100,6 +117,13 @@ public final class EnimRenderingRegistry {
 	private void reloadRenders(IResourceManager manager) {
 
 		Logger.info("Reloading resources...");
+		//reload global animations
+		try { animParser.parseGlobalFunctions(domains); }
+		catch(AbieParseException e) {
+			Logger.error("Exception parsing global functions; loading cannot continue.");
+			Logger.error(e);
+			return;
+		}
 		//reload models
 		for(Map.Entry<ResourceLocation, ReloadableRender> entry : renders.entrySet()) {
 
