@@ -1,0 +1,11 @@
+define outer
+define middle
+define inner
+
+over 128
+{
+rotate outer -0 +360 -0
+shift cosine +4 outer -0 +10 -0
+rotate middle -360 -0 -0
+rotate inner -0 -0 -360
+}

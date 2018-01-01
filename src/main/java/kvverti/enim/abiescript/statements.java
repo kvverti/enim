@@ -187,7 +187,6 @@ abstract class StateAneme extends Statement {
 		this.functionName = aType;
 		this.time = time;
 		this.offset = offset;
-		//function = functionFactories.get(aType).apply(time, offset);
 	}
 
 	final void init(Map<? super String, ? extends AnemeTransformation> functionFactories) {

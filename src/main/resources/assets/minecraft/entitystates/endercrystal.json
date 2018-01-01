@@ -1,0 +1,10 @@
+{
+	"defaults": {
+		"texture": "entity/endercrystal/endercrystal",
+		"size": [128,64]
+	},
+	"states": {
+		"baseplate=false": { "model": "endercrystal" },
+		"baseplate=true": { "model": "endercrystal_natural" }
+	}
+}
