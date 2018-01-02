@@ -25,11 +25,19 @@ final class FunctionBuiltins {
     public static final AbieFunctionOperator SIN;
     public static final AbieFunctionOperator COS;
 	public static final AbieFunctionOperator TAN;
+	public static final AbieFunctionOperator ASIN;
+	public static final AbieFunctionOperator ACOS;
+	public static final AbieFunctionOperator ATAN;
+	public static final AbieFunctionOperator ARG;
     public static final AbieFunctionOperator LOG;
     public static final AbieFunctionOperator FLOOR;
     public static final AbieFunctionOperator CEIL;
     public static final AbieFunctionOperator MAX;
     public static final AbieFunctionOperator MIN;
+	public static final AbieFunctionOperator CLAMP;
+	public static final AbieFunctionOperator SQRT;
+	public static final AbieFunctionOperator CBRT;
+	public static final AbieFunctionOperator SGN;
 
 	public static final AbieFunctionOperator PARAM;
 	public static final AbieFunctionOperator COMMA;
@@ -87,11 +95,22 @@ final class FunctionBuiltins {
 		SIN = (Unary) s -> s.push(Math.sin(s.pop()));
 		COS = (Unary) s -> s.push(Math.cos(s.pop()));
 		TAN = (Unary) s -> s.push(Math.tan(s.pop()));
+		ASIN = (Unary) s -> s.push(Math.asin(s.pop()));
+		ACOS = (Unary) s -> s.push(Math.acos(s.pop()));
+		ATAN = (Unary) s -> s.push(Math.atan(s.pop()));
+		ARG = (Binary) s -> { double t = s.pop(); s.push(Math.atan2(s.pop(), t)); };
 		LOG = (Unary) s -> s.push(Math.log(s.pop()));
 		FLOOR = (Unary) s -> s.push(Math.floor(s.pop()));
 		CEIL = (Unary) s -> s.push(Math.ceil(s.pop()));
 		MAX = (Binary) s -> s.push(Math.max(s.pop(), s.pop()));
 		MIN = (Binary) s -> s.push(Math.min(s.pop(), s.pop()));
+		CLAMP = (Ternary) s -> {
+			double max = s.pop(), min = s.pop(), x = s.pop();
+			s.push(x < min ? min : x > max ? max : x);
+		};
+		SQRT = (Unary) s -> s.push(Math.sqrt(s.pop()));
+		CBRT = (Unary) s -> s.push(Math.cbrt(s.pop()));
+		SGN = (Unary) s -> s.push(Math.signum(s.pop()));
 		COMMA = (Binary) s -> {};
 		PARAM = marker();
 		LPAREN = marker();
@@ -103,12 +122,20 @@ final class FunctionBuiltins {
 			.put("minecraft:sin", SIN)
 			.put("minecraft:cos", COS)
 			.put("minecraft:tan", TAN)
+			.put("minecraft:asin", ASIN)
+			.put("minecraft:acos", ACOS)
+			.put("minecraft:atan", ATAN)
+			.put("minecraft:arg", ARG)
+			.put("minecraft:clamp", CLAMP)
 			.put("minecraft:abs", ABS)
 			.put("minecraft:log", LOG)
 			.put("minecraft:floor", FLOOR)
 			.put("minecraft:ceil", CEIL)
 			.put("minecraft:max", MAX)
 			.put("minecraft:min", MIN)
+			.put("minecraft:sqrt", SQRT)
+			.put("minecraft:cbrt", CBRT)
+			.put("minecraft:sgn", SGN)
 			.build();
 
 		PREC =
