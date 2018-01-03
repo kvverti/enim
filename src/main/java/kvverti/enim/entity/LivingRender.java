@@ -95,7 +95,7 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 
 	private void renderItem(T entity, EntityInfo info, ItemStack stack, TransformType type, ModelProperties.OriginPoint origin) {
 
-		if(stack.isEmpty())
+		if(origin == null || stack.isEmpty())
 			return;
 		GlStateManager.pushMatrix();
 		//transform to the parent's position, if applicable
@@ -109,9 +109,11 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
 		Vec3f coords = origin.coords();
 		GlStateManager.translate((coords.x - 8.0f) * scale, -coords.y * scale, (8.0f - coords.z) * scale);
 		Vec3f rot = origin.rotation();
+		float scl = origin.scale();
 		GlStateManager.rotate(-rot.z, 0.0f, 0.0f, 1.0f);
 		GlStateManager.rotate(-rot.y, 0.0f, 1.0f, 0.0f);
 		GlStateManager.rotate(+rot.x, 1.0f, 0.0f, 0.0f);
+		GlStateManager.scale(scl, scl, scl);
 		//render
 		boolean leftHand = type == TransformType.THIRD_PERSON_LEFT_HAND;
 		Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, stack, type, leftHand);

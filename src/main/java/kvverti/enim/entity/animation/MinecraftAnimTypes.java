@@ -6,12 +6,14 @@ import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.monster.EntitySlime;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityEnderChest;
 
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
 import kvverti.enim.entity.Entities;
 import kvverti.enim.entity.EntityInfo;
@@ -69,6 +71,7 @@ public final class MinecraftAnimTypes {
 				return event.getTarget() != null;
 			}
 		}.create());
+		TRACK.addAnimPredicate(EntityZombie.class, (e, i) -> e.isArmsRaised());
 		JUMP = new AnimType(false).setRegistryName("minecraft:jump");
 		JUMP.addAnimPredicate(EntitySlime.class, (e, i) -> e.motionY > 0.20f);
 		JUMP.addAnimPredicate(EntityLivingBase.class, new EventBasedPredicate<EntityLivingBase, LivingJumpEvent>(false) {
@@ -80,6 +83,20 @@ public final class MinecraftAnimTypes {
 			}
 		}.create());
 		ATTACK = new AnimType(false).setRegistryName("minecraft:attack");
+		ATTACK.addAnimPredicate(EntityLivingBase.class, new EventBasedPredicate<EntityLivingBase, LivingAttackEvent>(false) {
+
+			@Override
+			protected Entity getAssociatedEntity(LivingAttackEvent event) {
+
+				return event.getSource().getImmediateSource();
+			}
+
+			@Override
+			protected boolean shouldAnimate(LivingAttackEvent event) {
+
+				return getAssociatedEntity(event) instanceof EntityLivingBase;
+			}
+		}.create());
 		DAMAGE = new AnimType(false).setRegistryName("minecraft:damage");
 		EAT = new AnimType(false).setRegistryName("minecraft:eat");
 		EAT.addAnimPredicate(EntitySheep.class, (e, i) -> e.getHeadRotationPointY(i.partialTicks) > 0.0f);

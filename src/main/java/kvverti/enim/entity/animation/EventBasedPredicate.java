@@ -2,7 +2,8 @@ package kvverti.enim.entity.animation;
 
 import java.lang.reflect.Method;
 import java.util.Set;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.WeakHashMap;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -67,7 +68,7 @@ public abstract class EventBasedPredicate<T extends Entity, E extends EntityEven
 		"onEventWrap",
 		EntityEvent.class);
 
-	private final Set<Entity> entitiesToAnimate = new HashSet<>(20);
+	private final Set<Entity> entitiesToAnimate = Collections.newSetFromMap(new WeakHashMap<>(20));
 	private final Class<?> eventType = new TypeToken<E>(getClass()){}.getRawType();
 	private final boolean toggle;
 
@@ -91,6 +92,12 @@ public abstract class EventBasedPredicate<T extends Entity, E extends EntityEven
 	protected boolean multiplayerFallback(T entity, EntityInfo info) { return false; }
 
 	/**
+	 * Get the entity that this predicate should be associated with. This entity is
+	 * the entity that will be animated. The default implementation returns {@code event.getEntity()}.
+	 */
+	protected Entity getAssociatedEntity(E event) { return event.getEntity(); }
+
+	/**
 	 * The actual method subscribed to the event bus. This method is package-private because private methods
 	 * do not work with the event system. The actual event passed to this method will always be a subtype of E
 	 * because the class of E is passed to the event bus. However, this forwards the raw type of IGenericEvents.
@@ -101,9 +108,9 @@ public abstract class EventBasedPredicate<T extends Entity, E extends EntityEven
 
 		assert eventType.isInstance(event) : event.getClass();
 		if(shouldAnimate(event))
-			entitiesToAnimate.add(event.getEntity());
+			entitiesToAnimate.add(getAssociatedEntity(event));
 		else if(toggle)
-			entitiesToAnimate.remove(event.getEntity());
+			entitiesToAnimate.remove(getAssociatedEntity(event));
 	}
 
 	/** Returns an instance of AnimPredicate which implements this functionality. You probably should only call this once. */

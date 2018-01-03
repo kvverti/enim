@@ -1,0 +1,9 @@
+define left_arm
+define right_arm
+
+init
+{
+rotate left_arm -120 -0 -0
+rotate right_arm -120 -0 -0
+}
+pause 1

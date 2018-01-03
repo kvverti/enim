@@ -1,0 +1,15 @@
+define left
+define right
+
+init
+{
+rotate right -80 +5 -0
+rotate left -80 +5 -0
+}
+over 96
+{
+rotate sine right +2.5 -0 -0
+rotate sine left -2.5 -0 -0
+rotate sine +1 +0.25 right -0 -0 +3
+rotate sine +1 +0.25 left -0 -0 +3
+}

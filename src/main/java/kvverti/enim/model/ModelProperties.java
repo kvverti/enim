@@ -30,9 +30,9 @@ public class ModelProperties {
 
 		nameplateBase = 0.0f;
 		shadowSize = 0.0f;
-		heldItemLeft = OriginPoint.DEFAULT;
-		heldItemRight = OriginPoint.DEFAULT;
-		helmet = OriginPoint.DEFAULT;
+		heldItemLeft = null;
+		heldItemRight = null;
+		helmet = null;
 	}
 
 	/**
@@ -48,19 +48,20 @@ public class ModelProperties {
 
 	/**
 	 * The position of the entity's left hand. Items held in the left hand will be rendered at this position and will move with the
-	 * element specified as the parent.
+	 * element specified as the parent. Returns null if this model has no left hand.
 	 */
 	public OriginPoint leftHand() { return heldItemLeft; }
 
 	/**
 	 * The position of the entity's right hand. Items held in the right hand will be rendered at this position and will move with the
-	 * element specified as the parent.
+	 * element specified as the parent. Returns null if this model has no right hand.
 	 */
 	public OriginPoint rightHand() { return heldItemRight; }
 
 	/**
 	 * The position of the entity's head, for helmet rendering purposes. Items worn on the head will be
 	 * rendered at this position and will move with the element specified as the parent.
+	 * Returns null if this model has no helmet.
 	 */
 	public OriginPoint helmet() { return helmet; }
 
@@ -88,8 +89,11 @@ public class ModelProperties {
 		@SerializedName(Keys.PROP_META_ROTATION)
 		private final Vec3f rotation;
 
+		@SerializedName(Keys.PROP_META_SCALE)
+		private final float scale;
+
 		/** For Json deserialization */
-		private OriginPoint() { parent = ""; coords = Vec3f.ORIGIN; rotation = Vec3f.ORIGIN; }
+		private OriginPoint() { parent = ""; coords = Vec3f.ORIGIN; rotation = Vec3f.ORIGIN; scale = 1.0f; }
 
 		/** Returns the parent element for this point, or the empty string if there is no parent element. */
 		public String parent() { return parent; }
@@ -99,6 +103,9 @@ public class ModelProperties {
 
 		/** Returns the rotation of this point. */
 		public Vec3f rotation() { return rotation; }
+
+		/** Returns the scale of this point. */
+		public float scale() { return scale; }
 
 		@Override
 		public String toString() {

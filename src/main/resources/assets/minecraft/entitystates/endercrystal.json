@@ -5,6 +5,9 @@
 	},
 	"states": {
 		"baseplate=false": { "model": "endercrystal" },
-		"baseplate=true": { "model": "endercrystal_natural" }
+		"baseplate=true": [
+			{ "model": "endercrystal" },
+			{ "model": "endercrystal_base" }
+		]
 	}
 }

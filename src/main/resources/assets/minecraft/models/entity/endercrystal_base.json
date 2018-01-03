@@ -1,10 +1,4 @@
 {
-	"properties": {
-		"shadowsize": 8
-	},
-	"imports": {
-		"endercrystal": ["*","animations:*"]
-	},
 	"elements": [
 		{
 			"name": "baseplate",

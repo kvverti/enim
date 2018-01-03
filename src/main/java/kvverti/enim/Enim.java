@@ -62,7 +62,7 @@ public final class Enim {
 
 		Logger.info("Registering Minecraft AnimTypes...");
 		Logger.info("Warnings follow, please ignore");
-		event.getRegistry().registerAll(IDLE, MOVE, AIR, SWIM, TRACK, JUMP, EAT, OPEN, CLOSE);
+		event.getRegistry().registerAll(IDLE, MOVE, AIR, SWIM, TRACK, JUMP, ATTACK, DAMAGE, EAT, OPEN, CLOSE);
 	}
 
 	@SubscribeEvent
@@ -98,6 +98,7 @@ public final class Enim {
 		registerEntityRender(EntityVillager.class, "minecraft", "villager", VillagerRender::new);
 		registerEntityRender(EntitySquid.class, "minecraft", "squid", SquidRender::new);
 		registerEntityRender(EntityEnderCrystal.class, "minecraft", "endercrystal", EnderCrystalRender::new);
+		registerEntityRender(EntityPigZombie.class, "minecraft", "zombie_pigman", ZombiePigmanRender::new);
 	}
 
 	@EventHandler

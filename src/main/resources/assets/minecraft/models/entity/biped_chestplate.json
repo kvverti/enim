@@ -1,0 +1,32 @@
+{
+	"imports": {
+		"biped": ["animations:idle","animations:tracking","animations:attack"]
+	},
+	"elements": [
+		{
+			"name": "chestplate",
+			"from": [4,12,6],
+			"to": [12,24,10],
+			"uv": [16,16],
+			"origin": [8,18,8],
+			"scale": 1.25
+		},
+		{
+			"name": "right_arm",
+			"from": [0,12,6],
+			"to": [4,24,10],
+			"uv": [40,16],
+			"origin": [2,22,8],
+			"scale": 1.375
+		},
+		{
+			"name": "left_arm",
+			"from": [12,12,6],
+			"to": [16,24,10],
+			"uv": [40,16],
+			"origin": [14,22,8],
+			"rotation": [180,0,0],
+			"scale": -1.375
+		}
+	]
+}

@@ -17,6 +17,7 @@ public final class Keys {
 	public static final String PROP_META_PARENT = "element";
 	public static final String PROP_META_ORIGIN = "position";
 	public static final String PROP_META_ROTATION = "rotation";
+	public static final String PROP_META_SCALE = "scale";
 
 	public static final String IMPORTS_TAG = "imports";
 	public static final String WILDCARD = "*";

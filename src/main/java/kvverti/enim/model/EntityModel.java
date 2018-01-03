@@ -173,9 +173,9 @@ public class EntityModel {
 				ensureContains(elem.parent(), elementNames);
 			}
 			//make sure properties reference valid elements
-			ensureContains(properties.helmet().parent(), elementNames);
-			ensureContains(properties.leftHand().parent(), elementNames);
-			ensureContains(properties.rightHand().parent(), elementNames);
+			ensureValidOrigin(properties.helmet(), elementNames);
+			ensureValidOrigin(properties.leftHand(), elementNames);
+			ensureValidOrigin(properties.rightHand(), elementNames);
 			//make sure animations defines reference valid elements
 			for(Animation anim : animations.values()) {
 
@@ -183,6 +183,12 @@ public class EntityModel {
 				for(String name : elemNames)
 					ensureContains(name, elementNames);
 			}
+		}
+
+		private void ensureValidOrigin(ModelProperties.OriginPoint p, Set<String> names) {
+
+			if(p != null)
+				ensureContains(p.parent(), names);
 		}
 
 		private void ensureContains(String name, Set<String> names) {
