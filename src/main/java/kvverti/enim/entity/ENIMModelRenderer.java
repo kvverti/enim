@@ -73,123 +73,124 @@ public class ENIMModelRenderer extends ModelRenderer {
 		addBox(from.x - origin.x,
 			origin.y - to.y,
 			origin.z - to.z,
-		(int)	(to.x - from.x),
-		(int)	(to.y - from.y),
-		(int)	(to.z - from.z));
-		pivotDeltaX = pivot.x - origin.x;
-		pivotDeltaY = origin.y - pivot.y;
-		pivotDeltaZ = origin.z - pivot.z;
-	}
+            (int) (to.x - from.x),
+            (int) (to.y - from.y),
+            (int) (to.z - from.z),
+            features.isTextureMirrored());
+        pivotDeltaX = pivot.x - origin.x;
+        pivotDeltaY = origin.y - pivot.y;
+        pivotDeltaZ = origin.z - pivot.z;
+    }
 
-	public void transformWithoutRendering(EntityInfo info) {
+    public void transformWithoutRendering(EntityInfo info) {
 
-		moveIntoPosition(info);
-		fixTransformsForChildren(info.scale);
-	}
+        moveIntoPosition(info);
+        fixTransformsForChildren(info.scale);
+    }
 
-	public void render(EntityInfo info) {
+    public void render(EntityInfo info) {
 
-		if(!isHidden && showModel) {
+        if(!isHidden && showModel) {
 
-			float scale = info.scale;
-			if(!compiled) compileDisplayList(scale);
-			GlStateManager.pushMatrix();
-			//render
-			moveIntoPosition(info);
-			Vec3f color = info.color.apply(tintIndex);
-			if(translucent || info.alpha < 1.0f) makeLucent();
-			GlStateManager.color(color.x, color.y, color.z, info.alpha);
-			GlStateManager.callList(displayList());
-			if(translucent || info.alpha < 1.0f) endLucent();
-			//render children
-			fixTransformsForChildren(scale);
-			if(childModels != null) childModels.forEach(box -> ((ENIMModelRenderer) box).render(info));
-			GlStateManager.popMatrix();
-		}
-	}
+            float scale = info.scale;
+            if(!compiled) compileDisplayList(scale);
+            GlStateManager.pushMatrix();
+            //render
+            moveIntoPosition(info);
+            Vec3f color = info.color.apply(tintIndex);
+            if(translucent || info.alpha < 1.0f) makeLucent();
+            GlStateManager.color(color.x, color.y, color.z, info.alpha);
+            GlStateManager.callList(displayList());
+            if(translucent || info.alpha < 1.0f) endLucent();
+            //render children
+            fixTransformsForChildren(scale);
+            if(childModels != null) childModels.forEach(box -> ((ENIMModelRenderer) box).render(info));
+            GlStateManager.popMatrix();
+        }
+    }
 
-	private void moveIntoPosition(EntityInfo info) {
+    private void moveIntoPosition(EntityInfo info) {
 
-		float scale = info.scale;
-		//transform element into position
-		GlStateManager.translate(offsetX, offsetY, offsetZ);
-		GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-		GlStateManager.translate(pivotDeltaX * scale, pivotDeltaY * scale, pivotDeltaZ * scale);
-		GlStateManager.rotate(-defaultRotations.z, 0.0f, 0.0f, 1.0f);
-		GlStateManager.rotate(-defaultRotations.y, 0.0f, 1.0f, 0.0f);
-		GlStateManager.rotate(+defaultRotations.x, 1.0f, 0.0f, 0.0f);
-		//apply special transformations
-		if(head) {
+        float scale = info.scale;
+        //transform element into position
+        GlStateManager.translate(offsetX, offsetY, offsetZ);
+        GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+        GlStateManager.translate(pivotDeltaX * scale, pivotDeltaY * scale, pivotDeltaZ * scale);
+        GlStateManager.rotate(-defaultRotations.z, 0.0f, 0.0f, 1.0f);
+        GlStateManager.rotate(-defaultRotations.y, 0.0f, 1.0f, 0.0f);
+        GlStateManager.rotate(+defaultRotations.x, 1.0f, 0.0f, 0.0f);
+        //apply special transformations
+        if(head) {
 
-			GlStateManager.rotate(info.headYaw, 0.0f, 1.0f, 0.0f);
-			GlStateManager.rotate(info.entityPitch, 1.0f, 0.0f, 0.0f);
-		}
-		//apply animations
-		GlStateManager.translate(shiftDistanceX * scale, -shiftDistanceY * scale, -shiftDistanceZ * scale);
-		GlStateManager.rotate(-toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
-		GlStateManager.rotate(-toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
-		GlStateManager.rotate(+toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
-		GlStateManager.translate(-pivotDeltaX * scale, -pivotDeltaY * scale, -pivotDeltaZ * scale);
-		GlStateManager.scale(defaultScale.x, defaultScale.y, defaultScale.z);
-	}
+            GlStateManager.rotate(info.headYaw, 0.0f, 1.0f, 0.0f);
+            GlStateManager.rotate(info.entityPitch, 1.0f, 0.0f, 0.0f);
+        }
+        //apply animations
+        GlStateManager.translate(shiftDistanceX * scale, -shiftDistanceY * scale, -shiftDistanceZ * scale);
+        GlStateManager.rotate(-toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
+        GlStateManager.rotate(-toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
+        GlStateManager.rotate(+toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
+        GlStateManager.translate(-pivotDeltaX * scale, -pivotDeltaY * scale, -pivotDeltaZ * scale);
+        GlStateManager.scale(defaultScale.x, defaultScale.y, defaultScale.z);
+    }
 
-	private void fixTransformsForChildren(float scale) {
+    private void fixTransformsForChildren(float scale) {
 
-		//do some transformations so children render properly
-		GlStateManager.translate(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
-		GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
-	}
+        //do some transformations so children render properly
+        GlStateManager.translate(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
+        GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
+    }
 
-	@Override
-	@Deprecated
-	public void render(float scale) {
+    @Override
+    @Deprecated
+    public void render(float scale) {
 
-		EntityInfo info = new EntityInfo();
-		info.scale = scale;
-		render(info);
-	}
+        EntityInfo info = new EntityInfo();
+        info.scale = scale;
+        render(info);
+    }
 
-	@Override
-	@Deprecated
-	public void renderWithRotation(float scale) {
+    @Override
+    @Deprecated
+    public void renderWithRotation(float scale) {
 
-		if(!isHidden && showModel) {
+        if(!isHidden && showModel) {
 
-			if(!compiled) compileDisplayList(scale);
-			GlStateManager.pushMatrix();
-			GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-			GlStateManager.rotate(+defaultRotations.z, 0.0f, 0.0f, 1.0f);
-			GlStateManager.rotate(+defaultRotations.y, 0.0f, 1.0f, 0.0f);
-			GlStateManager.rotate(-defaultRotations.x, 1.0f, 0.0f, 0.0f);
-			GlStateManager.rotate(+toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
-			GlStateManager.rotate(+toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
-			GlStateManager.rotate(-toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
-			GlStateManager.callList(displayList());
-			GlStateManager.popMatrix();
-		}
-	}
+            if(!compiled) compileDisplayList(scale);
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+            GlStateManager.rotate(+defaultRotations.z, 0.0f, 0.0f, 1.0f);
+            GlStateManager.rotate(+defaultRotations.y, 0.0f, 1.0f, 0.0f);
+            GlStateManager.rotate(-defaultRotations.x, 1.0f, 0.0f, 0.0f);
+            GlStateManager.rotate(+toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
+            GlStateManager.rotate(+toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
+            GlStateManager.rotate(-toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
+            GlStateManager.callList(displayList());
+            GlStateManager.popMatrix();
+        }
+    }
 
-	private void makeLucent() {
+    private void makeLucent() {
 
-		GlStateManager.enableNormalize();
-		GlStateManager.enableBlend();
-		GlStateManager.blendFunc(770, 771);
-	}
+        GlStateManager.enableNormalize();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(770, 771);
+    }
 
-	private void endLucent() {
+    private void endLucent() {
 
-		GlStateManager.disableBlend();
-		GlStateManager.disableNormalize();
-	}
+        GlStateManager.disableBlend();
+        GlStateManager.disableNormalize();
+    }
 
-	private void compileDisplayList(float scale) {
+    private void compileDisplayList(float scale) {
 
-		Util.invokeUnchecked(this, compileDisplayList, scale);
-		compiled = true;
-	}
+        Util.invokeUnchecked(this, compileDisplayList, scale);
+        compiled = true;
+    }
 
-	private int displayList() {
+    private int displayList() {
 
-		return Util.getIntField(this, displayList);
-	}
+        return Util.getIntField(this, displayList);
+    }
 }

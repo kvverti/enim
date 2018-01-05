@@ -9,150 +9,156 @@ import kvverti.enim.Vec3f;
 /** Class representing a model element in the "elements" tag */
 public final class ModelElement {
 
-	private static int nameIdx = 0;
+    private static int nameIdx = 0;
 
-	@SerializedName(Keys.ELEM_NAME)
-	private String name = "element" + nameIdx++;
+    @SerializedName(Keys.ELEM_NAME)
+    private String name = "element" + nameIdx++;
 
-	@SerializedName(Keys.ELEM_TEXCOORDS)
-	private final int[] uv = { 0, 0 };
+    @SerializedName(Keys.ELEM_TEXCOORDS)
+    private final int[] uv = { 0, 0 };
 
-	@SerializedName(Keys.ELEM_FROM)
-	private Vec3f from = Vec3f.ORIGIN;
+    @SerializedName(Keys.ELEM_FROM)
+    private Vec3f from = Vec3f.ORIGIN;
 
-	@SerializedName(Keys.ELEM_TO)
-	private Vec3f to = Vec3f.ORIGIN;
+    @SerializedName(Keys.ELEM_TO)
+    private Vec3f to = Vec3f.ORIGIN;
 
-	@SerializedName(Keys.ELEM_ROTPOINT)
-	private Vec3f origin = Vec3f.ORIGIN;
+    @SerializedName(Keys.ELEM_ROTPOINT)
+    private Vec3f origin = Vec3f.ORIGIN;
 
-	@SerializedName(Keys.ELEM_PIVOT_POINT)
-	private Vec3f pivot = null; //defaults to value of origin
+    @SerializedName(Keys.ELEM_PIVOT_POINT)
+    private Vec3f pivot = null; //defaults to value of origin
 
-	@SerializedName(Keys.ELEM_DEFROT)
-	private Vec3f rotation = Vec3f.ORIGIN;
+    @SerializedName(Keys.ELEM_DEFROT)
+    private Vec3f rotation = Vec3f.ORIGIN;
 
-	@SerializedName(Keys.ELEM_SCALE)
-	private ScaleProperty scale = ScaleProperty.ONE;
+    @SerializedName(Keys.ELEM_SCALE)
+    private ScaleProperty scale = ScaleProperty.ONE;
 
-	@SerializedName(Keys.ELEM_PARENT)
-	private String parent = null;
+    @SerializedName(Keys.ELEM_PARENT)
+    private String parent = null;
 
-	@SerializedName(Keys.ELEM_TRANSLUCENT)
-	private boolean translucent = false;
+    @SerializedName(Keys.ELEM_TRANSLUCENT)
+    private boolean translucent = false;
 
-	@SerializedName(Keys.ELEM_HEAD)
-	private boolean head = false;
+    @SerializedName(Keys.ELEM_HEAD)
+    private boolean head = false;
 
-	@SerializedName(Keys.ELEM_TINTINDEX)
-	private int tintIndex = -1;
+    @SerializedName(Keys.ELEM_TINTINDEX)
+    private int tintIndex = -1;
 
-	/** For Json deserialization */
-	private ModelElement() { }
+    @SerializedName(Keys.ELEM_MIRRORED)
+    private boolean mirrored = false;
 
-	/** The name of this element. */
-	public String name() { return name; }
+    /** For Json deserialization */
+    private ModelElement() { }
 
-	/** The parent element to this element, or null if there is no parent. */
-	public String parent() { return parent; }
+    /** The name of this element. */
+    public String name() { return name; }
 
-	/** The lower vertex of this cuboid element. */
-	public Vec3f from() { return from; }
+    /** The parent element to this element, or null if there is no parent. */
+    public String parent() { return parent; }
 
-	/** The upper vertex of this cuboid element. */
-	public Vec3f to() { return to; }
+    /** The lower vertex of this cuboid element. */
+    public Vec3f from() { return from; }
 
-	/** The texture coordinates for this element. */
-	public int[] uv() { return uv.clone(); }
+    /** The upper vertex of this cuboid element. */
+    public Vec3f to() { return to; }
 
-	/** The origin of transformation for this element. */
-	public Vec3f origin() { return origin; }
+    /** The texture coordinates for this element. */
+    public int[] uv() { return uv.clone(); }
 
-	/** The rotation origin of this element. Defaults to the value of {@link #origin()}. */
-	public Vec3f pivot() { return pivot != null ? pivot : origin; }
+    /** The origin of transformation for this element. */
+    public Vec3f origin() { return origin; }
 
-	/** The rotation of this element about its pivot. */
-	public Vec3f rotation() { return rotation; }
+    /** The rotation origin of this element. Defaults to the value of {@link #origin()}. */
+    public Vec3f pivot() { return pivot != null ? pivot : origin; }
 
-	/** The scale of this element relative to its origin. */
-	public Vec3f scale() { return scale.value; }
+    /** The rotation of this element about its pivot. */
+    public Vec3f rotation() { return rotation; }
 
-	/** Whether this element supports partial alpha. */
-	public boolean isTranslucent() { return translucent; }
+    /** The scale of this element relative to its origin. */
+    public Vec3f scale() { return scale.value; }
 
-	/** Whether this element represents a head. */
-	public boolean isHead() { return head; }
+    /** Whether this element supports partial alpha. */
+    public boolean isTranslucent() { return translucent; }
 
-	/** The index of the colormap to multiply onto this element. Returns -1 if not colored. */
-	public int tintIndex() { return tintIndex; }
+    /** Whether this element represents a head. */
+    public boolean isHead() { return head; }
 
-	void applyOverride(Override value) {
+    /** The index of the colormap to multiply onto this element. Returns -1 if not colored. */
+    public int tintIndex() { return tintIndex; }
 
-		if(value == null) return;
-		rotation = value.rotation;
-		scale = value.scale;
-	}
+    /** Whether the texture for this element should be mirrored. */
+    public boolean isTextureMirrored() { return mirrored; }
 
-	@java.lang.Override
-	public String toString() {
+    void applyOverride(Override value) {
 
-		return String.format(
-			"ModelElement { \"%s\": \"%s\", \"%s\": \"%s\", \"%s\": [%f,%f,%f], \"%s\": [%f,%f,%f], " +
-			"\"%s\": [%d,%d], \"%s\": [%f,%f,%f], \"%s\": [%f,%f,%f], \"%s\": %s, \"%s\": %s, \"%s\": %s }",
-			Keys.ELEM_NAME, name,
-			Keys.ELEM_PARENT, parent,
-			Keys.ELEM_FROM, from.x, from.y, from.z,
-			Keys.ELEM_TO, to.x, to.y, to.z,
-			Keys.ELEM_TEXCOORDS, uv[0], uv[1],
-			Keys.ELEM_ROTPOINT, origin.x, origin.y, origin.z,
-			Keys.ELEM_DEFROT, rotation.x, rotation.y, rotation.z,
-			Keys.ELEM_SCALE, scale,
-			Keys.ELEM_TRANSLUCENT, translucent,
-			Keys.ELEM_HEAD, head);
-	}
+        if(value == null) return;
+        rotation = value.rotation;
+        scale = value.scale;
+    }
 
-	@java.lang.Override
-	public boolean equals(Object o) {
+    @java.lang.Override
+    public String toString() {
 
-		return o != null && o.getClass() == ModelElement.class && ((ModelElement) o).name.equals(this.name);
-	}
+        return String.format(
+            "ModelElement { \"%s\": \"%s\", \"%s\": \"%s\", \"%s\": [%f,%f,%f], \"%s\": [%f,%f,%f], " +
+            "\"%s\": [%d,%d], \"%s\": [%f,%f,%f], \"%s\": [%f,%f,%f], \"%s\": %s, \"%s\": %s, \"%s\": %s }",
+            Keys.ELEM_NAME, name,
+            Keys.ELEM_PARENT, parent,
+            Keys.ELEM_FROM, from.x, from.y, from.z,
+            Keys.ELEM_TO, to.x, to.y, to.z,
+            Keys.ELEM_TEXCOORDS, uv[0], uv[1],
+            Keys.ELEM_ROTPOINT, origin.x, origin.y, origin.z,
+            Keys.ELEM_DEFROT, rotation.x, rotation.y, rotation.z,
+            Keys.ELEM_SCALE, scale,
+            Keys.ELEM_TRANSLUCENT, translucent,
+            Keys.ELEM_HEAD, head);
+    }
 
-	@java.lang.Override
-	public int hashCode() {
+    @java.lang.Override
+    public boolean equals(Object o) {
 
-		return name.hashCode();
-	}
+        return o != null && o.getClass() == ModelElement.class && ((ModelElement) o).name.equals(this.name);
+    }
 
-	public void verify() {
+    @java.lang.Override
+    public int hashCode() {
 
-		verifyName(name);
-		verifyCoords(uv);
-	}
+        return name.hashCode();
+    }
 
-	private void verifyName(String name) {
+    public void verify() {
 
-		boolean flag;
-		flag = name != null && name.length() > 0 && Keys.IDENTIFIER_REGEX.matcher(name).matches();
-		if(!flag) throw new JsonParseException("Invalid name: " + name);
-	}
+        verifyName(name);
+        verifyCoords(uv);
+    }
 
-	private void verifyCoords(int[] coords) {
+    private void verifyName(String name) {
 
-		if(coords.length != 2) throw new JsonParseException("UV length must be 2");
-		for(int n : coords)
-			if(n < 0) throw new JsonParseException("Value must be non-negative: " + n);
-	}
+        boolean flag;
+        flag = name != null && name.length() > 0 && Keys.IDENTIFIER_REGEX.matcher(name).matches();
+        if(!flag) throw new JsonParseException("Invalid name: " + name);
+    }
 
-	/** Class representing an entry in the "overrides" tag */
-	static class Override {
+    private void verifyCoords(int[] coords) {
 
-		@SerializedName(Keys.ELEM_DEFROT)
-		Vec3f rotation = Vec3f.ORIGIN;
+        if(coords.length != 2) throw new JsonParseException("UV length must be 2");
+        for(int n : coords)
+            if(n < 0) throw new JsonParseException("Value must be non-negative: " + n);
+    }
 
-		@SerializedName(Keys.ELEM_SCALE)
-		ScaleProperty scale = ScaleProperty.ONE;
+    /** Class representing an entry in the "overrides" tag */
+    static class Override {
 
-		/** For Json deserialization */
-		private Override() { }
-	}
+        @SerializedName(Keys.ELEM_DEFROT)
+        Vec3f rotation = Vec3f.ORIGIN;
+
+        @SerializedName(Keys.ELEM_SCALE)
+        ScaleProperty scale = ScaleProperty.ONE;
+
+        /** For Json deserialization */
+        private Override() { }
+    }
 }

@@ -14,26 +14,26 @@ import kvverti.enim.Vec3f;
  */
 class ScaleProperty {
 
-	public static final ScaleProperty ONE = new ScaleProperty(Vec3f.IDENTITY);
+    public static final ScaleProperty ONE = new ScaleProperty(Vec3f.IDENTITY);
 
-	public final Vec3f value;
+    public final Vec3f value;
 
-	public ScaleProperty(Vec3f v) { value = v; }
+    public ScaleProperty(Vec3f v) { value = v; }
 
-	public static class Deserializer implements JsonDeserializer<ScaleProperty> {
+    public static class Deserializer implements JsonDeserializer<ScaleProperty> {
 
-		@Override
-		public ScaleProperty deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
+        @Override
+        public ScaleProperty deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
 
-			Vec3f value;
-			if(json.isJsonPrimitive()) {
-				float f = json.getAsFloat();
-				value = Vec3f.of(f, f, f);
-			} else
-				value = context.deserialize(json, Vec3f.class);
-			if(value.equals(Vec3f.IDENTITY))
-				return ScaleProperty.ONE;
-			return new ScaleProperty(value);
-		}
-	}
+            Vec3f value;
+            if(json.isJsonPrimitive()) {
+                float f = json.getAsFloat();
+                value = Vec3f.of(f, f, f);
+            } else
+                value = context.deserialize(json, Vec3f.class);
+            if(value.equals(Vec3f.IDENTITY))
+                return ScaleProperty.ONE;
+            return new ScaleProperty(value);
+        }
+    }
 }
