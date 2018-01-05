@@ -41,6 +41,7 @@ public class EntityModel {
 		.registerTypeAdapter(EntityModel.class, new EntityModel.Deserializer())
 		.registerTypeAdapter(Condition.class, new Condition.Deserializer())
 		.registerTypeAdapter(Rule.class, new Rule.Deserializer())
+		.registerTypeAdapter(ScaleProperty.class, new ScaleProperty.Deserializer())
 		.create();
 
 	/**

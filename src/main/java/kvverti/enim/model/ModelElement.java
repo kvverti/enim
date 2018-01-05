@@ -33,7 +33,7 @@ public final class ModelElement {
 	private Vec3f rotation = Vec3f.ORIGIN;
 
 	@SerializedName(Keys.ELEM_SCALE)
-	private float scale = 1.0f;
+	private ScaleProperty scale = ScaleProperty.ONE;
 
 	@SerializedName(Keys.ELEM_PARENT)
 	private String parent = null;
@@ -75,7 +75,7 @@ public final class ModelElement {
 	public Vec3f rotation() { return rotation; }
 
 	/** The scale of this element relative to its origin. */
-	public float scale() { return scale; }
+	public Vec3f scale() { return scale.value; }
 
 	/** Whether this element supports partial alpha. */
 	public boolean isTranslucent() { return translucent; }
@@ -98,7 +98,7 @@ public final class ModelElement {
 
 		return String.format(
 			"ModelElement { \"%s\": \"%s\", \"%s\": \"%s\", \"%s\": [%f,%f,%f], \"%s\": [%f,%f,%f], " +
-			"\"%s\": [%d,%d], \"%s\": [%f,%f,%f], \"%s\": [%f,%f,%f], \"%s\": %f, \"%s\": %s, \"%s\": %s }",
+			"\"%s\": [%d,%d], \"%s\": [%f,%f,%f], \"%s\": [%f,%f,%f], \"%s\": %s, \"%s\": %s, \"%s\": %s }",
 			Keys.ELEM_NAME, name,
 			Keys.ELEM_PARENT, parent,
 			Keys.ELEM_FROM, from.x, from.y, from.z,
@@ -150,7 +150,7 @@ public final class ModelElement {
 		Vec3f rotation = Vec3f.ORIGIN;
 
 		@SerializedName(Keys.ELEM_SCALE)
-		float scale = 1.0f;
+		ScaleProperty scale = ScaleProperty.ONE;
 
 		/** For Json deserialization */
 		private Override() { }

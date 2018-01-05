@@ -90,10 +90,10 @@ public class ModelProperties {
 		private final Vec3f rotation;
 
 		@SerializedName(Keys.PROP_META_SCALE)
-		private final float scale;
+		private final ScaleProperty scale;
 
 		/** For Json deserialization */
-		private OriginPoint() { parent = ""; coords = Vec3f.ORIGIN; rotation = Vec3f.ORIGIN; scale = 1.0f; }
+		private OriginPoint() { parent = ""; coords = Vec3f.ORIGIN; rotation = Vec3f.ORIGIN; scale = ScaleProperty.ONE; }
 
 		/** Returns the parent element for this point, or the empty string if there is no parent element. */
 		public String parent() { return parent; }
@@ -105,7 +105,7 @@ public class ModelProperties {
 		public Vec3f rotation() { return rotation; }
 
 		/** Returns the scale of this point. */
-		public float scale() { return scale; }
+		public Vec3f scale() { return scale.value; }
 
 		@Override
 		public String toString() {

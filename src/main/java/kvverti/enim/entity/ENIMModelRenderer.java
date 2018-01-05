@@ -20,7 +20,7 @@ public class ENIMModelRenderer extends ModelRenderer {
 	private static final Field displayList;
 
 	private final Vec3f defaultRotations;
-	private final float defaultScale;
+	private final Vec3f defaultScale;
 	private final boolean translucent;
 	private final boolean head;
 	private final int tintIndex;
@@ -48,7 +48,7 @@ public class ENIMModelRenderer extends ModelRenderer {
 
 		super(model, "#missingno");
 		defaultRotations = Vec3f.ORIGIN;
-		defaultScale = 1.0f;
+		defaultScale = Vec3f.IDENTITY;
 		translucent = false;
 		head = false;
 		tintIndex = -1;
@@ -130,7 +130,7 @@ public class ENIMModelRenderer extends ModelRenderer {
 		GlStateManager.rotate(-toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
 		GlStateManager.rotate(+toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
 		GlStateManager.translate(-pivotDeltaX * scale, -pivotDeltaY * scale, -pivotDeltaZ * scale);
-		GlStateManager.scale(defaultScale, defaultScale, defaultScale);
+		GlStateManager.scale(defaultScale.x, defaultScale.y, defaultScale.z);
 	}
 
 	private void fixTransformsForChildren(float scale) {
@@ -155,7 +155,7 @@ public class ENIMModelRenderer extends ModelRenderer {
 
 		if(!isHidden && showModel) {
 
-			if(!compiled) compileDisplayList(scale * defaultScale);
+			if(!compiled) compileDisplayList(scale);
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 			GlStateManager.rotate(+defaultRotations.z, 0.0f, 0.0f, 1.0f);
