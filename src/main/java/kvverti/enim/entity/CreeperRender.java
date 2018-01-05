@@ -7,14 +7,14 @@ import kvverti.enim.entity.state.RenderState;
 
 public class CreeperRender extends LivingRender<EntityCreeper> {
 
-	public CreeperRender(RenderManager manager) {
+    public CreeperRender(RenderManager manager) {
 
-		super(manager);
-	}
+        super(manager);
+    }
 
-	@Override
-	public RenderState getStateFromEntity(EntityCreeper entity) {
+    @Override
+    public RenderState getStateFromEntity(EntityCreeper entity) {
 
-		return getStateManager().getDefaultState();
-	}
+        return getStateManager().getDefaultState();
+    }
 }

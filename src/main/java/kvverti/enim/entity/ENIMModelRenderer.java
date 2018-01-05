@@ -16,63 +16,63 @@ import static kvverti.enim.entity.Entities.*;
 
 public class ENIMModelRenderer extends ModelRenderer {
 
-	private static final Method compileDisplayList;
-	private static final Field displayList;
+    private static final Method compileDisplayList;
+    private static final Field displayList;
 
-	private final Vec3f defaultRotations;
-	private final Vec3f defaultScale;
-	private final boolean translucent;
-	private final boolean head;
-	private final int tintIndex;
-	private final float pivotDeltaX;
-	private final float pivotDeltaY;
-	private final float pivotDeltaZ;
-	private boolean compiled = false;
-	public float shiftDistanceX;
-	public float shiftDistanceY;
-	public float shiftDistanceZ;
+    private final Vec3f defaultRotations;
+    private final Vec3f defaultScale;
+    private final boolean translucent;
+    private final boolean head;
+    private final int tintIndex;
+    private final float pivotDeltaX;
+    private final float pivotDeltaY;
+    private final float pivotDeltaZ;
+    private boolean compiled = false;
+    public float shiftDistanceX;
+    public float shiftDistanceY;
+    public float shiftDistanceZ;
 
-	static {
+    static {
 
-		compileDisplayList = Util.findMethod(ModelRenderer.class,
-			void.class,
-			"compileDisplayList",
-			"func_78788_d",
-			float.class);
+        compileDisplayList = Util.findMethod(ModelRenderer.class,
+            void.class,
+            "compileDisplayList",
+            "func_78788_d",
+            float.class);
 
-		displayList = Util.findField(ModelRenderer.class, int.class, "field_78811_r", "displayList");
-	}
+        displayList = Util.findField(ModelRenderer.class, int.class, "field_78811_r", "displayList");
+    }
 
-	/* Make missingno */
-	ENIMModelRenderer(ModelBase model) {
+    /* Make missingno */
+    ENIMModelRenderer(ModelBase model) {
 
-		super(model, "#missingno");
-		defaultRotations = Vec3f.ORIGIN;
-		defaultScale = Vec3f.IDENTITY;
-		translucent = false;
-		head = false;
-		tintIndex = -1;
-		pivotDeltaX = 0.0f;
-		pivotDeltaY = 0.0f;
-		pivotDeltaZ = 0.0f;
-		addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
-	}
+        super(model, "#missingno");
+        defaultRotations = Vec3f.ORIGIN;
+        defaultScale = Vec3f.IDENTITY;
+        translucent = false;
+        head = false;
+        tintIndex = -1;
+        pivotDeltaX = 0.0f;
+        pivotDeltaY = 0.0f;
+        pivotDeltaZ = 0.0f;
+        addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
+    }
 
-	public ENIMModelRenderer(ModelBase model, ModelElement features) {
+    public ENIMModelRenderer(ModelBase model, ModelElement features) {
 
-		super(model, features.name());
-		defaultRotations = features.rotation();
-		defaultScale = features.scale();
-		translucent = features.isTranslucent();
-		head = features.isHead();
-		tintIndex = features.tintIndex();
-		Vec3f origin = features.origin(), pivot = features.pivot(), from = features.from(), to = features.to();
-		int[] uv = features.uv();
-		setTextureOffset(uv[0], uv[1]);
-		setRotationPoint(origin.x - 8.0f, -origin.y, 8.0f - origin.z);
-		addBox(from.x - origin.x,
-			origin.y - to.y,
-			origin.z - to.z,
+        super(model, features.name());
+        defaultRotations = features.rotation();
+        defaultScale = features.scale();
+        translucent = features.isTranslucent();
+        head = features.isHead();
+        tintIndex = features.tintIndex();
+        Vec3f origin = features.origin(), pivot = features.pivot(), from = features.from(), to = features.to();
+        int[] uv = features.uv();
+        setTextureOffset(uv[0], uv[1]);
+        setRotationPoint(origin.x - 8.0f, -origin.y, 8.0f - origin.z);
+        addBox(from.x - origin.x,
+            origin.y - to.y,
+            origin.z - to.z,
             (int) (to.x - from.x),
             (int) (to.y - from.y),
             (int) (to.z - from.z),

@@ -1,116 +1,116 @@
 {
-	"properties": {
-		"nameplate": 16,
-		"shadowsize": 4
-	},
-	"elements": [
-		{
-			"name": "head",
-			"from": [5,8,5],
-			"to": [11,14,11],
-			"uv": [0,0],
-			"origin": [8,8,8],
-			"scale": 0.375,
-			"head": true
-		},
-		{
-			"name": "ear_left",
-			"parent": "head",
-			"from": [9,13,9],
-			"to": [12,17,10],
-			"uv": [24,0],
-			"origin": [10.5,15,9.5],
-			"rotation": [180,0,0],
-			"scale": -1
-		},
-		{
-			"name": "ear_right",
-			"parent": "head",
-			"from": [4,13,9],
-			"to": [7,17,10],
-			"uv": [24,0]
-		},
-		{
-			"name": "body",
-			"parent": "head",
-			"from": [5,-4,5],
-			"to": [11,8,11],
-			"uv": [0,16],
-			"origin": [8,11,8],
-			"rotation": [30,0,0]
-		},
-		{
-			"name": "tail",
-			"parent": "body",
-			"from": [5,-10,8],
-			"to": [11,-4,8],
-			"uv": [3,35]
-		},
-		{
-			"name": "right_inner_wing",
-			"parent": "body",
-			"from": [-2,-5,8],
-			"to": [8,12,8],
-			"uv": [43,0],
-			"origin": [8,8,8]
-		},
-		{
-			"name": "right_outer_wing",
-			"parent": "right_inner_wing",
-			"from": [-11,-4,8],
-			"to": [-2,11,8],
-			"uv": [24,16],
-			"origin": [-2,8,8]
-		},
-		{
-			"name": "left_wing_reflector",
-			"parent": "body",
-			"from": [0,0,0],
-			"to": [0,0,0],
-			"uv": [0,0],
-			"origin": [8,8,8],
-			"rotation": [180,0,0],
-			"scale": -1
-		},
-		{
-			"name": "left_inner_wing",
-			"parent": "left_wing_reflector",
-			"from": [-2,-5,8],
-			"to": [8,12,8],
-			"uv": [43,0],
-			"origin": [8,8,8]
-		},
-		{
-			"name": "left_outer_wing",
-			"parent": "left_inner_wing",
-			"from": [-11,-4,8],
-			"to": [-2,11,8],
-			"uv": [24,16],
-			"origin": [-2,8,8]
-		}
-	],
-	"animations": {
-		"idle": {
-			"script": "bat_idle",
-			"with": {
-				"head": "head",
-				"body": "body",
-				"lwing": "left_inner_wing",
-				"lwing_ext": "left_outer_wing",
-				"rwing": "right_inner_wing",
-				"rwing_ext": "right_outer_wing"
-			}
-		},
-		"airborne": {
-			"script": "bat_swing",
-			"with": {
-				"head": "head",
-				"body": "body",
-				"lwing": "left_inner_wing",
-				"lwing_ext": "left_outer_wing",
-				"rwing": "right_inner_wing",
-				"rwing_ext": "right_outer_wing"
-			}
-		}
-	}
+    "properties": {
+        "nameplate": 16,
+        "shadowsize": 4
+    },
+    "elements": [
+        {
+            "name": "head",
+            "from": [5,8,5],
+            "to": [11,14,11],
+            "uv": [0,0],
+            "origin": [8,8,8],
+            "scale": 0.375,
+            "head": true
+        },
+        {
+            "name": "ear_left",
+            "parent": "head",
+            "from": [9,13,9],
+            "to": [12,17,10],
+            "uv": [24,0],
+            "origin": [10.5,15,9.5],
+            "rotation": [180,0,0],
+            "scale": -1
+        },
+        {
+            "name": "ear_right",
+            "parent": "head",
+            "from": [4,13,9],
+            "to": [7,17,10],
+            "uv": [24,0]
+        },
+        {
+            "name": "body",
+            "parent": "head",
+            "from": [5,-4,5],
+            "to": [11,8,11],
+            "uv": [0,16],
+            "origin": [8,11,8],
+            "rotation": [30,0,0]
+        },
+        {
+            "name": "tail",
+            "parent": "body",
+            "from": [5,-10,8],
+            "to": [11,-4,8],
+            "uv": [3,35]
+        },
+        {
+            "name": "right_inner_wing",
+            "parent": "body",
+            "from": [-2,-5,8],
+            "to": [8,12,8],
+            "uv": [43,0],
+            "origin": [8,8,8]
+        },
+        {
+            "name": "right_outer_wing",
+            "parent": "right_inner_wing",
+            "from": [-11,-4,8],
+            "to": [-2,11,8],
+            "uv": [24,16],
+            "origin": [-2,8,8]
+        },
+        {
+            "name": "left_wing_reflector",
+            "parent": "body",
+            "from": [0,0,0],
+            "to": [0,0,0],
+            "uv": [0,0],
+            "origin": [8,8,8],
+            "rotation": [180,0,0],
+            "scale": -1
+        },
+        {
+            "name": "left_inner_wing",
+            "parent": "left_wing_reflector",
+            "from": [-2,-5,8],
+            "to": [8,12,8],
+            "uv": [43,0],
+            "origin": [8,8,8]
+        },
+        {
+            "name": "left_outer_wing",
+            "parent": "left_inner_wing",
+            "from": [-11,-4,8],
+            "to": [-2,11,8],
+            "uv": [24,16],
+            "origin": [-2,8,8]
+        }
+    ],
+    "animations": {
+        "idle": {
+            "script": "bat_idle",
+            "with": {
+                "head": "head",
+                "body": "body",
+                "lwing": "left_inner_wing",
+                "lwing_ext": "left_outer_wing",
+                "rwing": "right_inner_wing",
+                "rwing_ext": "right_outer_wing"
+            }
+        },
+        "airborne": {
+            "script": "bat_swing",
+            "with": {
+                "head": "head",
+                "body": "body",
+                "lwing": "left_inner_wing",
+                "lwing_ext": "left_outer_wing",
+                "rwing": "right_inner_wing",
+                "rwing_ext": "right_outer_wing"
+            }
+        }
+    }
 }

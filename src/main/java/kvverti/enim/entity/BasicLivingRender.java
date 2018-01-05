@@ -7,14 +7,14 @@ import kvverti.enim.entity.state.RenderState;
 
 public class BasicLivingRender<T extends EntityLivingBase> extends LivingRender<T> {
 
-	public BasicLivingRender(RenderManager manager) {
+    public BasicLivingRender(RenderManager manager) {
 
-		super(manager);
-	}
+        super(manager);
+    }
 
-	@Override
-	public RenderState getStateFromEntity(T entity) {
+    @Override
+    public RenderState getStateFromEntity(T entity) {
 
-		return getStateManager().getDefaultState();
-	}
+        return getStateManager().getDefaultState();
+    }
 }

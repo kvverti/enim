@@ -14,87 +14,87 @@ import kvverti.enim.entity.state.EnumStringSerializable;
 
 public class SignLikeRender<T extends TileEntity> extends ENIMTileEntityRender<T> {
 
-	public static final IProperty<SignFacing> ROTATION = PropertyEnum.create("rotation", SignFacing.class);
+    public static final IProperty<SignFacing> ROTATION = PropertyEnum.create("rotation", SignFacing.class);
 
-	private final Block floorBlock;
+    private final Block floorBlock;
 
-	public SignLikeRender(Block floor) {
+    public SignLikeRender(Block floor) {
 
-		super(ROTATION);
-		floorBlock = floor;
-	}
+        super(ROTATION);
+        floorBlock = floor;
+    }
 
-	@Override
-	public RenderState getStateFromTile(T tile) {
+    @Override
+    public RenderState getStateFromTile(T tile) {
 
-		int meta = tile.getBlockMetadata();
-		SignFacing facing = tile.getBlockType() == floorBlock ?
-			SignFacing.fromFloor(meta)
-			: SignFacing.fromWall(meta);
-		return getStateManager().getDefaultState().withProperty(ROTATION, facing);
-	}
+        int meta = tile.getBlockMetadata();
+        SignFacing facing = tile.getBlockType() == floorBlock ?
+            SignFacing.fromFloor(meta)
+            : SignFacing.fromWall(meta);
+        return getStateManager().getDefaultState().withProperty(ROTATION, facing);
+    }
 
-	public enum SignFacing implements EnumStringSerializable {
+    public enum SignFacing implements EnumStringSerializable {
 
-		N	(0),
-		NNE	(1),
-		NE	(2),
-		ENE	(3),
-		E	(4),
-		ESE	(5),
-		SE	(6),
-		SSE	(7),
-		S	(8),
-		SSW	(9),
-		SW	(10),
-		WSW	(11),
-		W	(12),
-		WNW	(13),
-		NW	(14),
-		NNW	(15),
-		NORTH	(2),
-		SOUTH	(3),
-		EAST	(4),
-		WEST	(5);
+        N    (0),
+        NNE    (1),
+        NE    (2),
+        ENE    (3),
+        E    (4),
+        ESE    (5),
+        SE    (6),
+        SSE    (7),
+        S    (8),
+        SSW    (9),
+        SW    (10),
+        WSW    (11),
+        W    (12),
+        WNW    (13),
+        NW    (14),
+        NNW    (15),
+        NORTH    (2),
+        SOUTH    (3),
+        EAST    (4),
+        WEST    (5);
 
-		private static final Map<Integer, SignFacing> wallToFacing = new HashMap<>();
-		private static final Map<Integer, SignFacing> floorToFacing = new HashMap<>();
-		static {
+        private static final Map<Integer, SignFacing> wallToFacing = new HashMap<>();
+        private static final Map<Integer, SignFacing> floorToFacing = new HashMap<>();
+        static {
 
-			wall().forEach(value -> wallToFacing.put(value.meta, value));
-			floor().forEach(value -> floorToFacing.put(value.meta, value));
-		}
+            wall().forEach(value -> wallToFacing.put(value.meta, value));
+            floor().forEach(value -> floorToFacing.put(value.meta, value));
+        }
 
-		private final int meta;
+        private final int meta;
 
-		private SignFacing(int i) {
+        private SignFacing(int i) {
 
-			meta = i;
-		}
+            meta = i;
+        }
 
-		public int nbtValue() {
+        public int nbtValue() {
 
-			return meta;
-		}
+            return meta;
+        }
 
-		public static Set<SignFacing> wall() {
+        public static Set<SignFacing> wall() {
 
-			return EnumSet.range(NORTH, WEST);
-		}
+            return EnumSet.range(NORTH, WEST);
+        }
 
-		public static Set<SignFacing> floor() {
+        public static Set<SignFacing> floor() {
 
-			return EnumSet.range(N, NNW);
-		}
+            return EnumSet.range(N, NNW);
+        }
 
-		public static SignFacing fromFloor(int rotation) {
+        public static SignFacing fromFloor(int rotation) {
 
-			return floorToFacing.getOrDefault(rotation, N);
-		}
+            return floorToFacing.getOrDefault(rotation, N);
+        }
 
-		public static SignFacing fromWall(int facing) {
+        public static SignFacing fromWall(int facing) {
 
-			return wallToFacing.getOrDefault(facing, NORTH);
-		}
-	}
+            return wallToFacing.getOrDefault(facing, NORTH);
+        }
+    }
 }

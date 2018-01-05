@@ -1,5 +1,5 @@
 {
-	"states": {
-		"normal": { "model": "boat", "texture": "entity/boat", "size": [64,32] }
-	}
+    "states": {
+        "normal": { "model": "boat", "texture": "entity/boat", "size": [64,32] }
+    }
 }

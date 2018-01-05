@@ -1,29 +1,29 @@
 {
-	"defaults": {
-		"texture": "entity/banner_base",
-		"size": [64,64]
-	},
-	"states": {
-		"rotation=south": { "model": "wall_banner" },
-		"rotation=north": { "model": "wall_banner", "y": 180 },
-		"rotation=west" : { "model": "wall_banner", "y": -90 },
-		"rotation=east" : { "model": "wall_banner", "y": 90 },
+    "defaults": {
+        "texture": "entity/banner_base",
+        "size": [64,64]
+    },
+    "states": {
+        "rotation=south": { "model": "wall_banner" },
+        "rotation=north": { "model": "wall_banner", "y": 180 },
+        "rotation=west" : { "model": "wall_banner", "y": -90 },
+        "rotation=east" : { "model": "wall_banner", "y": 90 },
 
-		"rotation=n":   { "model": "floor_banner" },
-		"rotation=nne": { "model": "floor_banner", "y": 22.5 },
-		"rotation=ne":  { "model": "floor_banner", "y": 45 },
-		"rotation=ene": { "model": "floor_banner", "y": 67.5 },
-		"rotation=e":   { "model": "floor_banner", "y": 90 },
-		"rotation=ese": { "model": "floor_banner", "y": 112.5 },
-		"rotation=se":  { "model": "floor_banner", "y": 135 },
-		"rotation=sse": { "model": "floor_banner", "y": 157.5 },
-		"rotation=s":   { "model": "floor_banner", "y": 180 },
-		"rotation=ssw": { "model": "floor_banner", "y": -157.5 },
-		"rotation=sw":  { "model": "floor_banner", "y": -135 },
-		"rotation=wsw": { "model": "floor_banner", "y": -112.5 },
-		"rotation=w":   { "model": "floor_banner", "y": -90 },
-		"rotation=wnw": { "model": "floor_banner", "y": -67.5 },
-		"rotation=nw":  { "model": "floor_banner", "y": -45 },
-		"rotation=nnw": { "model": "floor_banner", "y": -22.5 }
-	}
+        "rotation=n":   { "model": "floor_banner" },
+        "rotation=nne": { "model": "floor_banner", "y": 22.5 },
+        "rotation=ne":  { "model": "floor_banner", "y": 45 },
+        "rotation=ene": { "model": "floor_banner", "y": 67.5 },
+        "rotation=e":   { "model": "floor_banner", "y": 90 },
+        "rotation=ese": { "model": "floor_banner", "y": 112.5 },
+        "rotation=se":  { "model": "floor_banner", "y": 135 },
+        "rotation=sse": { "model": "floor_banner", "y": 157.5 },
+        "rotation=s":   { "model": "floor_banner", "y": 180 },
+        "rotation=ssw": { "model": "floor_banner", "y": -157.5 },
+        "rotation=sw":  { "model": "floor_banner", "y": -135 },
+        "rotation=wsw": { "model": "floor_banner", "y": -112.5 },
+        "rotation=w":   { "model": "floor_banner", "y": -90 },
+        "rotation=wnw": { "model": "floor_banner", "y": -67.5 },
+        "rotation=nw":  { "model": "floor_banner", "y": -45 },
+        "rotation=nnw": { "model": "floor_banner", "y": -22.5 }
+    }
 }

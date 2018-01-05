@@ -7,14 +7,14 @@ import kvverti.enim.entity.state.RenderState;
 
 public class BasicRender<T extends Entity> extends ENIMRender<T> {
 
-	public BasicRender(RenderManager manager) {
+    public BasicRender(RenderManager manager) {
 
-		super(manager);
-	}
+        super(manager);
+    }
 
-	@Override
-	public RenderState getStateFromEntity(T entity) {
+    @Override
+    public RenderState getStateFromEntity(T entity) {
 
-		return getStateManager().getDefaultState();
-	}
+        return getStateManager().getDefaultState();
+    }
 }

@@ -1,92 +1,92 @@
 {
-	"multipart": [
-		{
-			"when": { "baby": false },
-			"apply": { "model": "biped", "texture": "entity/zombie_pigman", "size": [64,64] }
-		},
-		{
-			"when": { "baby": true },
-			"apply": { "model": "baby_biped", "texture": "entity/zombie_pigman", "size": [64,64], "scale": 0.5 }
-		},
-		{
-			"when": { "armor_head": "diamond" },
-			"apply": { "model": "biped_helmet", "texture": "models/armor/diamond_layer_1" }
-		},
-		{
-			"when": { "armor_chest": "diamond" },
-			"apply": { "model": "biped_chestplate", "texture": "models/armor/diamond_layer_1" }
-		},
-		{
-			"when": { "armor_legs": "diamond" },
-			"apply": { "model": "biped_leggings", "texture": "models/armor/diamond_layer_2" }
-		},
-		{
-			"when": { "armor_feet": "diamond" },
-			"apply": { "model": "biped_boots", "texture": "models/armor/diamond_layer_1" }
-		},
-		{
-			"when": { "armor_head": "gold" },
-			"apply": { "model": "biped_helmet", "texture": "models/armor/gold_layer_1" }
-		},
-		{
-			"when": { "armor_chest": "gold" },
-			"apply": { "model": "biped_chestplate", "texture": "models/armor/gold_layer_1" }
-		},
-		{
-			"when": { "armor_legs": "gold" },
-			"apply": { "model": "biped_leggings", "texture": "models/armor/gold_layer_2" }
-		},
-		{
-			"when": { "armor_feet": "gold" },
-			"apply": { "model": "biped_boots", "texture": "models/armor/gold_layer_1" }
-		},
-		{
-			"when": { "armor_head": "iron" },
-			"apply": { "model": "biped_helmet", "texture": "models/armor/iron_layer_1" }
-		},
-		{
-			"when": { "armor_chest": "iron" },
-			"apply": { "model": "biped_chestplate", "texture": "models/armor/iron_layer_1" }
-		},
-		{
-			"when": { "armor_legs": "iron" },
-			"apply": { "model": "biped_leggings", "texture": "models/armor/iron_layer_2" }
-		},
-		{
-			"when": { "armor_feet": "iron" },
-			"apply": { "model": "biped_boots", "texture": "models/armor/iron_layer_1" }
-		},
-		{
-			"when": { "armor_head": "chainmail" },
-			"apply": { "model": "biped_helmet", "texture": "models/armor/chainmail_layer_1" }
-		},
-		{
-			"when": { "armor_chest": "chainmail" },
-			"apply": { "model": "biped_chestplate", "texture": "models/armor/chainmail_layer_1" }
-		},
-		{
-			"when": { "armor_legs": "chainmail" },
-			"apply": { "model": "biped_leggings", "texture": "models/armor/chainmail_layer_2" }
-		},
-		{
-			"when": { "armor_feet": "chainmail" },
-			"apply": { "model": "biped_boots", "texture": "models/armor/chainmail_layer_1" }
-		},
-		{
-			"when": { "armor_head": "leather" },
-			"apply": { "model": "biped_helmet", "texture": "models/armor/leather_layer_1" }
-		},
-		{
-			"when": { "armor_chest": "leather" },
-			"apply": { "model": "biped_chestplate", "texture": "models/armor/leather_layer_1" }
-		},
-		{
-			"when": { "armor_legs": "leather" },
-			"apply": { "model": "biped_leggings", "texture": "models/armor/leather_layer_2" }
-		},
-		{
-			"when": { "armor_feet": "leather" },
-			"apply": { "model": "biped_boots", "texture": "models/armor/leather_layer_1" }
-		}
-	]
+    "multipart": [
+        {
+            "when": { "baby": false },
+            "apply": { "model": "biped", "texture": "entity/zombie_pigman", "size": [64,64] }
+        },
+        {
+            "when": { "baby": true },
+            "apply": { "model": "baby_biped", "texture": "entity/zombie_pigman", "size": [64,64], "scale": 0.5 }
+        },
+        {
+            "when": { "armor_head": "diamond" },
+            "apply": { "model": "biped_helmet", "texture": "models/armor/diamond_layer_1" }
+        },
+        {
+            "when": { "armor_chest": "diamond" },
+            "apply": { "model": "biped_chestplate", "texture": "models/armor/diamond_layer_1" }
+        },
+        {
+            "when": { "armor_legs": "diamond" },
+            "apply": { "model": "biped_leggings", "texture": "models/armor/diamond_layer_2" }
+        },
+        {
+            "when": { "armor_feet": "diamond" },
+            "apply": { "model": "biped_boots", "texture": "models/armor/diamond_layer_1" }
+        },
+        {
+            "when": { "armor_head": "gold" },
+            "apply": { "model": "biped_helmet", "texture": "models/armor/gold_layer_1" }
+        },
+        {
+            "when": { "armor_chest": "gold" },
+            "apply": { "model": "biped_chestplate", "texture": "models/armor/gold_layer_1" }
+        },
+        {
+            "when": { "armor_legs": "gold" },
+            "apply": { "model": "biped_leggings", "texture": "models/armor/gold_layer_2" }
+        },
+        {
+            "when": { "armor_feet": "gold" },
+            "apply": { "model": "biped_boots", "texture": "models/armor/gold_layer_1" }
+        },
+        {
+            "when": { "armor_head": "iron" },
+            "apply": { "model": "biped_helmet", "texture": "models/armor/iron_layer_1" }
+        },
+        {
+            "when": { "armor_chest": "iron" },
+            "apply": { "model": "biped_chestplate", "texture": "models/armor/iron_layer_1" }
+        },
+        {
+            "when": { "armor_legs": "iron" },
+            "apply": { "model": "biped_leggings", "texture": "models/armor/iron_layer_2" }
+        },
+        {
+            "when": { "armor_feet": "iron" },
+            "apply": { "model": "biped_boots", "texture": "models/armor/iron_layer_1" }
+        },
+        {
+            "when": { "armor_head": "chainmail" },
+            "apply": { "model": "biped_helmet", "texture": "models/armor/chainmail_layer_1" }
+        },
+        {
+            "when": { "armor_chest": "chainmail" },
+            "apply": { "model": "biped_chestplate", "texture": "models/armor/chainmail_layer_1" }
+        },
+        {
+            "when": { "armor_legs": "chainmail" },
+            "apply": { "model": "biped_leggings", "texture": "models/armor/chainmail_layer_2" }
+        },
+        {
+            "when": { "armor_feet": "chainmail" },
+            "apply": { "model": "biped_boots", "texture": "models/armor/chainmail_layer_1" }
+        },
+        {
+            "when": { "armor_head": "leather" },
+            "apply": { "model": "biped_helmet", "texture": "models/armor/leather_layer_1" }
+        },
+        {
+            "when": { "armor_chest": "leather" },
+            "apply": { "model": "biped_chestplate", "texture": "models/armor/leather_layer_1" }
+        },
+        {
+            "when": { "armor_legs": "leather" },
+            "apply": { "model": "biped_leggings", "texture": "models/armor/leather_layer_2" }
+        },
+        {
+            "when": { "armor_feet": "leather" },
+            "apply": { "model": "biped_boots", "texture": "models/armor/leather_layer_1" }
+        }
+    ]
 }

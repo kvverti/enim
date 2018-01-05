@@ -1,66 +1,66 @@
 {
-	"properties": {
-		"nameplate": 27,
-		"shadowsize": 11.5
-	},
-	"imports": {
-		"cow_head": ["*"]
-	},
-	"elements": [
-		{
-			"name": "body",
-			"from": [2,4,16],
-			"to": [14,22,26],
-			"uv": [18,4],
-			"origin": [8,22,16],
-			"rotation": [90,0,0]
-		},
-		{
-			"name": "udder",
-			"parent": "body",
-			"from": [6,4,26],
-			"to": [10,10,27],
-			"uv": [52,0]
-		},
-		{
-			"name": "right_foreleg",
-			"from": [2,0,12],
-			"to": [6,12,16],
-			"uv": [0,16],
-			"origin": [4,12,14]
-		},
-		{
-			"name": "left_foreleg",
-			"from": [10,0,12],
-			"to": [14,12,16],
-			"uv": [0,16],
-			"origin": [12,12,14]
-		},
-		{
-			"name": "right_hindleg",
-			"from": [2,0,-1],
-			"to": [6,12,3],
-			"uv": [0,16],
-			"origin": [4,12,1]
-		},
-		{
-			"name": "left_hindleg",
-			"from": [10,0,-1],
-			"to": [14,12,3],
-			"uv": [0,16],
-			"origin": [12,12,1]
-		}
-	],
-	"animations": {
-		"moving": {
-			"scaling": 5,
-			"script": "quadruped_swing",
-			"with": {
-				"front_left": "left_foreleg",
-				"front_right": "right_foreleg",
-				"rear_left": "left_hindleg",
-				"rear_right": "right_hindleg"
-			}
-		}
-	}
+    "properties": {
+        "nameplate": 27,
+        "shadowsize": 11.5
+    },
+    "imports": {
+        "cow_head": ["*"]
+    },
+    "elements": [
+        {
+            "name": "body",
+            "from": [2,4,16],
+            "to": [14,22,26],
+            "uv": [18,4],
+            "origin": [8,22,16],
+            "rotation": [90,0,0]
+        },
+        {
+            "name": "udder",
+            "parent": "body",
+            "from": [6,4,26],
+            "to": [10,10,27],
+            "uv": [52,0]
+        },
+        {
+            "name": "right_foreleg",
+            "from": [2,0,12],
+            "to": [6,12,16],
+            "uv": [0,16],
+            "origin": [4,12,14]
+        },
+        {
+            "name": "left_foreleg",
+            "from": [10,0,12],
+            "to": [14,12,16],
+            "uv": [0,16],
+            "origin": [12,12,14]
+        },
+        {
+            "name": "right_hindleg",
+            "from": [2,0,-1],
+            "to": [6,12,3],
+            "uv": [0,16],
+            "origin": [4,12,1]
+        },
+        {
+            "name": "left_hindleg",
+            "from": [10,0,-1],
+            "to": [14,12,3],
+            "uv": [0,16],
+            "origin": [12,12,1]
+        }
+    ],
+    "animations": {
+        "moving": {
+            "scaling": 5,
+            "script": "quadruped_swing",
+            "with": {
+                "front_left": "left_foreleg",
+                "front_right": "right_foreleg",
+                "rear_left": "left_hindleg",
+                "rear_right": "right_hindleg"
+            }
+        }
+    }
 }

@@ -9,33 +9,33 @@ import java.util.function.DoubleUnaryOperator;
 @FunctionalInterface
 interface AbieFunctionOperator {
 
-	void eval(Stack stack);
+    void eval(Stack stack);
 
-	default int arity() { return 1; }
+    default int arity() { return 1; }
 
-	interface Nullary extends AbieFunctionOperator {
+    interface Nullary extends AbieFunctionOperator {
 
-		@Override
-		default int arity() { return 0; }
-	}
+        @Override
+        default int arity() { return 0; }
+    }
 
-	interface Unary extends AbieFunctionOperator {
+    interface Unary extends AbieFunctionOperator {
 
-		@Override
-		default int arity() { return 1; }
-	}
-
-
-	interface Binary extends AbieFunctionOperator {
-
-		@Override
-		default int arity() { return 2; }
-	}
+        @Override
+        default int arity() { return 1; }
+    }
 
 
-	interface Ternary extends AbieFunctionOperator {
+    interface Binary extends AbieFunctionOperator {
 
-		@Override
-		default int arity() { return 3; }
-	}
+        @Override
+        default int arity() { return 2; }
+    }
+
+
+    interface Ternary extends AbieFunctionOperator {
+
+        @Override
+        default int arity() { return 3; }
+    }
 }

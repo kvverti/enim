@@ -7,15 +7,15 @@ import kvverti.enim.entity.state.RenderState;
 
 public class ZombiePigmanRender extends ArmorLivingRender<EntityPigZombie> {
 
-	public ZombiePigmanRender(RenderManager manager) {
+    public ZombiePigmanRender(RenderManager manager) {
 
-		super(manager, LivingRender.BABY);
-	}
+        super(manager, LivingRender.BABY);
+    }
 
-	@Override
-	public RenderState getStateFromEntity(EntityPigZombie entity) {
+    @Override
+    public RenderState getStateFromEntity(EntityPigZombie entity) {
 
-		return super.getStateFromEntity(entity)
-			.withProperty(BABY, entity.isChild());
-	}
+        return super.getStateFromEntity(entity)
+            .withProperty(BABY, entity.isChild());
+    }
 }

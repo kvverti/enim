@@ -1,77 +1,77 @@
 {
-	"elements": [
-		{
-			"name": "body",
-			"from": [4,3,16],
-			"to": [12,16,22],
-			"uv": [28,8],
-			"origin": [8,10,19],
-			"pivot": [8,18,16],
-			"rotation": [90,0,0],
-			"scale": 1.5,
-			"tintindex": 0
-		},
-		{
-			"name": "head",
-			"from": [5,16,13.75],
-			"to": [11,22,19.75],
-			"uv": [0,0],
-			"origin": [8,18,16],
-			"scale": 1.2,
-			"head": true,
-			"tintindex": 0
-		},
-		{
-			"name": "right_foreleg",
-			"from": [3,6.5,11],
-			"to": [7,12.5,15],
-			"uv": [0,16],
-			"origin": [5,12,13],
-			"scale": 1.25,
-			"tintindex": 0
-		},
-		{
-			"name": "left_foreleg",
-			"from": [9,6.5,11],
-			"to": [13,12.5,15],
-			"uv": [0,16],
-			"origin": [11,12,13],
-			"scale": 1.25,
-			"tintindex": 0
-		},
-		{
-			"name": "right_hindleg",
-			"from": [3,6.5,-1],
-			"to": [7,12.5,3],
-			"uv": [0,16],
-			"origin": [5,12,1],
-			"scale": 1.25,
-			"tintindex": 0
-		},
-		{
-			"name": "left_hindleg",
-			"from": [9,6.5,-1],
-			"to": [13,12.5,3],
-			"uv": [0,16],
-			"origin": [11,12,1],
-			"scale": 1.25,
-			"tintindex": 0
-		}
-	],
-	"animations": {
-		"moving": {
-			"scaling": 5,
-			"script": "quadruped_swing",
-			"with": {
-				"front_right": "right_foreleg",
-				"front_left": "left_foreleg",
-				"rear_right": "right_hindleg",
-				"rear_left": "left_hindleg"
-			}
-		},
-		"eat": {
-			"script": "sheep_eat",
-			"with": { "head": "head" }
-		}
-	}
+    "elements": [
+        {
+            "name": "body",
+            "from": [4,3,16],
+            "to": [12,16,22],
+            "uv": [28,8],
+            "origin": [8,10,19],
+            "pivot": [8,18,16],
+            "rotation": [90,0,0],
+            "scale": 1.5,
+            "tintindex": 0
+        },
+        {
+            "name": "head",
+            "from": [5,16,13.75],
+            "to": [11,22,19.75],
+            "uv": [0,0],
+            "origin": [8,18,16],
+            "scale": 1.2,
+            "head": true,
+            "tintindex": 0
+        },
+        {
+            "name": "right_foreleg",
+            "from": [3,6.5,11],
+            "to": [7,12.5,15],
+            "uv": [0,16],
+            "origin": [5,12,13],
+            "scale": 1.25,
+            "tintindex": 0
+        },
+        {
+            "name": "left_foreleg",
+            "from": [9,6.5,11],
+            "to": [13,12.5,15],
+            "uv": [0,16],
+            "origin": [11,12,13],
+            "scale": 1.25,
+            "tintindex": 0
+        },
+        {
+            "name": "right_hindleg",
+            "from": [3,6.5,-1],
+            "to": [7,12.5,3],
+            "uv": [0,16],
+            "origin": [5,12,1],
+            "scale": 1.25,
+            "tintindex": 0
+        },
+        {
+            "name": "left_hindleg",
+            "from": [9,6.5,-1],
+            "to": [13,12.5,3],
+            "uv": [0,16],
+            "origin": [11,12,1],
+            "scale": 1.25,
+            "tintindex": 0
+        }
+    ],
+    "animations": {
+        "moving": {
+            "scaling": 5,
+            "script": "quadruped_swing",
+            "with": {
+                "front_right": "right_foreleg",
+                "front_left": "left_foreleg",
+                "rear_right": "right_hindleg",
+                "rear_left": "left_hindleg"
+            }
+        },
+        "eat": {
+            "script": "sheep_eat",
+            "with": { "head": "head" }
+        }
+    }
 }

@@ -26,97 +26,97 @@ import static java.util.stream.Collectors.toList;
  */
 public final class BannerTextures {
 
-	/**
-	 * Internal cache containing the banner textures.
-	 */
-	private final LoadingCache<TextureKey, ResourceLocation> textures;
+    /**
+     * Internal cache containing the banner textures.
+     */
+    private final LoadingCache<TextureKey, ResourceLocation> textures;
 
-	/** Cache id - should be short */
-	private final String id;
+    /** Cache id - should be short */
+    private final String id;
 
-	/** Pattern directory in resource location format */
-	private final String patterns;
+    /** Pattern directory in resource location format */
+    private final String patterns;
 
-	public BannerTextures(String id, String patternDir) {
+    public BannerTextures(String id, String patternDir) {
 
-		this(id, patternDir, 255, 3000);
-	}
+        this(id, patternDir, 255, 3000);
+    }
 
-	public BannerTextures(String id, String patternDir, int maxSize, int millisPersistance) {
+    public BannerTextures(String id, String patternDir, int maxSize, int millisPersistance) {
 
-		this.id = id;
-		this.patterns = patternDir;
-		this.textures = CacheBuilder.newBuilder()
-			.expireAfterAccess(millisPersistance, TimeUnit.MILLISECONDS)
-			.initialCapacity(Math.min(100, maxSize))
-			.maximumSize(maxSize)
-			.removalListener(note -> kvverti.enim.Logger.info("Removed banner texture: %s", note.getValue()))
-			.build(new TextureLoader());
-	}
+        this.id = id;
+        this.patterns = patternDir;
+        this.textures = CacheBuilder.newBuilder()
+            .expireAfterAccess(millisPersistance, TimeUnit.MILLISECONDS)
+            .initialCapacity(Math.min(100, maxSize))
+            .maximumSize(maxSize)
+            .removalListener(note -> kvverti.enim.Logger.info("Removed banner texture: %s", note.getValue()))
+            .build(new TextureLoader());
+    }
 
-	/** Retrieves the banner texture with overlays given by the banner object, creating a new texture if necessary. */
-	public ResourceLocation getTexture(TileEntityBanner obj, EntityState state) {
+    /** Retrieves the banner texture with overlays given by the banner object, creating a new texture if necessary. */
+    public ResourceLocation getTexture(TileEntityBanner obj, EntityState state) {
 
-		if(state.texture().equals(Util.MISSING_LOCATION) || obj.getPatternList() == null) //for reasons who knows
-			return state.texture();
-		return textures.getUnchecked(new TextureKey(obj, state));
-	}
+        if(state.texture().equals(Util.MISSING_LOCATION) || obj.getPatternList() == null) //for reasons who knows
+            return state.texture();
+        return textures.getUnchecked(new TextureKey(obj, state));
+    }
 
-	public void clearAll() {
+    public void clearAll() {
 
-		textures.invalidateAll();
-	}
+        textures.invalidateAll();
+    }
 
-	/** Loader for textures. Values are of the form base_texture_modid:id/base_texture_path/pattern_location */
-	private final class TextureLoader extends CacheLoader<TextureKey, ResourceLocation> {
+    /** Loader for textures. Values are of the form base_texture_modid:id/base_texture_path/pattern_location */
+    private final class TextureLoader extends CacheLoader<TextureKey, ResourceLocation> {
 
-		@Override
-		public ResourceLocation load(TextureKey key) {
+        @Override
+        public ResourceLocation load(TextureKey key) {
 
-			ResourceLocation bannerTex = new ResourceLocation(key.baseTexture.getResourceDomain(),
-				String.join("/", id, key.baseTexture.getResourcePath(), key.bannerPatterns));
-			List<String> patternList = key.banner.getPatternList()
-				.stream()
-				.map(BannerPattern::getFileName)
-				.map(name -> patterns + name + Keys.PNG)
-				.collect(toList());
-			Entities.textureManager().loadTexture(bannerTex,
-				new LayeredColorMaskTexture(key.baseTexture, patternList, key.banner.getColorList()));
-			kvverti.enim.Logger.info("Created banner texture: %s", bannerTex);
-			return bannerTex;
-		}
-	}
+            ResourceLocation bannerTex = new ResourceLocation(key.baseTexture.getResourceDomain(),
+                String.join("/", id, key.baseTexture.getResourcePath(), key.bannerPatterns));
+            List<String> patternList = key.banner.getPatternList()
+                .stream()
+                .map(BannerPattern::getFileName)
+                .map(name -> patterns + name + Keys.PNG)
+                .collect(toList());
+            Entities.textureManager().loadTexture(bannerTex,
+                new LayeredColorMaskTexture(key.baseTexture, patternList, key.banner.getColorList()));
+            kvverti.enim.Logger.info("Created banner texture: %s", bannerTex);
+            return bannerTex;
+        }
+    }
 
-	/**
-	 * Key for texture cache. All fields are non-null. Uniqueness of key is based on the base texture and patterns.
-	 * Patterns are stored separately because the TileEntityBanner is shared between all item instances.
-	 */
-	private static final class TextureKey {
+    /**
+     * Key for texture cache. All fields are non-null. Uniqueness of key is based on the base texture and patterns.
+     * Patterns are stored separately because the TileEntityBanner is shared between all item instances.
+     */
+    private static final class TextureKey {
 
-		transient final TileEntityBanner banner;
-		final String bannerPatterns;
-		final ResourceLocation baseTexture;
+        transient final TileEntityBanner banner;
+        final String bannerPatterns;
+        final ResourceLocation baseTexture;
 
-		TextureKey(TileEntityBanner b, EntityState t) {
+        TextureKey(TileEntityBanner b, EntityState t) {
 
-			banner = b;
-			bannerPatterns = b.getPatternResourceLocation();
-			baseTexture = t.texture();
-		}
+            banner = b;
+            bannerPatterns = b.getPatternResourceLocation();
+            baseTexture = t.texture();
+        }
 
-		@Override
-		public boolean equals(Object obj) {
+        @Override
+        public boolean equals(Object obj) {
 
-			if(!(obj instanceof TextureKey))
-				return false;
-			TextureKey key = (TextureKey) obj;
-			return bannerPatterns.equals(key.bannerPatterns) && baseTexture.equals(key.baseTexture);
-		}
+            if(!(obj instanceof TextureKey))
+                return false;
+            TextureKey key = (TextureKey) obj;
+            return bannerPatterns.equals(key.bannerPatterns) && baseTexture.equals(key.baseTexture);
+        }
 
-		@Override
-		public int hashCode() {
+        @Override
+        public int hashCode() {
 
-			return 31 * bannerPatterns.hashCode() + baseTexture.hashCode();
-		}
-	}
+            return 31 * bannerPatterns.hashCode() + baseTexture.hashCode();
+        }
+    }
 }

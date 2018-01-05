@@ -14,48 +14,48 @@ import net.minecraft.tileentity.TileEntity;
  */
 public final class Entities {
 
-	/** Construction disallowed */
-	private Entities() { }
+    /** Construction disallowed */
+    private Entities() { }
 
-	public static float toRadians(float degrees) {
+    public static float toRadians(float degrees) {
 
-		return degrees * (float) Math.PI / 180.0f;
-	}
+        return degrees * (float) Math.PI / 180.0f;
+    }
 
-	public static float toDegrees(float radians) {
+    public static float toDegrees(float radians) {
 
-		return radians * (180.0f / (float) Math.PI);
-	}
+        return radians * (180.0f / (float) Math.PI);
+    }
 
-	public static float speedSq(Entity entity) {
+    public static float speedSq(Entity entity) {
 
-		double x = entity.posX - entity.lastTickPosX;
-		double z = entity.posZ - entity.lastTickPosZ;
-		return (float) (x * x + z * z);
-	}
+        double x = entity.posX - entity.lastTickPosX;
+        double z = entity.posZ - entity.lastTickPosZ;
+        return (float) (x * x + z * z);
+    }
 
-	public static float interpolate(float start, float end, float percent) {
+    public static float interpolate(float start, float end, float percent) {
 
-		return start * (1.0f - percent) + end * percent;
-	}
+        return start * (1.0f - percent) + end * percent;
+    }
 
-	public static TextureManager textureManager() {
+    public static TextureManager textureManager() {
 
-		return Minecraft.getMinecraft().getTextureManager();
-	}
+        return Minecraft.getMinecraft().getTextureManager();
+    }
 
-	public static IReloadableResourceManager resourceManager() {
+    public static IReloadableResourceManager resourceManager() {
 
-		return (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
-	}
+        return (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
+    }
 
-	public static EntityPlayerSP thePlayer() {
+    public static EntityPlayerSP thePlayer() {
 
-		return Minecraft.getMinecraft().player;
-	}
+        return Minecraft.getMinecraft().player;
+    }
 
-	public static WorldClient theWorld() {
+    public static WorldClient theWorld() {
 
-		return Minecraft.getMinecraft().world;
-	}
+        return Minecraft.getMinecraft().world;
+    }
 }

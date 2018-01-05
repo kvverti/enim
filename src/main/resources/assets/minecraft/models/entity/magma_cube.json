@@ -1,77 +1,77 @@
 {
-	"properties": {
-		"nameplate": 10,
-		"shadowsize": 4
-	},
-	"elements": [
-		{
-			"name": "core",
-			"from": [6,2,6],
-			"to": [10,6,10],
-			"uv": [0,16]
-		},
-		{
-			"name": "layer0",
-			"from": [4,0,4],
-			"to": [12,1,12],
-			"uv": [0,7]
-		},
-		{
-			"name": "layer1",
-			"from": [4,1,4],
-			"to": [12,2,12],
-			"uv": [0,6]
-		},
-		{
-			"name": "layer2",
-			"from": [4,2,4],
-			"to": [12,3,12],
-			"uv": [0,5]
-		},
-		{
-			"name": "layer3",
-			"from": [4,3,4],
-			"to": [12,4,12],
-			"uv": [0,4]
-		},
-		{
-			"name": "layer4",
-			"from": [4,4,4],
-			"to": [12,5,12],
-			"uv": [24,19]
-		},
-		{
-			"name": "layer5",
-			"from": [4,5,4],
-			"to": [12,6,12],
-			"uv": [24,10]
-		},
-		{
-			"name": "layer6",
-			"from": [4,6,4],
-			"to": [12,7,12],
-			"uv": [0,1]
-		},
-		{
-			"name": "layer7",
-			"from": [4,7,4],
-			"to": [12,8,12],
-			"uv": [0,0]
-		}
-	],
-	"animations": {
-		"jump": {
-			"script": "magma_split",
-			"with": {
-				"layer0": "layer0",
-				"layer1": "layer1",
-				"layer2": "layer2",
-				"layer3": "layer3",
-				"layer4": "layer4",
-				"layer5": "layer5",
-				"layer6": "layer6",
-				"layer7": "layer7"
-			}
-		}
-	}
+    "properties": {
+        "nameplate": 10,
+        "shadowsize": 4
+    },
+    "elements": [
+        {
+            "name": "core",
+            "from": [6,2,6],
+            "to": [10,6,10],
+            "uv": [0,16]
+        },
+        {
+            "name": "layer0",
+            "from": [4,0,4],
+            "to": [12,1,12],
+            "uv": [0,7]
+        },
+        {
+            "name": "layer1",
+            "from": [4,1,4],
+            "to": [12,2,12],
+            "uv": [0,6]
+        },
+        {
+            "name": "layer2",
+            "from": [4,2,4],
+            "to": [12,3,12],
+            "uv": [0,5]
+        },
+        {
+            "name": "layer3",
+            "from": [4,3,4],
+            "to": [12,4,12],
+            "uv": [0,4]
+        },
+        {
+            "name": "layer4",
+            "from": [4,4,4],
+            "to": [12,5,12],
+            "uv": [24,19]
+        },
+        {
+            "name": "layer5",
+            "from": [4,5,4],
+            "to": [12,6,12],
+            "uv": [24,10]
+        },
+        {
+            "name": "layer6",
+            "from": [4,6,4],
+            "to": [12,7,12],
+            "uv": [0,1]
+        },
+        {
+            "name": "layer7",
+            "from": [4,7,4],
+            "to": [12,8,12],
+            "uv": [0,0]
+        }
+    ],
+    "animations": {
+        "jump": {
+            "script": "magma_split",
+            "with": {
+                "layer0": "layer0",
+                "layer1": "layer1",
+                "layer2": "layer2",
+                "layer3": "layer3",
+                "layer4": "layer4",
+                "layer5": "layer5",
+                "layer6": "layer6",
+                "layer7": "layer7"
+            }
+        }
+    }
 }

@@ -1,8 +1,8 @@
 {
-	"imports": {
-		"sheep_wool": ["*","animations:*"]
-	},
-	"overrides": {
-		"head": { "scale": 2.4 }
-	}
+    "imports": {
+        "sheep_wool": ["*","animations:*"]
+    },
+    "overrides": {
+        "head": { "scale": 2.4 }
+    }
 }

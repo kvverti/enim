@@ -1,5 +1,5 @@
 {
-	"states": {
-		"normal": { "model": "silverfish", "texture": "entity/silverfish", "size": [64,32] }
-	}
+    "states": {
+        "normal": { "model": "silverfish", "texture": "entity/silverfish", "size": [64,32] }
+    }
 }

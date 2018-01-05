@@ -17,20 +17,20 @@ import kvverti.enim.model.EntityStateMap;
  */
 public interface ReloadableRender {
 
-	/**
-	 * Returns the list of valid states for this render
-	 */
-	ImmutableList<RenderState> getValidStates();
+    /**
+     * Returns the list of valid states for this render
+     */
+    ImmutableList<RenderState> getValidStates();
 
-	/**
-	 * Reloads this render from the game resources. This enables the render's models to be changed while the game is running.
-	 * @param states the state replacements for this render
-	 */
-	void reload(EntityStateMap states);
+    /**
+     * Reloads this render from the game resources. This enables the render's models to be changed while the game is running.
+     * @param states the state replacements for this render
+     */
+    void reload(EntityStateMap states);
 
-	/**
-	 * Sets this render to a default state not dependent on the game resources. Use this method when the game resources this
-	 * render relies on are missing or invalid.
-	 */
-	void setMissingno();
+    /**
+     * Sets this render to a default state not dependent on the game resources. Use this method when the game resources this
+     * render relies on are missing or invalid.
+     */
+    void setMissingno();
 }

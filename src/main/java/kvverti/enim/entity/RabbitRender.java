@@ -13,59 +13,59 @@ import kvverti.enim.entity.state.RenderState;
 
 public class RabbitRender extends LivingRender<EntityRabbit> {
 
-	public static final IProperty<RabbitType> RABBIT_TYPE = PropertyEnum.create("type", RabbitType.class);
+    public static final IProperty<RabbitType> RABBIT_TYPE = PropertyEnum.create("type", RabbitType.class);
 
-	public RabbitRender(RenderManager manager) {
+    public RabbitRender(RenderManager manager) {
 
-		super(manager, RABBIT_TYPE, BABY);
-	}
+        super(manager, RABBIT_TYPE, BABY);
+    }
 
-	@Override
-	public RenderState getStateFromEntity(EntityRabbit entity) {
+    @Override
+    public RenderState getStateFromEntity(EntityRabbit entity) {
 
-		String name = TextFormatting.getTextWithoutFormattingCodes(entity.getName());
-		RabbitType type = "Toast".equals(name) ? RabbitType.TOAST
-			: "Eclipse".equals(name) ? RabbitType.ECLIPSE
-			: RabbitType.fromNbt(entity.getRabbitType());
-		return getStateManager().getDefaultState()
-			.withProperty(RABBIT_TYPE, type)
-			.withProperty(BABY, entity.isChild());
-	}
+        String name = TextFormatting.getTextWithoutFormattingCodes(entity.getName());
+        RabbitType type = "Toast".equals(name) ? RabbitType.TOAST
+            : "Eclipse".equals(name) ? RabbitType.ECLIPSE
+            : RabbitType.fromNbt(entity.getRabbitType());
+        return getStateManager().getDefaultState()
+            .withProperty(RABBIT_TYPE, type)
+            .withProperty(BABY, entity.isChild());
+    }
 
-	public enum RabbitType implements EnumStringSerializable {
+    public enum RabbitType implements EnumStringSerializable {
 
-		BROWN		(0),
-		WHITE		(1),
-		BLACK		(2),
-		GOLD		(3),
-		SALT		(4),
-		SPLOTCHED	(5),
-		CAERBANNOG	(99),
-		TOAST		(-1),
-		ECLIPSE		(-2);
+        BROWN        (0),
+        WHITE        (1),
+        BLACK        (2),
+        GOLD        (3),
+        SALT        (4),
+        SPLOTCHED    (5),
+        CAERBANNOG    (99),
+        TOAST        (-1),
+        ECLIPSE        (-2);
 
-		private static final Map<Integer, RabbitType> intToType = new HashMap<>();
-		static {
+        private static final Map<Integer, RabbitType> intToType = new HashMap<>();
+        static {
 
-			for(RabbitType type : values())
-				intToType.put(type.meta, type);
-		}
+            for(RabbitType type : values())
+                intToType.put(type.meta, type);
+        }
 
-		private final int meta;
+        private final int meta;
 
-		private RabbitType(int i) {
+        private RabbitType(int i) {
 
-			meta = i;
-		}
+            meta = i;
+        }
 
-		public int nbtValue() {
+        public int nbtValue() {
 
-			return meta;
-		}
+            return meta;
+        }
 
-		public static RabbitType fromNbt(int value) {
+        public static RabbitType fromNbt(int value) {
 
-			return intToType.getOrDefault(value, BROWN);
-		}
-	}
+            return intToType.getOrDefault(value, BROWN);
+        }
+    }
 }

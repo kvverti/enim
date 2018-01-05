@@ -20,73 +20,73 @@ import kvverti.enim.model.multipart.Rule;
 /** An immutable collection of EntityStates for use in deserializing entitystate files. */
 public class EntityStateMap extends ForwardingMap<String, EntityState> {
 
-	private static final EntityState EMPTY = EntityModel.GSON.fromJson(
-		"{\"model\":\"builtin/missingno\",\"texture\":\"builtin/missingno\",\"size\":[64,32],\"y\":0,\"scale\":0}",
-		EntityState.class);
+    private static final EntityState EMPTY = EntityModel.GSON.fromJson(
+        "{\"model\":\"builtin/missingno\",\"texture\":\"builtin/missingno\",\"size\":[64,32],\"y\":0,\"scale\":0}",
+        EntityState.class);
 
-	private final ImmutableMap<String, EntityState> states;
+    private final ImmutableMap<String, EntityState> states;
 
-	/** For Json deserialization. */
-	public EntityStateMap(Map<String, EntityState> states) { this.states = ImmutableMap.copyOf(states); }
+    /** For Json deserialization. */
+    public EntityStateMap(Map<String, EntityState> states) { this.states = ImmutableMap.copyOf(states); }
 
-	@Override
-	protected Map<String, EntityState> delegate() { return states; }
+    @Override
+    protected Map<String, EntityState> delegate() { return states; }
 
-	public static EntityStateMap from(Reader json, List<RenderState> states) {
+    public static EntityStateMap from(Reader json, List<RenderState> states) {
 
-		//convert to json
-		JsonObject obj = EntityModel.GSON.fromJson(json, JsonObject.class);
-		//deal with multipart
-		if(obj.has(Keys.MULTIPART_TAG)) {
+        //convert to json
+        JsonObject obj = EntityModel.GSON.fromJson(json, JsonObject.class);
+        //deal with multipart
+        if(obj.has(Keys.MULTIPART_TAG)) {
 
-			Rule[] rules = EntityModel.GSON.fromJson(obj.get(Keys.MULTIPART_TAG), Rule[].class);
-			Map<String, EntityState> stateMap = new HashMap<>();
-			for(RenderState renderState : states)
-				stateMap.put(renderState.toString(), getEntityState(renderState, rules));
-			replaceDefaults(obj, stateMap.values());
-			return new EntityStateMap(stateMap);
-		//it's the normal states
-		} else
-			return EntityModel.GSON.fromJson(obj, EntityStateMap.class);
-	}
+            Rule[] rules = EntityModel.GSON.fromJson(obj.get(Keys.MULTIPART_TAG), Rule[].class);
+            Map<String, EntityState> stateMap = new HashMap<>();
+            for(RenderState renderState : states)
+                stateMap.put(renderState.toString(), getEntityState(renderState, rules));
+            replaceDefaults(obj, stateMap.values());
+            return new EntityStateMap(stateMap);
+        //it's the normal states
+        } else
+            return EntityModel.GSON.fromJson(obj, EntityStateMap.class);
+    }
 
-	private static EntityState getEntityState(RenderState renderState, Rule[] rules) {
+    private static EntityState getEntityState(RenderState renderState, Rule[] rules) {
 
-		List<EntityState> layers = new ArrayList<>();
-		for(Rule r : rules)
-			if(r.condition().fulfills(renderState))
-				layers.addAll(r.layers());
-		if(layers.isEmpty())
-			return EMPTY;
-		EntityState base = layers.remove(0);
-		return base.replaceLayers(layers);
-	}
+        List<EntityState> layers = new ArrayList<>();
+        for(Rule r : rules)
+            if(r.condition().fulfills(renderState))
+                layers.addAll(r.layers());
+        if(layers.isEmpty())
+            return EMPTY;
+        EntityState base = layers.remove(0);
+        return base.replaceLayers(layers);
+    }
 
-	private static void replaceDefaults(JsonObject obj, Collection<EntityState> states) {
+    private static void replaceDefaults(JsonObject obj, Collection<EntityState> states) {
 
-		EntityState.Defaults stateDefaults = obj.has(Keys.STATES_DEFAULTS) ?
-			EntityModel.GSON.fromJson(obj.get(Keys.STATES_DEFAULTS), EntityState.Defaults.class)
-			: new EntityState.Defaults();
-		for(EntityState state : states) {
+        EntityState.Defaults stateDefaults = obj.has(Keys.STATES_DEFAULTS) ?
+            EntityModel.GSON.fromJson(obj.get(Keys.STATES_DEFAULTS), EntityState.Defaults.class)
+            : new EntityState.Defaults();
+        for(EntityState state : states) {
 
-			state.replaceDefaults(stateDefaults);
-			for(EntityState layer : state.getLayers())
-				layer.replaceDefaults(stateDefaults);
-		}
-	}
+            state.replaceDefaults(stateDefaults);
+            for(EntityState layer : state.getLayers())
+                layer.replaceDefaults(stateDefaults);
+        }
+    }
 
-	/** Deserializer for the {@link EntityStateMap} class. */
-	public static class Deserializer implements JsonDeserializer<EntityStateMap> {
+    /** Deserializer for the {@link EntityStateMap} class. */
+    public static class Deserializer implements JsonDeserializer<EntityStateMap> {
 
-		private static final Type statesType = new TypeToken<Map<String, EntityState>>(){}.getType();
+        private static final Type statesType = new TypeToken<Map<String, EntityState>>(){}.getType();
 
-		@Override
-		public EntityStateMap deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
+        @Override
+        public EntityStateMap deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
 
-			JsonObject obj = json.getAsJsonObject();
-			EntityStateMap res = new EntityStateMap(context.deserialize(obj.get(Keys.STATES_TAG), statesType));
-			replaceDefaults(obj, res.states.values());
-			return res;
-		}
-	}
+            JsonObject obj = json.getAsJsonObject();
+            EntityStateMap res = new EntityStateMap(context.deserialize(obj.get(Keys.STATES_TAG), statesType));
+            replaceDefaults(obj, res.states.values());
+            return res;
+        }
+    }
 }

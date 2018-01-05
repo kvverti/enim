@@ -1,10 +1,10 @@
 {
-	"defaults": {
-		"texture": "entity/chicken",
-		"size": [64,32]
-	},
-	"states": {
-		"baby=false": { "model": "chicken" },
-		"baby=true":  { "model": "baby_chicken", "scale": 0.5 }
-	}
+    "defaults": {
+        "texture": "entity/chicken",
+        "size": [64,32]
+    },
+    "states": {
+        "baby=false": { "model": "chicken" },
+        "baby=true":  { "model": "baby_chicken", "scale": 0.5 }
+    }
 }

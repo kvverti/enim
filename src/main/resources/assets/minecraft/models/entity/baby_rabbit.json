@@ -1,12 +1,12 @@
 {
-	"properties": {
-		"nameplate": 28,
-		"shadowsize": 4.8
-	},
-	"imports": {
-		"rabbit": ["*","animations:*"]
-	},
-	"overrides": {
-		"head": { "scale": 2 }
-	}
+    "properties": {
+        "nameplate": 28,
+        "shadowsize": 4.8
+    },
+    "imports": {
+        "rabbit": ["*","animations:*"]
+    },
+    "overrides": {
+        "head": { "scale": 2 }
+    }
 }

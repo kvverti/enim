@@ -1,14 +1,14 @@
 {
-	"defaults": {
-		"texture": "entity/pig/pig"
-	},
-	"states": {
-		"baby=false,saddled=false": { "model": "pig" },
-		"baby=false,saddled=true": [
-			{ "model": "pig" },
-			{ "model": "pig_saddle", "texture": "entity/pig/pig_saddle" }
-		],
-		"baby=true,saddled=false": { "model": "baby_pig", "scale": 0.5 },
-		"baby=true,saddled=true": { "model": "baby_pig", "scale": 0.5 }
-	}
+    "defaults": {
+        "texture": "entity/pig/pig"
+    },
+    "states": {
+        "baby=false,saddled=false": { "model": "pig" },
+        "baby=false,saddled=true": [
+            { "model": "pig" },
+            { "model": "pig_saddle", "texture": "entity/pig/pig_saddle" }
+        ],
+        "baby=true,saddled=false": { "model": "baby_pig", "scale": 0.5 },
+        "baby=true,saddled=true": { "model": "baby_pig", "scale": 0.5 }
+    }
 }

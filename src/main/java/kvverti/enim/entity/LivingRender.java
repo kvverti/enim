@@ -19,145 +19,145 @@ import kvverti.enim.model.ModelProperties;
 /** Base class for ENIM reloadable living entity (mob) renders. */
 public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
 
-	public static final float NAMETAG_VISIBILITY_RANGE_SQ = 64.0f * 64.0f;
-	public static final IProperty<Boolean> BABY = PropertyBool.create("baby");
+    public static final float NAMETAG_VISIBILITY_RANGE_SQ = 64.0f * 64.0f;
+    public static final IProperty<Boolean> BABY = PropertyBool.create("baby");
 
-	protected LivingRender(RenderManager manager, IProperty<?>... properties) {
+    protected LivingRender(RenderManager manager, IProperty<?>... properties) {
 
-		super(manager, properties);
-	}
+        super(manager, properties);
+    }
 
-	@Override
-	public boolean shouldRender(T entity) {
+    @Override
+    public boolean shouldRender(T entity) {
 
-		return !entity.isInvisible() || !entity.isInvisibleToPlayer(Entities.thePlayer());
-	}
+        return !entity.isInvisible() || !entity.isInvisibleToPlayer(Entities.thePlayer());
+    }
 
-	@Override
-	public Vec3f getBaseColor(T entity, EntityInfo info) {
+    @Override
+    public Vec3f getBaseColor(T entity, EntityInfo info) {
 
-		//tint red when damaged
-		if(entity.hurtTime > 0 || entity.deathTime > 0)
-			return Vec3f.of(1.0f, 0.5f, 0.5f);
-		return Vec3f.IDENTITY;
-	}
+        //tint red when damaged
+        if(entity.hurtTime > 0 || entity.deathTime > 0)
+            return Vec3f.of(1.0f, 0.5f, 0.5f);
+        return Vec3f.IDENTITY;
+    }
 
-	@Override
-	public float getBaseAlpha(T entity, EntityInfo info) {
+    @Override
+    public float getBaseAlpha(T entity, EntityInfo info) {
 
-		//invisible mobs as translucent to players in creative/spectator
-		if(entity.isInvisible() && !entity.isInvisibleToPlayer(Entities.thePlayer()))
-			return 0.25f;
-		return 1.0f;
-	}
+        //invisible mobs as translucent to players in creative/spectator
+        if(entity.isInvisible() && !entity.isInvisibleToPlayer(Entities.thePlayer()))
+            return 0.25f;
+        return 1.0f;
+    }
 
-	/* Must call super.preRender(entity, state, info); in subclasses!! */
-	@Override
-	protected void preRender(T entity, EntityInfo info) {
+    /* Must call super.preRender(entity, state, info); in subclasses!! */
+    @Override
+    protected void preRender(T entity, EntityInfo info) {
 
-		super.preRender(entity, info);
-		//fall over when dead
-		if(entity.deathTime > 0)
-			rotateCorpse(entity);
-		//"Dinnerbone" or "Grumm" mobs render upside down
-		if(entity.hasCustomName()) {
+        super.preRender(entity, info);
+        //fall over when dead
+        if(entity.deathTime > 0)
+            rotateCorpse(entity);
+        //"Dinnerbone" or "Grumm" mobs render upside down
+        if(entity.hasCustomName()) {
 
-			String name = TextFormatting.getTextWithoutFormattingCodes(entity.getName());
-			if("Grumm".equals(name) || "Dinnerbone".equals(name)) {
+            String name = TextFormatting.getTextWithoutFormattingCodes(entity.getName());
+            if("Grumm".equals(name) || "Dinnerbone".equals(name)) {
 
-				GlStateManager.translate(0.0f, -entity.height, 0.0f);
-				GlStateManager.rotate(180.0f, 0.0f, 0.0f, 1.0f);
-			}
-		}
-	}
+                GlStateManager.translate(0.0f, -entity.height, 0.0f);
+                GlStateManager.rotate(180.0f, 0.0f, 0.0f, 1.0f);
+            }
+        }
+    }
 
-	@Override
-	protected void postRender(T entity, EntityInfo info) {
+    @Override
+    protected void postRender(T entity, EntityInfo info) {
 
-		//render held/worn items
-		boolean leftHanded = entity.getPrimaryHand() == EnumHandSide.LEFT;
-		ItemStack right, left, head;
-		right = leftHanded ? entity.getHeldItemOffhand() : entity.getHeldItemMainhand();
-		left = leftHanded ? entity.getHeldItemMainhand() : entity.getHeldItemOffhand();
-		head = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-		//test
-		//right = new ItemStack(net.minecraft.init.Items.FLINT, 1, 0);
-		//left = new ItemStack(net.minecraft.init.Items.DIAMOND, 1, 0);
-		//head = new ItemStack(net.minecraft.init.Blocks.GLASS, 1, 0);
-		ModelProperties properties = getCurrentEntityState().model().properties();
-		renderItem(entity, info, right, TransformType.THIRD_PERSON_RIGHT_HAND, properties.rightHand());
-		renderItem(entity, info, left, TransformType.THIRD_PERSON_LEFT_HAND, properties.leftHand());
-		if(!(head.getItem() instanceof ItemArmor) //prevent armor rendering as an item
-			|| ((ItemArmor) head.getItem()).getEquipmentSlot() != EntityEquipmentSlot.HEAD)
-			renderItem(entity, info, head, TransformType.HEAD, properties.helmet());
-		super.postRender(entity, info);
-	}
+        //render held/worn items
+        boolean leftHanded = entity.getPrimaryHand() == EnumHandSide.LEFT;
+        ItemStack right, left, head;
+        right = leftHanded ? entity.getHeldItemOffhand() : entity.getHeldItemMainhand();
+        left = leftHanded ? entity.getHeldItemMainhand() : entity.getHeldItemOffhand();
+        head = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+        //test
+        //right = new ItemStack(net.minecraft.init.Items.FLINT, 1, 0);
+        //left = new ItemStack(net.minecraft.init.Items.DIAMOND, 1, 0);
+        //head = new ItemStack(net.minecraft.init.Blocks.GLASS, 1, 0);
+        ModelProperties properties = getCurrentEntityState().model().properties();
+        renderItem(entity, info, right, TransformType.THIRD_PERSON_RIGHT_HAND, properties.rightHand());
+        renderItem(entity, info, left, TransformType.THIRD_PERSON_LEFT_HAND, properties.leftHand());
+        if(!(head.getItem() instanceof ItemArmor) //prevent armor rendering as an item
+            || ((ItemArmor) head.getItem()).getEquipmentSlot() != EntityEquipmentSlot.HEAD)
+            renderItem(entity, info, head, TransformType.HEAD, properties.helmet());
+        super.postRender(entity, info);
+    }
 
-	private void renderItem(T entity, EntityInfo info, ItemStack stack, TransformType type, ModelProperties.OriginPoint origin) {
+    private void renderItem(T entity, EntityInfo info, ItemStack stack, TransformType type, ModelProperties.OriginPoint origin) {
 
-		if(origin == null || stack.isEmpty())
-			return;
-		GlStateManager.pushMatrix();
-		//transform to the parent's position, if applicable
-		if(!origin.parent().isEmpty()) {
+        if(origin == null || stack.isEmpty())
+            return;
+        GlStateManager.pushMatrix();
+        //transform to the parent's position, if applicable
+        if(!origin.parent().isEmpty()) {
 
-			ENIMModelRenderer parent = getStateManager().getModel(getStateFromEntity(entity)).getBox(origin.parent());
-			parent.transformWithoutRendering(info);
-		}
-		//apply specified transformations
-		float scale = info.scale;
-		Vec3f coords = origin.coords();
-		GlStateManager.translate((coords.x - 8.0f) * scale, -coords.y * scale, (8.0f - coords.z) * scale);
-		Vec3f rot = origin.rotation();
-		Vec3f scl = origin.scale();
-		GlStateManager.rotate(-rot.z, 0.0f, 0.0f, 1.0f);
-		GlStateManager.rotate(-rot.y, 0.0f, 1.0f, 0.0f);
-		GlStateManager.rotate(+rot.x, 1.0f, 0.0f, 0.0f);
-		GlStateManager.scale(scl.x, scl.y, scl.z);
-		//render
-		boolean leftHand = type == TransformType.THIRD_PERSON_LEFT_HAND;
-		Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, stack, type, leftHand);
-		GlStateManager.popMatrix();
-	}
+            ENIMModelRenderer parent = getStateManager().getModel(getStateFromEntity(entity)).getBox(origin.parent());
+            parent.transformWithoutRendering(info);
+        }
+        //apply specified transformations
+        float scale = info.scale;
+        Vec3f coords = origin.coords();
+        GlStateManager.translate((coords.x - 8.0f) * scale, -coords.y * scale, (8.0f - coords.z) * scale);
+        Vec3f rot = origin.rotation();
+        Vec3f scl = origin.scale();
+        GlStateManager.rotate(-rot.z, 0.0f, 0.0f, 1.0f);
+        GlStateManager.rotate(-rot.y, 0.0f, 1.0f, 0.0f);
+        GlStateManager.rotate(+rot.x, 1.0f, 0.0f, 0.0f);
+        GlStateManager.scale(scl.x, scl.y, scl.z);
+        //render
+        boolean leftHand = type == TransformType.THIRD_PERSON_LEFT_HAND;
+        Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, stack, type, leftHand);
+        GlStateManager.popMatrix();
+    }
 
-	protected void rotateCorpse(T entity) {
+    protected void rotateCorpse(T entity) {
 
-		final float time = 15.0f; //ticks
-		float rot = Entities.interpolate(0.0f, 90.0f, (float) entity.deathTime / time);
-		GlStateManager.rotate(Math.min(rot, 90.0f), 0.0f, 0.0f, 1.0f);
-	}
+        final float time = 15.0f; //ticks
+        float rot = Entities.interpolate(0.0f, 90.0f, (float) entity.deathTime / time);
+        GlStateManager.rotate(Math.min(rot, 90.0f), 0.0f, 0.0f, 1.0f);
+    }
 
-	@Override
-	protected boolean canRenderName(T entity) {
+    @Override
+    protected boolean canRenderName(T entity) {
 
-		return entity.hasCustomName() &&
-			Minecraft.isGuiEnabled() &&
-			entity != renderManager.renderViewEntity &&
-			!entity.isInvisibleToPlayer(Entities.thePlayer()) &&
-			entity.getPassengers().isEmpty();
-	}
+        return entity.hasCustomName() &&
+            Minecraft.isGuiEnabled() &&
+            entity != renderManager.renderViewEntity &&
+            !entity.isInvisibleToPlayer(Entities.thePlayer()) &&
+            entity.getPassengers().isEmpty();
+    }
 
-	@Override
-	public void renderName(T entity, double x, double y, double z) {
+    @Override
+    public void renderName(T entity, double x, double y, double z) {
 
-		if(canRenderName(entity)) {
+        if(canRenderName(entity)) {
 
-			double distanceSq = entity.getDistanceSqToEntity(renderManager.renderViewEntity);
-			if(distanceSq < NAMETAG_VISIBILITY_RANGE_SQ) {
+            double distanceSq = entity.getDistanceSqToEntity(renderManager.renderViewEntity);
+            if(distanceSq < NAMETAG_VISIBILITY_RANGE_SQ) {
 
-				float namePos = getCurrentEntityState().model().properties().nameplate();
-				float scale = 0.0625f * getCurrentEntityState().scale();
-				EntityRenderer.drawNameplate(getFontRendererFromRenderManager(),
-					entity.getDisplayName().getFormattedText(),
-					(float) x,
-					(float) y + namePos * scale + (3.0f / 16.0f),
-					(float) z,
-					0,
-					renderManager.playerViewY,
-					renderManager.playerViewX,
-					renderManager.options.thirdPersonView == 2,
-					entity.isSneaking());
-			}
-		}
-	}
+                float namePos = getCurrentEntityState().model().properties().nameplate();
+                float scale = 0.0625f * getCurrentEntityState().scale();
+                EntityRenderer.drawNameplate(getFontRendererFromRenderManager(),
+                    entity.getDisplayName().getFormattedText(),
+                    (float) x,
+                    (float) y + namePos * scale + (3.0f / 16.0f),
+                    (float) z,
+                    0,
+                    renderManager.playerViewY,
+                    renderManager.playerViewX,
+                    renderManager.options.thirdPersonView == 2,
+                    entity.isSneaking());
+            }
+        }
+    }
 }

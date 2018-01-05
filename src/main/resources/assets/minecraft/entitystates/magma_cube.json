@@ -1,12 +1,12 @@
 {
-	"defaults": {
-		"texture": "entity/slime/magmacube",
-		"size": [64,32]
-	},
-	"states": {
-		"size=0": { "model": "magma_cube" },
-		"size=1": { "model": "magma_cube", "scale": 2.0 },
-		"size=2": { "model": "magma_cube", "scale": 3.0 },
-		"size=3": { "model": "magma_cube", "scale": 4.0 }
-	}
+    "defaults": {
+        "texture": "entity/slime/magmacube",
+        "size": [64,32]
+    },
+    "states": {
+        "size=0": { "model": "magma_cube" },
+        "size=1": { "model": "magma_cube", "scale": 2.0 },
+        "size=2": { "model": "magma_cube", "scale": 3.0 },
+        "size=3": { "model": "magma_cube", "scale": 4.0 }
+    }
 }

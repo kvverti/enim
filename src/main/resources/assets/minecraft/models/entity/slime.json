@@ -1,39 +1,39 @@
 {
-	"properties": {
-		"nameplate": 10,
-		"shadowsize": 4
-	},
-	"elements": [
-		{
-			"name": "shell",
-			"from": [4,0,4],
-			"to": [12,8,12],
-			"uv": [0,0],
-			"translucent": true
-		},
-		{
-			"name": "inside",
-			"from": [5,1,5],
-			"to": [11,7,11],
-			"uv": [0,16]
-		},
-		{
-			"name": "left_eye",
-			"from": [4.75,4,9.5],
-			"to": [6.75,6,11.5],
-			"uv": [32,0]
-		},
-		{
-			"name": "right_eye",
-			"from": [9.25,4,9.5],
-			"to": [11.25,6,11.5],
-			"uv": [32,4]
-		},
-		{
-			"name": "mouth",
-			"from": [8,2,10.5],
-			"to": [9,3,11.5],
-			"uv": [32,8]
-		}
-	]
+    "properties": {
+        "nameplate": 10,
+        "shadowsize": 4
+    },
+    "elements": [
+        {
+            "name": "shell",
+            "from": [4,0,4],
+            "to": [12,8,12],
+            "uv": [0,0],
+            "translucent": true
+        },
+        {
+            "name": "inside",
+            "from": [5,1,5],
+            "to": [11,7,11],
+            "uv": [0,16]
+        },
+        {
+            "name": "left_eye",
+            "from": [4.75,4,9.5],
+            "to": [6.75,6,11.5],
+            "uv": [32,0]
+        },
+        {
+            "name": "right_eye",
+            "from": [9.25,4,9.5],
+            "to": [11.25,6,11.5],
+            "uv": [32,4]
+        },
+        {
+            "name": "mouth",
+            "from": [8,2,10.5],
+            "to": [9,3,11.5],
+            "uv": [32,8]
+        }
+    ]
 }

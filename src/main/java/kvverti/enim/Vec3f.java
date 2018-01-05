@@ -16,136 +16,136 @@ import com.google.gson.stream.JsonWriter;
  */
 public final class Vec3f {
 
-	public static final Vec3f ORIGIN = new Vec3f(0.0f, 0.0f, 0.0f);
-	public static final Vec3f UNIT_X = new Vec3f(1.0f, 0.0f, 0.0f);
-	public static final Vec3f UNIT_Y = new Vec3f(0.0f, 1.0f, 0.0f);
-	public static final Vec3f UNIT_Z = new Vec3f(0.0f, 0.0f, 1.0f);
-	public static final Vec3f IDENTITY = new Vec3f(1.0f, 1.0f, 1.0f);
-	public static final Vec3f INFINITY = new Vec3f(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
-	public static final Vec3f NaN = new Vec3f(Float.NaN, Float.NaN, Float.NaN);
+    public static final Vec3f ORIGIN = new Vec3f(0.0f, 0.0f, 0.0f);
+    public static final Vec3f UNIT_X = new Vec3f(1.0f, 0.0f, 0.0f);
+    public static final Vec3f UNIT_Y = new Vec3f(0.0f, 1.0f, 0.0f);
+    public static final Vec3f UNIT_Z = new Vec3f(0.0f, 0.0f, 1.0f);
+    public static final Vec3f IDENTITY = new Vec3f(1.0f, 1.0f, 1.0f);
+    public static final Vec3f INFINITY = new Vec3f(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
+    public static final Vec3f NaN = new Vec3f(Float.NaN, Float.NaN, Float.NaN);
 
-	public final float x;
-	public final float y;
-	public final float z;
+    public final float x;
+    public final float y;
+    public final float z;
 
-	/** Private constructor */
-	private Vec3f(float x, float y, float z) {
+    /** Private constructor */
+    private Vec3f(float x, float y, float z) {
 
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
-	public static Vec3f of(float x, float y, float z) {
+    public static Vec3f of(float x, float y, float z) {
 
-		return equals(ORIGIN, x, y, z) ? ORIGIN
-			: equals(IDENTITY, x, y, z) ? IDENTITY
-			: new Vec3f(x, y, z);
-	}
+        return equals(ORIGIN, x, y, z) ? ORIGIN
+            : equals(IDENTITY, x, y, z) ? IDENTITY
+            : new Vec3f(x, y, z);
+    }
 
-	public static Vec3f of(float[] values) {
+    public static Vec3f of(float[] values) {
 
-		return of(values[0], values[1], values[2]);
-	}
+        return of(values[0], values[1], values[2]);
+    }
 
-	private static boolean equals(Vec3f vec, float x, float y, float z) {
+    private static boolean equals(Vec3f vec, float x, float y, float z) {
 
-		return equalsOrNaN(vec.x, x) && equalsOrNaN(vec.y, y) && equalsOrNaN(vec.z, z);
-	}
+        return equalsOrNaN(vec.x, x) && equalsOrNaN(vec.y, y) && equalsOrNaN(vec.z, z);
+    }
 
-	private static boolean equalsOrNaN(float f1, float f2) {
+    private static boolean equalsOrNaN(float f1, float f2) {
 
-		return Float.isNaN(f1) ? Float.isNaN(f2) : f1 == f2;
-	}
+        return Float.isNaN(f1) ? Float.isNaN(f2) : f1 == f2;
+    }
 
-	/** Returns the result of adding the given Vec3f to this Vec3f. */
-	public Vec3f add(Vec3f other) {
+    /** Returns the result of adding the given Vec3f to this Vec3f. */
+    public Vec3f add(Vec3f other) {
 
-		return Vec3f.of(x + other.x, y + other.y, z + other.z);
-	}
+        return Vec3f.of(x + other.x, y + other.y, z + other.z);
+    }
 
-	/** Returns the result of scaling this Vec3f by the given amount. */
-	public Vec3f scale(float scalar) {
+    /** Returns the result of scaling this Vec3f by the given amount. */
+    public Vec3f scale(float scalar) {
 
-		return Vec3f.of(x * scalar, y * scalar, z * scalar);
-	}
+        return Vec3f.of(x * scalar, y * scalar, z * scalar);
+    }
 
-	/** Returns the result of scaling this Vec3f by the corresponding elements of the given Vec3f. */
-	public Vec3f scale(Vec3f other) {
+    /** Returns the result of scaling this Vec3f by the corresponding elements of the given Vec3f. */
+    public Vec3f scale(Vec3f other) {
 
-		return Vec3f.of(x * other.x, y * other.y, z * other.z);
-	}
+        return Vec3f.of(x * other.x, y * other.y, z * other.z);
+    }
 
-	/** Returns the result of applying the given mapping function to this Vec3f. */
-	public Vec3f map(DoubleUnaryOperator mapper) {
+    /** Returns the result of applying the given mapping function to this Vec3f. */
+    public Vec3f map(DoubleUnaryOperator mapper) {
 
-		return Vec3f.of((float) mapper.applyAsDouble(x), (float) mapper.applyAsDouble(y), (float) mapper.applyAsDouble(z));
-	}
+        return Vec3f.of((float) mapper.applyAsDouble(x), (float) mapper.applyAsDouble(y), (float) mapper.applyAsDouble(z));
+    }
 
-	/** Returns the result of combining this Vec3f with the given Vec3f, using the given combiner. */
-	public Vec3f combine(Vec3f other, DoubleBinaryOperator mapper) {
+    /** Returns the result of combining this Vec3f with the given Vec3f, using the given combiner. */
+    public Vec3f combine(Vec3f other, DoubleBinaryOperator mapper) {
 
-		return Vec3f.of(
-			(float) mapper.applyAsDouble(x, other.x),
-			(float) mapper.applyAsDouble(y, other.y),
-			(float) mapper.applyAsDouble(z, other.z));
-	}
+        return Vec3f.of(
+            (float) mapper.applyAsDouble(x, other.x),
+            (float) mapper.applyAsDouble(y, other.y),
+            (float) mapper.applyAsDouble(z, other.z));
+    }
 
-	/** Returns the result of interpolating the given amount between this Vec3f and the given Vec3f. */
-	public Vec3f interpolate(Vec3f to, float percent) {
+    /** Returns the result of interpolating the given amount between this Vec3f and the given Vec3f. */
+    public Vec3f interpolate(Vec3f to, float percent) {
 
-		float oneMinusPercent = 1.0f - percent;
-		return Vec3f.of(
-			x * oneMinusPercent + to.x * percent,
-			y * oneMinusPercent + to.y * percent,
-			z * oneMinusPercent + to.z * percent);
-	}
+        float oneMinusPercent = 1.0f - percent;
+        return Vec3f.of(
+            x * oneMinusPercent + to.x * percent,
+            y * oneMinusPercent + to.y * percent,
+            z * oneMinusPercent + to.z * percent);
+    }
 
-	/** Returns the value of this Vec3f as a float[] of length 3. */
-	public float[] toFloatArray() {
+    /** Returns the value of this Vec3f as a float[] of length 3. */
+    public float[] toFloatArray() {
 
-		return new float[] { x, y, z };
-	}
+        return new float[] { x, y, z };
+    }
 
-	@Override
-	public String toString() {
+    @Override
+    public String toString() {
 
-		return String.format("[%s, %s, %s]", x, y, z);
-	}
+        return String.format("[%s, %s, %s]", x, y, z);
+    }
 
-	@Override
-	public int hashCode() {
+    @Override
+    public int hashCode() {
 
-		return Objects.hash(x, y, z);
-	}
+        return Objects.hash(x, y, z);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
 
-		return (this == obj) || (obj instanceof Vec3f && equals((Vec3f) obj, x, y, z));
-	}
+        return (this == obj) || (obj instanceof Vec3f && equals((Vec3f) obj, x, y, z));
+    }
 
-	/** Json adapter for the {@link Vec3f} class. Vec3fs are serialized to a JsonArray. */
-	public static class Adapter extends TypeAdapter<Vec3f> {
+    /** Json adapter for the {@link Vec3f} class. Vec3fs are serialized to a JsonArray. */
+    public static class Adapter extends TypeAdapter<Vec3f> {
 
-		@Override
-		public Vec3f read(JsonReader in) throws IOException {
+        @Override
+        public Vec3f read(JsonReader in) throws IOException {
 
-			in.beginArray();
-			float[] coords = new float[3];
-			for(int i = 0; in.hasNext(); i++)
-				if(i < 3) coords[i] = (float) in.nextDouble();
-				else in.skipValue();
-			in.endArray();
-			return Vec3f.of(coords[0], coords[1], coords[2]);
-		}
+            in.beginArray();
+            float[] coords = new float[3];
+            for(int i = 0; in.hasNext(); i++)
+                if(i < 3) coords[i] = (float) in.nextDouble();
+                else in.skipValue();
+            in.endArray();
+            return Vec3f.of(coords[0], coords[1], coords[2]);
+        }
 
-		@Override
-		public void write(JsonWriter out, Vec3f value) throws IOException {
+        @Override
+        public void write(JsonWriter out, Vec3f value) throws IOException {
 
-			out.beginArray();
-			out.value(value.x).value(value.y).value(value.z);
-			out.endArray();
-		}
-	}
+            out.beginArray();
+            out.value(value.x).value(value.y).value(value.z);
+            out.endArray();
+        }
+    }
 }

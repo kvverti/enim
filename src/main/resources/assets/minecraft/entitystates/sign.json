@@ -1,29 +1,29 @@
 {
-	"defaults": {
-		"texture": "entity/sign",
-		"size": [64,32]
-	},
-	"states": {
-		"rotation=south": { "model": "wall_sign" },
-		"rotation=north": { "model": "wall_sign", "y": 180 },
-		"rotation=west" : { "model": "wall_sign", "y": -90 },
-		"rotation=east" : { "model": "wall_sign", "y": 90 },
+    "defaults": {
+        "texture": "entity/sign",
+        "size": [64,32]
+    },
+    "states": {
+        "rotation=south": { "model": "wall_sign" },
+        "rotation=north": { "model": "wall_sign", "y": 180 },
+        "rotation=west" : { "model": "wall_sign", "y": -90 },
+        "rotation=east" : { "model": "wall_sign", "y": 90 },
 
-		"rotation=n":   { "model": "floor_sign" },
-		"rotation=nne": { "model": "floor_sign", "y": 22.5 },
-		"rotation=ne":  { "model": "floor_sign", "y": 45 },
-		"rotation=ene": { "model": "floor_sign", "y": 67.5 },
-		"rotation=e":   { "model": "floor_sign", "y": 90 },
-		"rotation=ese": { "model": "floor_sign", "y": 112.5 },
-		"rotation=se":  { "model": "floor_sign", "y": 135 },
-		"rotation=sse": { "model": "floor_sign", "y": 157.5 },
-		"rotation=s":   { "model": "floor_sign", "y": 180 },
-		"rotation=ssw": { "model": "floor_sign", "y": -157.5 },
-		"rotation=sw":  { "model": "floor_sign", "y": -135 },
-		"rotation=wsw": { "model": "floor_sign", "y": -112.5 },
-		"rotation=w":   { "model": "floor_sign", "y": -90 },
-		"rotation=wnw": { "model": "floor_sign", "y": -67.5 },
-		"rotation=nw":  { "model": "floor_sign", "y": -45 },
-		"rotation=nnw": { "model": "floor_sign", "y": -22.5 }
-	}
+        "rotation=n":   { "model": "floor_sign" },
+        "rotation=nne": { "model": "floor_sign", "y": 22.5 },
+        "rotation=ne":  { "model": "floor_sign", "y": 45 },
+        "rotation=ene": { "model": "floor_sign", "y": 67.5 },
+        "rotation=e":   { "model": "floor_sign", "y": 90 },
+        "rotation=ese": { "model": "floor_sign", "y": 112.5 },
+        "rotation=se":  { "model": "floor_sign", "y": 135 },
+        "rotation=sse": { "model": "floor_sign", "y": 157.5 },
+        "rotation=s":   { "model": "floor_sign", "y": 180 },
+        "rotation=ssw": { "model": "floor_sign", "y": -157.5 },
+        "rotation=sw":  { "model": "floor_sign", "y": -135 },
+        "rotation=wsw": { "model": "floor_sign", "y": -112.5 },
+        "rotation=w":   { "model": "floor_sign", "y": -90 },
+        "rotation=wnw": { "model": "floor_sign", "y": -67.5 },
+        "rotation=nw":  { "model": "floor_sign", "y": -45 },
+        "rotation=nnw": { "model": "floor_sign", "y": -22.5 }
+    }
 }

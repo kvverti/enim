@@ -1,14 +1,14 @@
 {
-	"elements": [
-		{
-			"name": "helmet",
-			"from": [4,24,4],
-			"to": [12,32,12],
-			"uv": [0,0],
-			"origin": [8,28,8],
-			"pivot": [8,24,8],
-			"scale": 1.25,
-			"head": true
-		}
-	]
+    "elements": [
+        {
+            "name": "helmet",
+            "from": [4,24,4],
+            "to": [12,32,12],
+            "uv": [0,0],
+            "origin": [8,28,8],
+            "pivot": [8,24,8],
+            "scale": 1.25,
+            "head": true
+        }
+    ]
 }

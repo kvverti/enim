@@ -1,113 +1,113 @@
 {
-	"properties": {
-		"nameplate": 18,
-		"shadowsize": 11
-	},
-	"elements": [
-		{
-			"name": "body",
-			"from": [2,-3,2],
-			"to": [14,13,14],
-			"uv": [0,0],
-			"origin": [8,8,8],
-			"head": true
-		},
-		{
-			"name": "tentacle0",
-			"parent": "body",
-			"from": [7,-20,12],
-			"to": [9,-2,14],
-			"uv": [48,0],
-			"origin": [8,-2,13]
-		},
-		{
-			"name": "tentacle1",
-			"parent": "body",
-			"from": [3,-20,11],
-			"to": [5,-2,13],
-			"uv": [48,0],
-			"origin": [4,-2,12],
-			"rotation": [0,-45,0]
-		},
-		{
-			"name": "tentacle2",
-			"parent": "body",
-			"from": [2,-20,7],
-			"to": [4,-2,9],
-			"uv": [48,0],
-			"origin": [3,-2,8]
-		},
-		{
-			"name": "tentacle3",
-			"parent": "body",
-			"from": [3,-20,3],
-			"to": [5,-2,5],
-			"uv": [48,0],
-			"origin": [4,-2,4],
-			"rotation": [0,45,0]
-		},
-		{
-			"name": "tentacle4",
-			"parent": "body",
-			"from": [7,-20,2],
-			"to": [9,-2,4],
-			"uv": [48,0],
-			"origin": [8,-2,3]
-		},
-		{
-			"name": "tentacle6",
-			"parent": "body",
-			"from": [12,-20,7],
-			"to": [14,-2,9],
-			"uv": [48,0],
-			"origin": [13,-2,8]
-		},
-		{
-			"name": "tentacle7",
-			"parent": "body",
-			"from": [11,-20,11],
-			"to": [13,-2,13],
-			"uv": [48,0],
-			"origin": [12,-2,12],
-			"rotation": [0,45,0]
-		},
-		{
-			"name": "tentacle5",
-			"parent": "body",
-			"from": [11,-20,3],
-			"to": [13,-2,5],
-			"uv": [48,0],
-			"origin": [12,-2,4],
-			"rotation": [0,-45,0]
-		}
-	],
-	"animations": {
-		"idle": {
-			"script": "squid_land",
-			"with": {
-				"t0": "tentacle0",
-				"t1": "tentacle1",
-				"t2": "tentacle2",
-				"t3": "tentacle3",
-				"t4": "tentacle4",
-				"t5": "tentacle5",
-				"t6": "tentacle6",
-				"t7": "tentacle7"
-			}
-		},
-		"swimming": {
-			"script": "squid_water",
-			"with": {
-				"b": "body",
-				"t0": "tentacle0",
-				"t1": "tentacle1",
-				"t2": "tentacle2",
-				"t3": "tentacle3",
-				"t4": "tentacle4",
-				"t5": "tentacle5",
-				"t6": "tentacle6",
-				"t7": "tentacle7"
-			}
-		}
-	}
+    "properties": {
+        "nameplate": 18,
+        "shadowsize": 11
+    },
+    "elements": [
+        {
+            "name": "body",
+            "from": [2,-3,2],
+            "to": [14,13,14],
+            "uv": [0,0],
+            "origin": [8,8,8],
+            "head": true
+        },
+        {
+            "name": "tentacle0",
+            "parent": "body",
+            "from": [7,-20,12],
+            "to": [9,-2,14],
+            "uv": [48,0],
+            "origin": [8,-2,13]
+        },
+        {
+            "name": "tentacle1",
+            "parent": "body",
+            "from": [3,-20,11],
+            "to": [5,-2,13],
+            "uv": [48,0],
+            "origin": [4,-2,12],
+            "rotation": [0,-45,0]
+        },
+        {
+            "name": "tentacle2",
+            "parent": "body",
+            "from": [2,-20,7],
+            "to": [4,-2,9],
+            "uv": [48,0],
+            "origin": [3,-2,8]
+        },
+        {
+            "name": "tentacle3",
+            "parent": "body",
+            "from": [3,-20,3],
+            "to": [5,-2,5],
+            "uv": [48,0],
+            "origin": [4,-2,4],
+            "rotation": [0,45,0]
+        },
+        {
+            "name": "tentacle4",
+            "parent": "body",
+            "from": [7,-20,2],
+            "to": [9,-2,4],
+            "uv": [48,0],
+            "origin": [8,-2,3]
+        },
+        {
+            "name": "tentacle6",
+            "parent": "body",
+            "from": [12,-20,7],
+            "to": [14,-2,9],
+            "uv": [48,0],
+            "origin": [13,-2,8]
+        },
+        {
+            "name": "tentacle7",
+            "parent": "body",
+            "from": [11,-20,11],
+            "to": [13,-2,13],
+            "uv": [48,0],
+            "origin": [12,-2,12],
+            "rotation": [0,45,0]
+        },
+        {
+            "name": "tentacle5",
+            "parent": "body",
+            "from": [11,-20,3],
+            "to": [13,-2,5],
+            "uv": [48,0],
+            "origin": [12,-2,4],
+            "rotation": [0,-45,0]
+        }
+    ],
+    "animations": {
+        "idle": {
+            "script": "squid_land",
+            "with": {
+                "t0": "tentacle0",
+                "t1": "tentacle1",
+                "t2": "tentacle2",
+                "t3": "tentacle3",
+                "t4": "tentacle4",
+                "t5": "tentacle5",
+                "t6": "tentacle6",
+                "t7": "tentacle7"
+            }
+        },
+        "swimming": {
+            "script": "squid_water",
+            "with": {
+                "b": "body",
+                "t0": "tentacle0",
+                "t1": "tentacle1",
+                "t2": "tentacle2",
+                "t3": "tentacle3",
+                "t4": "tentacle4",
+                "t5": "tentacle5",
+                "t6": "tentacle6",
+                "t7": "tentacle7"
+            }
+        }
+    }
 }

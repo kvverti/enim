@@ -1,18 +1,18 @@
 {
-	"imports": {
-		"chest": ["*"]
-	},
-	"overrides": {
-		"lid": { "rotation": [-90,0,0] }
-	},
-	"animations": {
-		"open": {
-			"script": "chest_open",
-			"with": { "lid": "lid" }
-		},
-		"close": {
-			"script": "chest_close_begin",
-			"with": { "lid": "lid" }
-		}
-	}
+    "imports": {
+        "chest": ["*"]
+    },
+    "overrides": {
+        "lid": { "rotation": [-90,0,0] }
+    },
+    "animations": {
+        "open": {
+            "script": "chest_open",
+            "with": { "lid": "lid" }
+        },
+        "close": {
+            "script": "chest_close_begin",
+            "with": { "lid": "lid" }
+        }
+    }
 }

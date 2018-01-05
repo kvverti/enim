@@ -2,48 +2,48 @@ package kvverti.enim.abiescript;
 
 final class Token {
 
-	private final String value;
-	private final TokenType type;
+    private final String value;
+    private final TokenType type;
 
-	private Token(String s, TokenType t) {
+    private Token(String s, TokenType t) {
 
-		value = s;
-		type = t;
-	}
+        value = s;
+        type = t;
+    }
 
-	public String getValue() {
+    public String getValue() {
 
-		return value;
-	}
+        return value;
+    }
 
-	public float getFloatValue() {
+    public float getFloatValue() {
 
-		return Float.parseFloat(value);
-	}
+        return Float.parseFloat(value);
+    }
 
-	public int getIntValue() {
+    public int getIntValue() {
 
-		return Integer.parseInt(value);
-	}
+        return Integer.parseInt(value);
+    }
 
-	public TokenType getTokenType() {
+    public TokenType getTokenType() {
 
-		return type;
-	}
+        return type;
+    }
 
-	public static Token compile(String s) {
+    public static Token compile(String s) {
 
-		TokenType ttype = TokenType.match(s);
-		if(ttype != null) {
+        TokenType ttype = TokenType.match(s);
+        if(ttype != null) {
 
-			return new Token(s, ttype);
+            return new Token(s, ttype);
 
-		} else throw new AbieSyntaxException("Could not resolve token: " + s);
-	}
+        } else throw new AbieSyntaxException("Could not resolve token: " + s);
+    }
 
-	@Override
-	public String toString() {
+    @Override
+    public String toString() {
 
-		return String.format("[%s] %s", type, value);
-	}
+        return String.format("[%s] %s", type, value);
+    }
 }

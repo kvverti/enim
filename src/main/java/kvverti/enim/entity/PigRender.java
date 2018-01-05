@@ -8,18 +8,18 @@ import kvverti.enim.entity.state.RenderState;
 
 public class PigRender extends LivingRender<EntityPig> {
 
-	public static final IProperty<Boolean> SADDLED = PropertyBool.create("saddled");
+    public static final IProperty<Boolean> SADDLED = PropertyBool.create("saddled");
 
-	public PigRender(RenderManager manager) {
+    public PigRender(RenderManager manager) {
 
-		super(manager, BABY, SADDLED);
-	}
+        super(manager, BABY, SADDLED);
+    }
 
-	@Override
-	public RenderState getStateFromEntity(EntityPig entity) {
+    @Override
+    public RenderState getStateFromEntity(EntityPig entity) {
 
-		return getStateManager().getDefaultState()
-			.withProperty(BABY, entity.isChild())
-			.withProperty(SADDLED, entity.getSaddled());
-	}
+        return getStateManager().getDefaultState()
+            .withProperty(BABY, entity.isChild())
+            .withProperty(SADDLED, entity.getSaddled());
+    }
 }

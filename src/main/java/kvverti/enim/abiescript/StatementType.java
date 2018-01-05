@@ -9,56 +9,56 @@ import static kvverti.enim.abiescript.TokenType.*;
 
 enum StatementType {
 
-	DEFINITION       (Keys.ABIE_KEY_DEFINE, IDENTIFIER),
-	FREQUENCY        (Keys.ABIE_KEY_FREQ, UNSIGNED_INTEGER),
-	ROTATE_OFFSET    (Keys.ABIE_KEY_ROTATE, ANGLE_TYPE, FLOATING_POINT, FLOATING_POINT, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
-	ROTATE           (Keys.ABIE_KEY_ROTATE, ANGLE_TYPE, FLOATING_POINT, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
-	ROTATE_LINEAR    (Keys.ABIE_KEY_ROTATE, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
-	ROTATE_NOTIME    (Keys.ABIE_KEY_ROTATE, ANGLE_TYPE, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
-	SHIFT_OFFSET     (Keys.ABIE_KEY_SHIFT, ANGLE_TYPE, FLOATING_POINT, FLOATING_POINT, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
-	SHIFT            (Keys.ABIE_KEY_SHIFT, ANGLE_TYPE, FLOATING_POINT, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
-	SHIFT_LINEAR     (Keys.ABIE_KEY_SHIFT, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
-	SHIFT_NOTIME     (Keys.ABIE_KEY_SHIFT, ANGLE_TYPE, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
-	FUNCTION         (Keys.ABIE_KEY_FUNCTION, IDENTIFIER, FUNCTION_BODY),
-	PAUSE            (Keys.ABIE_KEY_PAUSE, UNSIGNED_INTEGER),
-	REPEAT           (Keys.ABIE_KEY_REPEAT, UNSIGNED_INTEGER),
-	OVER             (Keys.ABIE_KEY_OVER, UNSIGNED_INTEGER),
-	INIT             (Keys.ABIE_KEY_INIT),
-	START_FRAME      ("{"),
-	END_FRAME        ("}");
+    DEFINITION       (Keys.ABIE_KEY_DEFINE, IDENTIFIER),
+    FREQUENCY        (Keys.ABIE_KEY_FREQ, UNSIGNED_INTEGER),
+    ROTATE_OFFSET    (Keys.ABIE_KEY_ROTATE, ANGLE_TYPE, FLOATING_POINT, FLOATING_POINT, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+    ROTATE           (Keys.ABIE_KEY_ROTATE, ANGLE_TYPE, FLOATING_POINT, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+    ROTATE_LINEAR    (Keys.ABIE_KEY_ROTATE, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+    ROTATE_NOTIME    (Keys.ABIE_KEY_ROTATE, ANGLE_TYPE, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+    SHIFT_OFFSET     (Keys.ABIE_KEY_SHIFT, ANGLE_TYPE, FLOATING_POINT, FLOATING_POINT, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+    SHIFT            (Keys.ABIE_KEY_SHIFT, ANGLE_TYPE, FLOATING_POINT, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+    SHIFT_LINEAR     (Keys.ABIE_KEY_SHIFT, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+    SHIFT_NOTIME     (Keys.ABIE_KEY_SHIFT, ANGLE_TYPE, IDENTIFIER, FLOATING_POINT, FLOATING_POINT, FLOATING_POINT),
+    FUNCTION         (Keys.ABIE_KEY_FUNCTION, IDENTIFIER, FUNCTION_BODY),
+    PAUSE            (Keys.ABIE_KEY_PAUSE, UNSIGNED_INTEGER),
+    REPEAT           (Keys.ABIE_KEY_REPEAT, UNSIGNED_INTEGER),
+    OVER             (Keys.ABIE_KEY_OVER, UNSIGNED_INTEGER),
+    INIT             (Keys.ABIE_KEY_INIT),
+    START_FRAME      ("{"),
+    END_FRAME        ("}");
 
-	private final String name;
-	private final TokenType[] args;
+    private final String name;
+    private final TokenType[] args;
 
-	private StatementType(String s, TokenType... ttypes) {
+    private StatementType(String s, TokenType... ttypes) {
 
-		name = s;
-		args = ttypes;
-	}
+        name = s;
+        args = ttypes;
+    }
 
-	public String getName() {
+    public String getName() {
 
-		return name;
-	}
+        return name;
+    }
 
-	public TokenType[] getTokenTypes() {
+    public TokenType[] getTokenTypes() {
 
-		return args.clone();
-	}
+        return args.clone();
+    }
 
-	public int tokenCount() {
+    public int tokenCount() {
 
-		return args.length;
-	}
+        return args.length;
+    }
 
-	public static StatementType[] byName(String name) {
+    public static StatementType[] byName(String name) {
 
-		List<StatementType> types = new ArrayList<>();
-		for(StatementType type : values()) {
+        List<StatementType> types = new ArrayList<>();
+        for(StatementType type : values()) {
 
-			if(type.name.equals(name))
-				types.add(type);
-		}
-		return types.toArray(new StatementType[types.size()]);
-	}
+            if(type.name.equals(name))
+                types.add(type);
+        }
+        return types.toArray(new StatementType[types.size()]);
+    }
 }

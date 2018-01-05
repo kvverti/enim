@@ -1,5 +1,5 @@
 {
-	"states": {
-		"normal": { "model": "spider", "texture": "entity/spider/spider", "overlay": "entity/spider_eyes", "size": [64,32] }
-	}
+    "states": {
+        "normal": { "model": "spider", "texture": "entity/spider/spider", "overlay": "entity/spider_eyes", "size": [64,32] }
+    }
 }

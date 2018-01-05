@@ -1,5 +1,5 @@
 {
-	"states": {
-		"normal": { "model": "blaze", "texture": "entity/blaze", "size": [64,32] }
-	}
+    "states": {
+        "normal": { "model": "blaze", "texture": "entity/blaze", "size": [64,32] }
+    }
 }
