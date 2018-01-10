@@ -1,0 +1,22 @@
+{
+    "elements": [
+        {
+            "name": "helmet_scaling",
+            "from": [0,0,0],
+            "to": [0,0,0],
+            "uv": [0,0],
+            "origin": [8,28,8],
+            "scale": 1.25
+        },
+        {
+            "name": "helmet",
+            "parent": "helmet_scaling",
+            "from": [4,24,4],
+            "to": [12,32,12],
+            "uv": [0,0],
+            "origin": [8,24,8],
+            "scale": 1.5,
+            "head": true
+        }
+    ]
+}

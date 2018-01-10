@@ -22,7 +22,7 @@ plugins {
 */
 version = String.format("dev-%1\$tY.%1\$tm.%1\$td_%1\$tH-%1\$tM-%1\$tS", new GregorianCalendar())
 group = "kvverti.enim" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "enim-1.11"
+archivesBaseName = "enim-1.12"
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 javadoc {
