@@ -10,6 +10,7 @@ import net.minecraft.util.ResourceLocation;
 
 import kvverti.enim.Util;
 import kvverti.enim.entity.state.RenderState;
+import kvverti.enim.model.EntityState;
 
 public class BannerRender extends SignLikeRender<TileEntityBanner> {
 
@@ -22,10 +23,10 @@ public class BannerRender extends SignLikeRender<TileEntityBanner> {
     }
 
     @Override
-    protected void preRender(TileEntityBanner tile, EntityInfo info) {
+    protected void preRenderLayer(TileEntityBanner tile, EntityInfo info, EntityState layer) {
 
-        super.preRender(tile, info);
-        bindTexture(textureCache.getTexture(tile, getCurrentEntityState()));
+        super.preRenderLayer(tile, info, layer);
+        bindTexture(textureCache.getTexture(tile, layer));
     }
 
     @Override

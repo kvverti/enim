@@ -14,6 +14,7 @@ import kvverti.enim.entity.properties.PropertyArmor;
 import kvverti.enim.entity.state.RenderState;
 
 /** Base for entities that may wear armor. */
+@Deprecated //built into LivingRender
 public class ArmorLivingRender<T extends EntityLivingBase> extends LivingRender<T> {
 
     public static final IProperty<ArmorMaterial> ARMOR_HEAD = PropertyArmor.create("armor_head");

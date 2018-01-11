@@ -1,8 +1,8 @@
 package kvverti.enim;
 
-import java.util.regex.*;
+import java.util.regex.Pattern;
 
-/** Contains constants used in the ENIM entity model format and the AbieScript specification. */
+/** Contains keys used in the ENIM entity model format and the AbieScript specification. */
 public final class Keys {
 
     public static final int INTERPOLATION_TICKS = 3;
@@ -66,12 +66,17 @@ public final class Keys {
     public static final String STATE_TEX_SIZE = "size";
     public static final String STATE_ROTATION = "y";
     public static final String STATE_SCALE = "scale";
+    public static final String STATE_ARMOR = "armor";
+    
+    public static final String ARMOR_DEFAULTS = "defaults";
+    public static final String ARMOR_MATERIALS = "materials";
 
     public static final String STATES_DIR = "entitystates/";
     public static final String MODELS_DIR = "models/entity/";
     public static final String ANIMS_DIR = "models/entity/animations/";
     public static final String TEXTURES_DIR = "textures/";
     public static final String COLORS_DIR = "colors/";
+    public static final String ARMOR_DIR = "models/armor/";
 
     public static final String MISSING_DEFINITION = "builtin/missingno";
 
@@ -81,7 +86,7 @@ public final class Keys {
 
     public static final Pattern IDENTIFIER_REGEX = Pattern.compile("[a-z_][a-z_0-9]*");
     public static final Pattern RESOURCE_LOCATION_REGEX =
-        Pattern.compile("(?:(?<domain>[a-z_0-9 ]+):)?(?<filepath>[a-z_0-9 /]+)");
+        Pattern.compile("(?:(?<domain>[a-z_0-9-]+):)?(?<filepath>[a-z_0-9/-]+)");
 
     private Keys() { }
 }

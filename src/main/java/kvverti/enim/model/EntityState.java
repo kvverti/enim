@@ -31,7 +31,7 @@ public class EntityState {
     private final int[] size = { -1, -1 };        //invalid value (-1) will be filled with default
     private float scale = Float.NaN;        //invalid value (NaN) will be filled with default
     private float y = Float.NaN;            //invalid value (NaN) will be filled with default
-    private ImmutableList<EntityState> layers = ImmutableList.of(); //other layers, such as sheep wool, wolf collars, or armor
+    private ArmorModel armor; //armor model for this state. May be null if there is no armor.
 
     //original texture names, for debugging purposes
     private String textureName;
@@ -72,12 +72,12 @@ public class EntityState {
      * The rotation about the vertical axis this state should render at.
      */
     public float y() { return y; }
-
+    
     /**
-     * The model layers for this state. Layers specify additonal models with separately bound textures that render with this state.
-     * For example, layers include armor, wolf collars, and sheep wool.
+     * The armor models for this state. Armor models are rendered when the entity is wearing the corresponding
+     * armor piece. Returns null if this state does not render armor.
      */
-    public ImmutableList<EntityState> getLayers() { return layers; }
+    public ArmorModel armor() { return armor; }
 
     /** Binds a texture dynamically. This is needed because the texture may be reloaded many times over the course of a game session. */
     private static ResourceLocation bindTexture(ResourceLocation loc) {
@@ -90,7 +90,9 @@ public class EntityState {
     void replaceDefaults(Defaults defaults) {
 
         if(texture == null)
-            texture = Util.getResourceLocation(defaults.texture, Keys.TEXTURES_DIR, Keys.PNG);
+            texture = defaults.texture == null ?
+                Util.MISSING_LOCATION
+                : Util.getResourceLocation(defaults.texture, Keys.TEXTURES_DIR, Keys.PNG);
         if(overlay == null && defaults.overlay != null)
             overlay = Util.getResourceLocation(defaults.overlay, Keys.TEXTURES_DIR, Keys.PNG);
         if(size[0] == -1 && size[1] == -1) {
@@ -103,9 +105,9 @@ public class EntityState {
         if(Float.isNaN(y))
             y = defaults.y;
     }
-
-    EntityState replaceLayers(Collection<? extends EntityState> layers) {
-
+    
+    EntityState replaceTexture(ResourceLocation texture) {
+        
         EntityState res = new EntityState(model);
         res.texture = texture;
         res.overlay = overlay;
@@ -113,7 +115,7 @@ public class EntityState {
         res.size[1] = size[1];
         res.scale = scale;
         res.y = y;
-        res.layers = ImmutableList.copyOf(layers);
+        res.armor = armor;
         return res;
     }
 
@@ -128,29 +130,32 @@ public class EntityState {
             Keys.STATE_SCALE, scale,
             Keys.STATE_ROTATION, y);
     }
-
-    /** Deserializer for the {@link EntityState} class */
-    public static class Deserializer implements JsonDeserializer<EntityState> {
-
+    
+    /** Deserializer for lists of EntityStates. */
+    public static class ListDeserializer implements JsonDeserializer<ImmutableList<EntityState>> {
+        
         private static final Type stateListType = new TypeToken<List<EntityState>>(){}.getType();
 
         @Override
-        public EntityState deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
+        public ImmutableList<EntityState> deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
 
             if(json.isJsonArray()) {
 
                 if(json.getAsJsonArray().size() == 0)
                     throw new JsonParseException("Layers list may not be empty");
                 List<EntityState> list = context.deserialize(json, stateListType);
-                EntityState res = list.remove(0);
-                res.layers = ImmutableList.copyOf(list);
-                return res;
+                return ImmutableList.copyOf(list);
             } else
-                return getSingle(json, context);
+                return ImmutableList.of(context.deserialize(json, EntityState.class));
         }
+    }
 
-        private EntityState getSingle(JsonElement json, JsonDeserializationContext context) {
+    /** Deserializer for the {@link EntityState} class */
+    public static class Deserializer implements JsonDeserializer<EntityState> {
 
+        @Override
+        public EntityState deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
+            
             JsonObject jsonObj = json.getAsJsonObject();
             String modelStr = jsonObj.get(Keys.STATE_MODEL_NAME).getAsString();
             EntityModel model;
@@ -194,6 +199,16 @@ public class EntityState {
                 res.y = jsonObj.get(Keys.STATE_ROTATION).getAsFloat();
             if(jsonObj.has(Keys.STATE_SCALE))
                 res.scale = jsonObj.get(Keys.STATE_SCALE).getAsFloat();
+            if(jsonObj.has(Keys.STATE_ARMOR)) {
+                ResourceLocation armorFile =
+                    Util.getResourceLocation(jsonObj.get(Keys.STATE_ARMOR).getAsString(), Keys.ARMOR_DIR, Keys.JSON);
+                try(Reader rd = Util.getReaderFor(armorFile)) {
+                    res.armor = EntityModel.GSON.fromJson(rd, ArmorModel.class);
+                    res.armor.init();
+                } catch(IOException e) {
+                    Logger.error(e, "Exception parsing armor models");
+                }
+            }
             return res;
         }
     }

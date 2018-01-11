@@ -7,8 +7,12 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
+import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.inventory.EntityEquipmentSlot;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
@@ -32,11 +36,14 @@ public class EntityModel {
      * they cannot be serialized into Json again.
      */
     public static final Gson GSON = new GsonBuilder()
+        .registerTypeAdapter(ArmorMaterial.class, new ArmorModel.MaterialDeserializer())
+        .registerTypeAdapter(EntityEquipmentSlot.class, new ArmorModel.SlotDeserializer())
         .registerTypeAdapter(Vec3f.class, new Vec3f.Adapter().nullSafe())
         .registerTypeAdapter(ModelImports.class, new ModelImports.Deserializer())
         .registerTypeAdapter(Animation.class, new Animation.Deserializer())
         .registerTypeAdapter(AnimType.class, new AnimType.Adapter().nullSafe())
         .registerTypeAdapter(EntityState.class, new EntityState.Deserializer())
+        .registerTypeAdapter(new TypeToken<ImmutableList<EntityState>>(){}.getType(), new EntityState.ListDeserializer())
         .registerTypeAdapter(EntityStateMap.class, new EntityStateMap.Deserializer())
         .registerTypeAdapter(EntityModel.class, new EntityModel.Deserializer())
         .registerTypeAdapter(Condition.class, new Condition.Deserializer())

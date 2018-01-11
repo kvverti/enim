@@ -49,51 +49,35 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
         GlStateManager.rotate(180.0f, 1.0f, 0.0f, 0.0f);
 
         RenderState renderState = getStateFromTile(tileEntity);
-        currentState = stateManager.getState(renderState);
-        ENIMModel model = stateManager.getModel(renderState);
-        bindTexture(currentState.texture());
-        GlStateManager.rotate(currentState.y(), 0.0f, 1.0f, 0.0f);
+        ImmutableList<EntityState> entityStates = stateManager.getStateLayers(renderState);
+        currentState = entityStates.get(0);
         EntityInfo info = new EntityInfo();
         info.partialTicks = partialTicks;
-        info.scale = 0.0625f * currentState.scale();
         info.color = i -> i < 0 ? getBaseColor(tileEntity, info) : getBaseColor(tileEntity, info).scale(getColorOverlay(tileEntity, info, i));
         GEntity e = new GEntity(tileEntity);
         preRender(tileEntity, info);
-        if(shouldRender(tileEntity)) {
-
-            model.render(e, info);
-            ResourceLocation overlay = currentState.overlay();
-            if(overlay != null)
-                renderOverlay(e, info, model, overlay);
-            List<EntityState> layers = currentState.getLayers();
-            for(int i = 0; i < layers.size(); i++)
-                renderLayer(e, info, layers.get(i), stateManager.getLayerModel(renderState, i));
-        } else {
-            ResourceLocation overlay = currentState.overlay();
-            if(overlay != null)
-                renderOverlay(e, info, model, overlay);
-            List<EntityState> layers = currentState.getLayers();
-            for(int i = 0; i < layers.size(); i++) {
-
-                overlay = layers.get(i).overlay();
-                if(overlay != null)
-                    renderOverlay(e, info, stateManager.getLayerModel(renderState, i), overlay);
-            }
-        }
+        boolean render = shouldRender(tileEntity);
+        for(EntityState layer : entityStates)
+            renderLayer(e, info, layer, render);
         postRender(tileEntity, info);
         GlStateManager.popMatrix();
     }
 
-    private void renderLayer(GEntity tile, EntityInfo info, EntityState layer, ENIMModel model) {
+    @SuppressWarnings("unchecked")
+    private void renderLayer(GEntity tile, EntityInfo info, EntityState layer, boolean render) {
 
         GlStateManager.pushMatrix();
         bindTexture(layer.texture());
         GlStateManager.rotate(layer.y(), 0.0f, 1.0f, 0.0f);
         info.scale = 0.0625f * layer.scale();
-        model.render(tile, info);
+        ENIMModel model = stateManager.getModel(layer);
+        preRenderLayer((T) tile.getTileEntity(), info, layer);
+        if(render)
+            model.render(tile, info);
         ResourceLocation overlay = currentState.overlay();
         if(overlay != null)
             renderOverlay(tile, info, model, overlay);
+        postRenderLayer((T) tile.getTileEntity(), info, layer);
         GlStateManager.popMatrix();
     }
 
@@ -127,6 +111,16 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
      * Method called immediately before the main model is rendered.
      */
     protected void preRender(T tile, EntityInfo info) { }
+    
+    /**
+     * Method called immediately before a layer is rendered.
+     */
+    protected void preRenderLayer(T tile, EntityInfo info, EntityState layer) { }
+    
+    /**
+     * Method called immediately after a layer is rendered.
+     */
+    protected void postRenderLayer(T tile, EntityInfo info, EntityState layer) { }
 
     /**
      * Method called immediately after the main model and any layers are rendered.

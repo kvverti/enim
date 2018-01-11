@@ -9,12 +9,17 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.text.TextFormatting;
 
+import com.google.common.collect.ImmutableList;
+
 import kvverti.enim.Vec3f;
 import kvverti.enim.model.ModelProperties;
+import kvverti.enim.model.ArmorModel;
+import kvverti.enim.model.EntityState;
 
 /** Base class for ENIM reloadable living entity (mob) renders. */
 public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRender<T> {
@@ -74,23 +79,49 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
     @Override
     protected void postRender(T entity, EntityInfo info) {
 
+        //render armor
+        ArmorModel armor = getCurrentEntityState().armor();
+        if(armor != null) {
+            GEntity e = new GEntity(entity);
+            for(EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
+                if(slot.getSlotType() == EntityEquipmentSlot.Type.ARMOR) {
+                    
+                    ArmorMaterial material = getMaterial(entity, slot);
+                    if(material != null) {
+                        
+                        ImmutableList<EntityState> layers = armor.getArmorLayers(material, slot);
+                        for(EntityState armorState : layers)
+                            renderLayer(e, info, armorState, true);
+                    }
+                }
+            }
+        }
         //render held/worn items
         boolean leftHanded = entity.getPrimaryHand() == EnumHandSide.LEFT;
         ItemStack right, left, head;
         right = leftHanded ? entity.getHeldItemOffhand() : entity.getHeldItemMainhand();
         left = leftHanded ? entity.getHeldItemMainhand() : entity.getHeldItemOffhand();
         head = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-        //test
-        //right = new ItemStack(net.minecraft.init.Items.FLINT, 1, 0);
-        //left = new ItemStack(net.minecraft.init.Items.DIAMOND, 1, 0);
-        //head = new ItemStack(net.minecraft.init.Blocks.GLASS, 1, 0);
         ModelProperties properties = getCurrentEntityState().model().properties();
         renderItem(entity, info, right, TransformType.THIRD_PERSON_RIGHT_HAND, properties.rightHand());
         renderItem(entity, info, left, TransformType.THIRD_PERSON_LEFT_HAND, properties.leftHand());
         if(!(head.getItem() instanceof ItemArmor) //prevent armor rendering as an item
-            || ((ItemArmor) head.getItem()).getEquipmentSlot() != EntityEquipmentSlot.HEAD)
+            || ((ItemArmor) head.getItem()).getEquipmentSlot() != EntityEquipmentSlot.HEAD
+            || armor == null)
             renderItem(entity, info, head, TransformType.HEAD, properties.helmet());
         super.postRender(entity, info);
+    }
+
+    private ArmorMaterial getMaterial(T entity, EntityEquipmentSlot slot) {
+
+        ItemStack stack = entity.getItemStackFromSlot(slot);
+        if(!stack.isEmpty() && stack.getItem() instanceof ItemArmor) {
+
+            ItemArmor armor = (ItemArmor) stack.getItem();
+            if(armor.getEquipmentSlot() == slot)
+                return armor.getArmorMaterial();
+        }
+        return null;
     }
 
     private void renderItem(T entity, EntityInfo info, ItemStack stack, TransformType type, ModelProperties.OriginPoint origin) {
@@ -101,7 +132,7 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
         //transform to the parent's position, if applicable
         if(!origin.parent().isEmpty()) {
 
-            ENIMModelRenderer parent = getStateManager().getModel(getStateFromEntity(entity)).getBox(origin.parent());
+            ENIMModelRenderer parent = getStateManager().getModel(getCurrentEntityState()).getBox(origin.parent());
             parent.transformWithoutRendering(info);
         }
         //apply specified transformations

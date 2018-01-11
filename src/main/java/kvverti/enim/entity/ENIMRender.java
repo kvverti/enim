@@ -101,44 +101,21 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
         GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
 
         RenderState renderState = getStateFromEntity(entity);
-        currentState = stateManager.getState(renderState);
-        ENIMModel model = stateManager.getModel(renderState);
-        bindTexture(currentState.texture());
-        GlStateManager.rotate(currentState.y(), 0.0f, 1.0f, 0.0f);
+        ImmutableList<EntityState> entityStates = stateManager.getStateLayers(renderState);
+        currentState = entityStates.get(0);
         EntityInfo info = new EntityInfo();
         info.speedSq = Entities.speedSq(entity);
         info.partialTicks = partialTicks;
         info.entityYaw = yaw;
         info.headYaw = headYaw(entity, yaw);
         info.entityPitch = entity.rotationPitch;
-        info.scale = 0.0625f * currentState.scale();
         info.color = i -> i < 0 ? getBaseColor(entity, info) : getBaseColor(entity, info).scale(getColorOverlay(entity, info, i));
         info.alpha = getBaseAlpha(entity, info);
         preRender(entity, info);
         GEntity e = new GEntity(entity);
-        if(shouldRender(entity)) {
-
-            model.render(e, info);
-            ResourceLocation overlay = currentState.overlay();
-            if(overlay != null)
-                renderOverlay(e, info, model, overlay);
-            List<EntityState> layers = currentState.getLayers();
-            for(int i = 0; i < layers.size(); i++)
-                renderLayer(e, info, layers.get(i), stateManager.getLayerModel(renderState, i));
-        } else {
-            //because invisibility doesn't work with your texture layers, Mojang
-            //or model layers, for that matter, but WHOOP-DE-DOO
-            ResourceLocation overlay = currentState.overlay();
-            if(overlay != null)
-                renderOverlay(e, info, model, overlay);
-            List<EntityState> layers = currentState.getLayers();
-            for(int i = 0; i < layers.size(); i++) {
-
-                overlay = layers.get(i).overlay();
-                if(overlay != null)
-                    renderOverlay(e, info, stateManager.getLayerModel(renderState, i), overlay);
-            }
-        }
+        boolean render = shouldRender(entity);
+        for(EntityState layer : entityStates)
+            renderLayer(e, info, layer, render);
         postRender(entity, info);
         GlStateManager.popMatrix();
         super.doRender(entity, x, y, z, yaw, partialTicks);
@@ -146,16 +123,24 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
             Util.invokeUnchecked(proxy, renderLeash, entity, x, y, z, yaw, partialTicks);
     }
 
-    private void renderLayer(GEntity entity, EntityInfo info, EntityState layer, ENIMModel model) {
+    //note: only package-private so LivingRender can access
+    @SuppressWarnings("unchecked")
+    void renderLayer(GEntity entity, EntityInfo info, EntityState layer, boolean render) {
 
         GlStateManager.pushMatrix();
         bindTexture(layer.texture());
         GlStateManager.rotate(layer.y(), 0.0f, 1.0f, 0.0f);
         info.scale = 0.0625f * layer.scale();
-        model.render(entity, info);
+        ENIMModel model = stateManager.getModel(layer);
+        preRenderLayer((T) entity.getEntity(), info, layer);
+        if(render)
+            model.render(entity, info);
         ResourceLocation overlay = layer.overlay();
+        //because invisibility doesn't work with your texture layers, Mojang
+        //or model layers, for that matter, but WHOOP-DE-DOO
         if(overlay != null)
             renderOverlay(entity, info, model, overlay);
+        postRenderLayer((T) entity.getEntity(), info, layer);
         GlStateManager.popMatrix();
     }
 
@@ -200,6 +185,16 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
      * Method called immediately before the main model is rendered.
      */
     protected void preRender(T entity, EntityInfo info) { }
+    
+    /**
+     * Method called immediately before a layer is rendered.
+     */
+    protected void preRenderLayer(T entity, EntityInfo info, EntityState layer) { }
+    
+    /**
+     * Method called immediately after a layer is rendered.
+     */
+    protected void postRenderLayer(T entity, EntityInfo info, EntityState layer) { }
 
     /**
      * Method called immediately after the main model and any layers are rendered.
@@ -309,7 +304,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
     @Override
     protected final ResourceLocation getEntityTexture(T entity) {
 
-        return stateManager.getState(getStateFromEntity(entity)).texture();
+        return currentState.texture();
     }
 
     @Override
