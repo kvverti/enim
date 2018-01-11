@@ -120,7 +120,13 @@ public final class Util {
             new ResourceLocation(m.group("domain"), prefix + m.group("filepath") + postfix)
             : Util.MISSING_LOCATION;
     }
-
+    
+    public static Reader getReaderFor(IResource resource) {
+        
+        InputStream istream = resource.getInputStream();
+        return new BufferedReader(new InputStreamReader(istream));
+    }
+    
     public static Reader getReaderFor(IResourceManager manager, ResourceLocation location) throws IOException {
 
         IResource resource = manager.getResource(location);

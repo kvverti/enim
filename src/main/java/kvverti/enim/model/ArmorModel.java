@@ -28,7 +28,7 @@ public class ArmorModel {
     
     /** Stores the default models */
     @SerializedName(Keys.ARMOR_DEFAULTS)
-    private Map<EntityEquipmentSlot, EntityState> defaults;
+    private Map<EntityEquipmentSlot, EntityState> defaults = new HashMap<>();
     
     /** Stores any individual models */
     @SerializedName(Keys.ARMOR_MATERIALS)
@@ -39,8 +39,6 @@ public class ArmorModel {
     
     void init() {
         
-        if(defaults == null)
-            throw new JsonParseException("defaults required");
         EntityState.Defaults def = new EntityState.Defaults();
         for(EntityState s : defaults.values())
             s.replaceDefaults(def);
@@ -73,6 +71,19 @@ public class ArmorModel {
             name.getResourceDomain(),
             name.getResourcePath(),
             slot == EntityEquipmentSlot.LEGS ? 2 : 1);
+    }
+    
+    void combineWith(ArmorModel other) {
+        
+        defaults.putAll(other.defaults);
+        for(Map.Entry<ArmorMaterial, Map<EntityEquipmentSlot, ImmutableList<EntityState>>> entry
+            : other.materials.entrySet()) {
+            //combine other's materials with this's materials
+            if(materials.containsKey(entry.getKey()))
+                materials.get(entry.getKey()).putAll(entry.getValue());
+            else
+                materials.put(entry.getKey(), entry.getValue());
+        }
     }
     
     public static class MaterialDeserializer implements JsonDeserializer<ArmorMaterial> {

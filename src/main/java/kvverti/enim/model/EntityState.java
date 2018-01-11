@@ -9,6 +9,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 
 import com.google.common.collect.ImmutableList;
@@ -199,15 +200,30 @@ public class EntityState {
                 res.y = jsonObj.get(Keys.STATE_ROTATION).getAsFloat();
             if(jsonObj.has(Keys.STATE_SCALE))
                 res.scale = jsonObj.get(Keys.STATE_SCALE).getAsFloat();
+            yuck:
             if(jsonObj.has(Keys.STATE_ARMOR)) {
                 ResourceLocation armorFile =
                     Util.getResourceLocation(jsonObj.get(Keys.STATE_ARMOR).getAsString(), Keys.ARMOR_DIR, Keys.JSON);
-                try(Reader rd = Util.getReaderFor(armorFile)) {
-                    res.armor = EntityModel.GSON.fromJson(rd, ArmorModel.class);
-                    res.armor.init();
-                } catch(IOException e) {
-                    Logger.error(e, "Exception parsing armor models");
+                List<IResource> resources;
+                try { resources = Entities.resourceManager().getAllResources(armorFile); }
+                catch(IOException e) {
+                    Logger.error(e, "Could not open armor model " + armorFile);
+                    break yuck;
                 }
+                ArmorModel armor = null;
+                for(IResource rsc : resources) {
+                    try(Reader rd = Util.getReaderFor(rsc)) {
+                        ArmorModel tmp = EntityModel.GSON.fromJson(rd, ArmorModel.class);
+                        if(armor == null)
+                            armor = tmp;
+                        else
+                            armor.combineWith(tmp);
+                    } catch(IOException|JsonParseException e) {
+                        Logger.error(e, "Exception parsing armor models");
+                    }
+                }
+                armor.init();
+                res.armor = armor;
             }
             return res;
         }
