@@ -1,5 +1,7 @@
 package kvverti.enim.entity;
 
+import java.util.function.IntFunction;
+
 import net.minecraft.block.properties.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -83,6 +85,7 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
         ArmorModel armor = getCurrentEntityState().armor();
         if(armor != null) {
             GEntity e = new GEntity(entity);
+            IntFunction<Vec3f> oldColor = info.color;
             for(EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
                 if(slot.getSlotType() == EntityEquipmentSlot.Type.ARMOR) {
                     
@@ -90,6 +93,7 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
                     if(material != null) {
                         
                         ImmutableList<EntityState> layers = armor.getArmorLayers(material, slot);
+                        info.color = i -> i == 2 ? getArmorColor(entity, slot) : oldColor.apply(i);
                         for(EntityState armorState : layers)
                             renderLayer(e, info, armorState, true);
                     }
@@ -122,6 +126,16 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
                 return armor.getArmorMaterial();
         }
         return null;
+    }
+    
+    private Vec3f getArmorColor(T entity, EntityEquipmentSlot slot) {
+        
+        ItemStack item = entity.getItemStackFromSlot(slot);
+        int color = ((ItemArmor) item.getItem()).getColor(item);
+        return Vec3f.of(
+            ((color >> 16) & 0xff) / 255.0f,
+            ((color >> 8) & 0xff) / 255.0f,
+            (color & 0xff) / 255.0f);
     }
 
     private void renderItem(T entity, EntityInfo info, ItemStack stack, TransformType type, ModelProperties.OriginPoint origin) {
