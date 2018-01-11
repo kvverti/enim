@@ -1,0 +1,10 @@
+{
+    "defaults": {
+        "texture": "entity/zombie/husk",
+        "size": [64,64]
+    },
+    "states": {
+        "baby=false": { "model": "biped", "armor": "biped" },
+        "baby=true": { "model": "baby_biped", "scale": 0.5, "armor": "baby_biped" }
+    }
+}

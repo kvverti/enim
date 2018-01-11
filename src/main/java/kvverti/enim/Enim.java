@@ -98,7 +98,10 @@ public final class Enim {
         registerEntityRender(EntityVillager.class, "minecraft", "villager", VillagerRender::new);
         registerEntityRender(EntitySquid.class, "minecraft", "squid", SquidRender::new);
         registerEntityRender(EntityEnderCrystal.class, "minecraft", "endercrystal", EnderCrystalRender::new);
-        registerEntityRender(EntityPigZombie.class, "minecraft", "zombie_pigman", ZombiePigmanRender::new);
+        registerEntityRender(EntityPigZombie.class, "minecraft", "zombie_pigman", ZombieRender::new);
+        registerEntityRender(EntityZombie.class, "minecraft", "zombie", ZombieRender::new);
+        registerEntityRender(EntityHusk.class, "minecraft", "husk", ZombieRender::new);
+        registerEntityRender(EntityZombieVillager.class, "minecraft", "zombie_villager", ZombieVillagerRender::new);
     }
 
     @EventHandler

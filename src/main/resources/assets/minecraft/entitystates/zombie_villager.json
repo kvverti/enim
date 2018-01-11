@@ -1,0 +1,19 @@
+{
+    "defaults": {
+        "size": [64,64]
+    },
+    "states": {
+        "baby=false,profession=farmer": { "model": "zombie_villager", "texture": "entity/zombie_villager/zombie_farmer" },
+        "baby=false,profession=librarian": { "model": "zombie_villager", "texture": "entity/zombie_villager/zombie_librarian" },
+        "baby=false,profession=priest": { "model": "zombie_villager", "texture": "entity/zombie_villager/zombie_priest" },
+        "baby=false,profession=smith": { "model": "zombie_villager", "texture": "entity/zombie_villager/zombie_smith" },
+        "baby=false,profession=butcher": { "model": "zombie_villager", "texture": "entity/zombie_villager/zombie_butcher" },
+        "baby=false,profession=nitwit": { "model": "zombie_villager", "texture": "entity/zombie_villager/zombie_villager" },
+        "baby=true,profession=farmer": { "model": "zombie_villager", "texture": "entity/zombie_villager/zombie_farmer", "scale": 0.5 },
+        "baby=true,profession=librarian": { "model": "zombie_villager", "texture": "entity/zombie_villager/zombie_librarian", "scale": 0.5 },
+        "baby=true,profession=priest": { "model": "zombie_villager", "texture": "entity/zombie_villager/zombie_priest", "scale": 0.5 },
+        "baby=true,profession=smith": { "model": "zombie_villager", "texture": "entity/zombie_villager/zombie_smith", "scale": 0.5 },
+        "baby=true,profession=butcher": { "model": "zombie_villager", "texture": "entity/zombie_villager/zombie_butcher", "scale": 0.5 },
+        "baby=true,profession=nitwit": { "model": "zombie_villager", "texture": "entity/zombie_villager/zombie_villager", "scale": 0.5 }
+    }
+}
