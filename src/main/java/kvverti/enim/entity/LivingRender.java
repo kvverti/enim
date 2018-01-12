@@ -150,7 +150,7 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
             parent.transformWithoutRendering(info);
         }
         //apply specified transformations
-        float scale = info.scale;
+        float scale = 0.0625f * info.scale;
         Vec3f coords = origin.coords();
         GlStateManager.translate((coords.x - 8.0f) * scale, -coords.y * scale, (8.0f - coords.z) * scale);
         Vec3f rot = origin.rotation();

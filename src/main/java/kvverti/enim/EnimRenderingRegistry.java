@@ -33,12 +33,13 @@ import kvverti.enim.entity.color.CustomDyeColor;
 import kvverti.enim.model.Animation;
 import kvverti.enim.model.EntityStateMap;
 import kvverti.enim.model.EntityModel;
+import kvverti.enim.model.ModelCache;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Registry for ENIM related rendering features. This includes all entity and tile entity renders as well as armor items
- * and anything else that ENIM must be made aware of.
+ * Registry for ENIM related rendering features. This includes all entity and tile entity renders as well as
+ * anything else that ENIM must be made aware of.
  */
 public final class EnimRenderingRegistry {
 
@@ -145,6 +146,7 @@ public final class EnimRenderingRegistry {
         //reload custom dye colors
         for(CustomDyeColor colors : Enim.DYE_COLOR_REGISTRY.getValues())
             colors.reloadColors(manager);
+        ModelCache.clearCache();
         Logger.info("Reload complete");
     }
 }

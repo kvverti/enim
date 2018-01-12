@@ -34,8 +34,8 @@ public class ArmorModel {
     @SerializedName(Keys.ARMOR_MATERIALS)
     private Map<ArmorMaterial, Map<EntityEquipmentSlot, ImmutableList<EntityState>>> materials = new HashMap<>();
     
-    /** Json deserialization */
-    private ArmorModel() { }
+    /** Creates an armor model with no mappings */
+    ArmorModel() { }
     
     void init() {
         

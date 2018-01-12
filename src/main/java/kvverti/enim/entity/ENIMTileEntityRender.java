@@ -68,8 +68,9 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 
         GlStateManager.pushMatrix();
         bindTexture(layer.texture());
+        info.scale = layer.scale();
         GlStateManager.rotate(layer.y(), 0.0f, 1.0f, 0.0f);
-        info.scale = 0.0625f * layer.scale();
+        GlStateManager.scale(info.scale, info.scale, info.scale);
         ENIMModel model = stateManager.getModel(layer);
         preRenderLayer((T) tile.getTileEntity(), info, layer);
         if(render)

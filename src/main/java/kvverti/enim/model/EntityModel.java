@@ -1,5 +1,6 @@
 package kvverti.enim.model;
 
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.HashSet;
@@ -7,8 +8,12 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
+import net.minecraft.client.resources.IResource;
+import net.minecraft.client.resources.SimpleResource;
+import net.minecraft.client.resources.data.MetadataSerializer;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.util.ResourceLocation;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -18,6 +23,8 @@ import com.google.gson.reflect.TypeToken;
 
 import kvverti.enim.Keys;
 import kvverti.enim.Vec3f;
+import kvverti.enim.abiescript.AbieScript;
+import kvverti.enim.abiescript.AnimationParser;
 import kvverti.enim.entity.animation.AnimType;
 import kvverti.enim.model.multipart.Condition;
 import kvverti.enim.model.multipart.Rule;
@@ -64,6 +71,27 @@ public class EntityModel {
     public static final EntityState MISSING_STATE = GSON.fromJson(
         "{\"model\":\"builtin/missingno\",\"texture\":\"builtin/missingno\",\"size\":[64,32],\"y\":0,\"scale\":1}",
         EntityState.class);
+        
+    /**
+     * The invalid ("missingno") armor model.
+     */
+    public static final ArmorModel MISSING_ARMOR = new ArmorModel();
+    
+    /**
+     * The invalid ("missingno") AbieScript animation.
+     */
+    public static final AbieScript MISSING_ABIESCRIPT;
+    static {
+
+        @SuppressWarnings("deprecation")
+        AnimationParser parser = kvverti.enim.EnimRenderingRegistry.getGlobalParser();
+        final String script = "pause 1\n"; //empty AbieScript animation
+        @SuppressWarnings("deprecation")
+        InputStream input = new java.io.StringBufferInputStream(script);
+        ResourceLocation loc = new ResourceLocation("enim:noop");
+        IResource rsc = new SimpleResource("default", loc, input, null, new MetadataSerializer());
+        MISSING_ABIESCRIPT = parser.parse(rsc);
+    }
 
     private final ModelProperties properties;
     private final ImmutableSet<ModelElement> elements;

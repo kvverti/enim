@@ -129,8 +129,9 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 
         GlStateManager.pushMatrix();
         bindTexture(layer.texture());
+        info.scale = layer.scale();
         GlStateManager.rotate(layer.y(), 0.0f, 1.0f, 0.0f);
-        info.scale = 0.0625f * layer.scale();
+        GlStateManager.scale(info.scale, info.scale, info.scale);
         ENIMModel model = stateManager.getModel(layer);
         preRenderLayer((T) entity.getEntity(), info, layer);
         if(render)

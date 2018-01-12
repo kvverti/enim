@@ -1,14 +1,9 @@
 package kvverti.enim.model;
 
-import java.io.InputStream;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.SimpleResource;
-import net.minecraft.client.resources.data.MetadataSerializer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
@@ -78,41 +73,26 @@ public class Animation {
         private static final java.lang.reflect.Type definesType = new TypeToken<Map<String, String>>(){}.getType();
         @SuppressWarnings("deprecation")
         private static final AnimationParser parser = kvverti.enim.EnimRenderingRegistry.getGlobalParser();
-        private static final Animation NOOP;
-        static {
-
-            final String script = "pause 1\n"; //empty AbieScript animation
-            @SuppressWarnings("deprecation")
-            InputStream input = new java.io.StringBufferInputStream(script);
-            ResourceLocation loc = new ResourceLocation("enim:noop");
-            IResource rsc = new SimpleResource("default", loc, input, null, new MetadataSerializer());
-            AbieScript abiescript = parser.parse(rsc);
-            NOOP = new Animation(abiescript, Collections.emptyMap(), 0.0f, 0.0f);
-        }
+        private static final Animation NOOP =
+            new Animation(EntityModel.MISSING_ABIESCRIPT, Collections.emptyMap(), 0.0f, 0.0f);
 
         public Animation deserialize(JsonElement json, java.lang.reflect.Type type, JsonDeserializationContext context) {
 
-            try {
-                JsonObject obj = json.getAsJsonObject();
-                ResourceLocation scriptLoc = Util.getResourceLocation(
-                    obj.get(Keys.ANIM_SCRIPT).getAsString(), Keys.ANIMS_DIR, Keys.ABIESCRIPT);
-                IResource scriptFile = Entities.resourceManager().getResource(scriptLoc);
-                AbieScript script = parser.parse(scriptFile);
-                Map<String, String> defines = context.deserialize(obj.getAsJsonObject(Keys.ANIM_DEFINES), definesType);
-                float scaling = obj.has(Keys.ANIM_VALUE_SCALE_WEIGHT) ?
-                    obj.getAsJsonPrimitive(Keys.ANIM_VALUE_SCALE_WEIGHT).getAsFloat()
-                    : 0.0f;
-                float tuning = obj.has(Keys.ANIM_SPEED_SCALE_WEIGHT) ?
-                    obj.getAsJsonPrimitive(Keys.ANIM_SPEED_SCALE_WEIGHT).getAsFloat()
-                    : 0.0f;
-                validate(script, defines);
-                return new Animation(script, defines, scaling, tuning);
-
-            } catch(IOException|AbieParseException e) {
-
-                Logger.error(e);
+            JsonObject obj = json.getAsJsonObject();
+            ResourceLocation scriptLoc = Util.getResourceLocation(
+                obj.get(Keys.ANIM_SCRIPT).getAsString(), Keys.ANIMS_DIR, Keys.ABIESCRIPT);
+            AbieScript script = ModelCache.getAbieScript(scriptLoc);
+            if(script == EntityModel.MISSING_ABIESCRIPT)
                 return NOOP;
-            }
+            Map<String, String> defines = context.deserialize(obj.getAsJsonObject(Keys.ANIM_DEFINES), definesType);
+            float scaling = obj.has(Keys.ANIM_VALUE_SCALE_WEIGHT) ?
+                obj.getAsJsonPrimitive(Keys.ANIM_VALUE_SCALE_WEIGHT).getAsFloat()
+                : 0.0f;
+            float tuning = obj.has(Keys.ANIM_SPEED_SCALE_WEIGHT) ?
+                obj.getAsJsonPrimitive(Keys.ANIM_SPEED_SCALE_WEIGHT).getAsFloat()
+                : 0.0f;
+            validate(script, defines);
+            return new Animation(script, defines, scaling, tuning);
         }
 
         private void validate(AbieScript script, Map<String, String> defines) {

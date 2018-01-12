@@ -164,12 +164,9 @@ public class EntityState {
                 model = EntityModel.MISSING_MODEL;
             else {
                 ResourceLocation modelLocation = Util.getResourceLocation(modelStr, Keys.MODELS_DIR, Keys.JSON);
-                try(Reader reader = Util.getReaderFor(modelLocation)) {
-                    model = EntityModel.GSON.fromJson(reader, EntityModel.class);
-                } catch(IOException|JsonParseException e) {
-                    Logger.error(e, "Exception parsing model from entity state");
+                model = ModelCache.getEntityModel(modelLocation);
+                if(model == EntityModel.MISSING_MODEL)
                     return EntityModel.MISSING_STATE;
-                }
             }
             EntityState res = new EntityState(model);
             if(jsonObj.has(Keys.STATE_TEXTURE)) {
@@ -204,26 +201,7 @@ public class EntityState {
             if(jsonObj.has(Keys.STATE_ARMOR)) {
                 ResourceLocation armorFile =
                     Util.getResourceLocation(jsonObj.get(Keys.STATE_ARMOR).getAsString(), Keys.ARMOR_DIR, Keys.JSON);
-                List<IResource> resources;
-                try { resources = Entities.resourceManager().getAllResources(armorFile); }
-                catch(IOException e) {
-                    Logger.error(e, "Could not open armor model " + armorFile);
-                    break yuck;
-                }
-                ArmorModel armor = null;
-                for(IResource rsc : resources) {
-                    try(Reader rd = Util.getReaderFor(rsc)) {
-                        ArmorModel tmp = EntityModel.GSON.fromJson(rd, ArmorModel.class);
-                        if(armor == null)
-                            armor = tmp;
-                        else
-                            armor.combineWith(tmp);
-                    } catch(IOException|JsonParseException e) {
-                        Logger.error(e, "Exception parsing armor models");
-                    }
-                }
-                armor.init();
-                res.armor = armor;
+                res.armor = ModelCache.getArmorModel(armorFile);
             }
             return res;
         }

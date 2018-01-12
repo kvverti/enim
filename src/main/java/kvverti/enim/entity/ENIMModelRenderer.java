@@ -85,15 +85,14 @@ public class ENIMModelRenderer extends ModelRenderer {
     public void transformWithoutRendering(EntityInfo info) {
 
         moveIntoPosition(info);
-        fixTransformsForChildren(info.scale);
+        fixTransformsForChildren();
     }
 
     public void render(EntityInfo info) {
 
         if(!isHidden && showModel) {
 
-            float scale = info.scale;
-            if(!compiled) compileDisplayList(scale);
+            if(!compiled) compileDisplayList();
             GlStateManager.pushMatrix();
             //render
             moveIntoPosition(info);
@@ -103,7 +102,7 @@ public class ENIMModelRenderer extends ModelRenderer {
             GlStateManager.callList(displayList());
             if(translucent || info.alpha < 1.0f) endLucent();
             //render children
-            fixTransformsForChildren(scale);
+            fixTransformsForChildren();
             if(childModels != null) childModels.forEach(box -> ((ENIMModelRenderer) box).render(info));
             GlStateManager.popMatrix();
         }
@@ -111,7 +110,7 @@ public class ENIMModelRenderer extends ModelRenderer {
 
     private void moveIntoPosition(EntityInfo info) {
 
-        float scale = info.scale;
+        final float scale = 0.0625f;
         //transform element into position
         GlStateManager.translate(offsetX, offsetY, offsetZ);
         GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
@@ -134,8 +133,9 @@ public class ENIMModelRenderer extends ModelRenderer {
         GlStateManager.scale(defaultScale.x, defaultScale.y, defaultScale.z);
     }
 
-    private void fixTransformsForChildren(float scale) {
+    private void fixTransformsForChildren() {
 
+        final float scale = 0.0625f;
         //do some transformations so children render properly
         GlStateManager.translate(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
         GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
@@ -156,7 +156,7 @@ public class ENIMModelRenderer extends ModelRenderer {
 
         if(!isHidden && showModel) {
 
-            if(!compiled) compileDisplayList(scale);
+            if(!compiled) compileDisplayList();
             GlStateManager.pushMatrix();
             GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
             GlStateManager.rotate(+defaultRotations.z, 0.0f, 0.0f, 1.0f);
@@ -183,9 +183,9 @@ public class ENIMModelRenderer extends ModelRenderer {
         GlStateManager.disableNormalize();
     }
 
-    private void compileDisplayList(float scale) {
+    private void compileDisplayList() {
 
-        Util.invokeUnchecked(this, compileDisplayList, scale);
+        Util.invokeUnchecked(this, compileDisplayList, 0.0625f);
         compiled = true;
     }
 
