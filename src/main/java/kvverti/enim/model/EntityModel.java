@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.NoSuchElementException;
 
 import net.minecraft.client.resources.IResource;
@@ -178,7 +179,7 @@ public class EntityModel {
                 : new HashSet<>();
             Map<AnimType, Animation> animations = obj.has(Keys.ANIMS_TAG) ?
                 context.deserialize(obj.get(Keys.ANIMS_TAG), animsType)
-                : new HashMap<>();
+                : new LinkedHashMap<>();
 
             //other json objects that do not have an in-code representation
             if(obj.has(Keys.IMPORTS_TAG)) {

@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.lang.reflect.Type;
 
 import net.minecraft.util.ResourceLocation;
@@ -24,7 +25,7 @@ class ModelImports {
     public final Map<AnimType, Animation> animations;
 
     /** For Json deserialization */
-    public ModelImports() { elements = new HashSet<>(); animations = new HashMap<>(); }
+    public ModelImports() { elements = new HashSet<>(); animations = new LinkedHashMap<>(); }
 
     @Override
     public String toString() {
