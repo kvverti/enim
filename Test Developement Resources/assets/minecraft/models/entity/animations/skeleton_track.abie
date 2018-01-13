@@ -1,0 +1,9 @@
+define left
+define right
+
+init
+{
+rotate left -90 -0 -0
+rotate right -90 -0 -0
+}
+pause 1

@@ -1,0 +1,5 @@
+{
+    "defaults": {
+        "chest": { "model": "silverfish", "texture": "entity/silverfish", "scale": 2 }
+    }
+}

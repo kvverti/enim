@@ -1,0 +1,107 @@
+{
+    "properties": {
+        "shadowsize": 8,
+        "nameplate": 36,
+        "righthand": {
+            "element": "right_arm",
+            "position": [3,12,10],
+            "rotation": [90,180,0]
+        },
+        "lefthand": {
+            "element": "left_arm",
+            "position": [13,12,10],
+            "rotation": [90,180,0]
+        },
+        "helmet": {
+            "element": "head",
+            "position": [8,28,8],
+            "rotation": [0,0,180],
+            "scale": 0.625
+        }
+    },
+    "elements": [
+        {
+            "name": "body",
+            "from": [4,12,6],
+            "to": [12,24,10],
+            "uv": [16,16],
+            "origin": [8,18,8]
+        },
+        {
+            "name": "head",
+            "parent": "body",
+            "from": [4,24,4],
+            "to": [12,32,12],
+            "uv": [0,0],
+            "origin": [8,24,8],
+            "head": true
+        },
+        {
+            "name": "right_arm",
+            "parent": "body",
+            "from": [2,12,7],
+            "to": [4,24,9],
+            "uv": [40,16],
+            "origin": [3,23,8]
+        },
+        {
+            "name": "left_arm",
+            "parent": "body",
+            "from": [12,12,7],
+            "to": [14,24,9],
+            "uv": [40,16],
+            "origin": [13,23,8],
+            "mirrored": true
+        },
+        {
+            "name": "right_leg",
+            "parent": "body",
+            "from": [5,0,7],
+            "to": [7,12,9],
+            "uv": [0,16],
+            "origin": [6,12,8]
+        },
+        {
+            "name": "left_leg",
+            "parent": "body",
+            "from": [9,0,7],
+            "to": [11,12,9],
+            "uv": [0,16],
+            "origin": [10,12,8],
+            "mirrored": true
+        }
+    ],
+    "animations": {
+        "idle": {
+            "script": "biped_arms",
+            "with": {
+                "left": "left_arm",
+                "right": "right_arm"
+            }
+        },
+        "moving": {
+            "scaling": 5,
+            "script": "quadruped_swing",
+            "with": {
+                "front_left": "left_arm",
+                "front_right": "right_arm",
+                "rear_left": "left_leg",
+                "rear_right": "right_leg"
+            }
+        },
+        "tracking": {
+            "script": "skeleton_track",
+            "with": {
+                "left": "left_arm",
+                "right": "right_arm"
+            }
+        },
+        "bowhold": {
+            "script": "biped_bowhold",
+            "with": {
+                "left": "left_arm",
+                "right": "right_arm"
+            }
+        }
+    }
+}
