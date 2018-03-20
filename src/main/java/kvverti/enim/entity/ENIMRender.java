@@ -259,7 +259,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
     private static final Method mapShadowOnBlock = Util.findMethod(Render.class,
         void.class,
         "renderShadowSingle",
-        "func_180549_a",
+        "func_188299_a",
         IBlockState.class,
         double.class,
         double.class,
