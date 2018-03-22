@@ -11,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
 
 import com.google.gson.JsonParseException;
 
+import kvverti.enim.Keys;
 import kvverti.enim.Util;
 import kvverti.enim.Logger;
 import kvverti.enim.abiescript.AbieScript;
@@ -54,23 +55,40 @@ public final class ModelCache {
     
     private static ArmorModel parseArmorModel(ResourceLocation location) {
         
+        ArmorModel.JsonRepr repr;
+        try { repr = parseArmorModelJson(location); }
+        catch(IOException e) { return EntityModel.MISSING_ARMOR; }
+        return new ArmorModel(repr);
+    }
+    
+    private static ArmorModel.JsonRepr parseArmorModelJson(ResourceLocation location) throws IOException {
+        
+        //attempt to open file
+        //if file cannot be opened, fail the entire parse
         List<IResource> resources;
         try { resources = Entities.resourceManager().getAllResources(location); }
         catch(IOException e) {
             Logger.error(e, "Could not open armor model " + location);
-            return EntityModel.MISSING_ARMOR;
+            throw e;
         }
-        ArmorModel armor = new ArmorModel();
+        ArmorModel.JsonRepr repr = new ArmorModel.JsonRepr();
+        //flatten files from all resource packs
         for(IResource rsc : resources) {
             try(Reader rd = Util.getReaderFor(rsc)) {
-                ArmorModel tmp = EntityModel.GSON.fromJson(rd, ArmorModel.class);
-                armor.combineWith(tmp);
+                ArmorModel.JsonRepr tmp = EntityModel.GSON.fromJson(rd, ArmorModel.JsonRepr.class);
+                repr.combineWith(tmp);
             } catch(IOException|JsonParseException e) {
                 Logger.error(e, "Exception parsing armor models");
             }
         }
-        armor.init();
-        return armor;
+        //combine with parent
+        String parentName = repr.getParentName();
+        if(parentName == null)
+            return repr;
+        ResourceLocation parent = Util.getResourceLocation(parentName, Keys.ARMOR_DIR, Keys.JSON);
+        ArmorModel.JsonRepr parentRepr = parseArmorModelJson(parent);
+        parentRepr.combineWith(repr);
+        return parentRepr;
     }
     
     public static AbieScript getAbieScript(ResourceLocation location) {

@@ -27,17 +27,23 @@ import kvverti.enim.Keys;
 public class ArmorModel {
     
     /** Stores the default models */
-    @SerializedName(Keys.ARMOR_DEFAULTS)
     private Map<EntityEquipmentSlot, EntityState> defaults = new HashMap<>();
     
     /** Stores any individual models */
-    @SerializedName(Keys.ARMOR_MATERIALS)
     private Map<ArmorMaterial, Map<EntityEquipmentSlot, ImmutableList<EntityState>>> materials = new HashMap<>();
     
     /** Creates an armor model with no mappings */
     ArmorModel() { }
     
-    void init() {
+    /** Creates an armor model from the given representation */
+    ArmorModel(JsonRepr repr) {
+        
+        defaults = repr.defaults;
+        materials = repr.materials;
+        init();
+    }
+    
+    private final void init() {
         
         EntityState.Defaults def = new EntityState.Defaults();
         for(EntityState s : defaults.values())
@@ -71,19 +77,6 @@ public class ArmorModel {
             name.getResourceDomain(),
             name.getResourcePath(),
             slot == EntityEquipmentSlot.LEGS ? 2 : 1);
-    }
-    
-    void combineWith(ArmorModel other) {
-        
-        defaults.putAll(other.defaults);
-        for(Map.Entry<ArmorMaterial, Map<EntityEquipmentSlot, ImmutableList<EntityState>>> entry
-            : other.materials.entrySet()) {
-            //combine other's materials with this's materials
-            if(materials.containsKey(entry.getKey()))
-                materials.get(entry.getKey()).putAll(entry.getValue());
-            else
-                materials.put(entry.getKey(), entry.getValue());
-        }
     }
     
     public static class MaterialDeserializer implements JsonDeserializer<ArmorMaterial> {
@@ -123,6 +116,42 @@ public class ArmorModel {
             if(!slots.containsKey(s))
                 throw new JsonParseException("No such EntityEquipmentSlot " + s);
             return slots.get(s);
+        }
+    }
+    
+    /** Used to deserialize armor models from JSON. */
+    static class JsonRepr {
+        
+        /** This armor model's parent, as a string */
+        @SerializedName(Keys.ARMOR_PARENT)
+        private String parent = null;
+        
+        /** Stores the default models */
+        @SerializedName(Keys.ARMOR_DEFAULTS)
+        private Map<EntityEquipmentSlot, EntityState> defaults = new HashMap<>();
+        
+        /** Stores any individual models */
+        @SerializedName(Keys.ARMOR_MATERIALS)
+        private Map<ArmorMaterial, Map<EntityEquipmentSlot, ImmutableList<EntityState>>> materials = new HashMap<>();
+        
+        String getParentName() {
+            
+            return parent;
+        }
+    
+        /** Adds to or replaces this instance's data with other's data. */
+        void combineWith(JsonRepr other) {
+            
+            parent = other.parent;
+            defaults.putAll(other.defaults);
+            for(Map.Entry<ArmorMaterial, Map<EntityEquipmentSlot, ImmutableList<EntityState>>> entry
+                : other.materials.entrySet()) {
+                //combine other's materials with this's materials
+                if(materials.containsKey(entry.getKey()))
+                    materials.get(entry.getKey()).putAll(entry.getValue());
+                else
+                    materials.put(entry.getKey(), entry.getValue());
+            }
         }
     }
 }

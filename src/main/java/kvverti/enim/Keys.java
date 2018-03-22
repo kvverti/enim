@@ -70,6 +70,7 @@ public final class Keys {
     
     public static final String ARMOR_DEFAULTS = "defaults";
     public static final String ARMOR_MATERIALS = "materials";
+    public static final String ARMOR_PARENT = "parent";
 
     public static final String STATES_DIR = "entitystates/";
     public static final String MODELS_DIR = "models/entity/";
