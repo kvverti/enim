@@ -1,0 +1,55 @@
+{
+    "imports": {
+        "skeleton": ["animations:*"]
+    },
+    "elements": [
+        {
+            "name": "body",
+            "from": [4,12,6],
+            "to": [12,24,10],
+            "uv": [16,16],
+            "origin": [8,18,8],
+            "scale": 1.0625
+        },
+        {
+            "name": "head",
+            "from": [4,24,4],
+            "to": [12,32,12],
+            "uv": [0,0],
+            "origin": [8,28,8],
+            "pivot": [8,24,8],
+            "scale": 1.0625,
+            "head": true
+        },
+        {
+            "name": "right_arm",
+            "from": [0,12,6],
+            "to": [4,24,10],
+            "uv": [40,16],
+            "origin": [3,23,8]
+        },
+        {
+            "name": "left_arm",
+            "from": [12,12,6],
+            "to": [16,24,10],
+            "uv": [40,16],
+            "origin": [13,23,8],
+            "mirrored": true
+        },
+        {
+            "name": "right_leg",
+            "from": [4,0,6],
+            "to": [8,12,10],
+            "uv": [0,16],
+            "origin": [6,12,8]
+        },
+        {
+            "name": "left_leg",
+            "from": [8,0,6],
+            "to": [12,12,10],
+            "uv": [0,16],
+            "origin": [10,12,8],
+            "mirrored": true
+        }
+    ]
+}

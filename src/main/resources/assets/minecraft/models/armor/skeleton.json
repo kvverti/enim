@@ -1,0 +1,14 @@
+{
+    "parent": "biped",
+    "defaults": {
+        "chest": { "model": "skeleton_chestplate" }
+    },
+    "materials": {
+        "leather": {
+            "chest": [
+                { "model": "tinted_skeleton_chestplate", "texture": "models/armor/leather_layer_1" },
+                { "model": "skeleton_chestplate", "texture": "models/armor/leather_layer_1_overlay" }
+            ]
+        }
+    }
+}

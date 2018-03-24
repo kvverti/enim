@@ -1,0 +1,8 @@
+define left
+define right
+
+over 75
+{
+rotate cosine left -0 -0 +5
+rotate cosine right -0 -0 -5
+}
