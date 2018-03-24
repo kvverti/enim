@@ -1,0 +1,5 @@
+{
+    "states": {
+        "normal": { "model": "skeleton", "texture": "entity/skeleton/wither_skeleton", "armor": "skeleton", "scale": 1.2 }
+    }
+}

@@ -8,8 +8,8 @@
             "scaling": 8,
             "script": "biped_swing",
             "with": {
-                "left": "left_arm",
-                "right": "right_arm"
+                "left": "right_arm",
+                "right": "left_arm"
             }
         }
     }

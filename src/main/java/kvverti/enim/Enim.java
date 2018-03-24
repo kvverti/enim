@@ -116,6 +116,7 @@ public final class Enim {
         registerEntityRender(EntityZombieVillager.class, "minecraft", "zombie_villager", ZombieVillagerRender::new);
         registerEntityRender(EntitySkeleton.class, "minecraft", "skeleton", BasicLivingRender::new);
         registerEntityRender(EntityStray.class, "minecraft", "stray", BasicLivingRender::new);
+        registerEntityRender(EntityWitherSkeleton.class, "minecraft", "wither_skeleton", BasicLivingRender::new);
     }
 
     @EventHandler
