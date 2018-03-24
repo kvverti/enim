@@ -186,8 +186,9 @@ public class EntityModel {
 
                 ModelImports imports = context.deserialize(obj.get(Keys.IMPORTS_TAG), ModelImports.class);
                 elements.addAll(imports.elements);
-                for(Map.Entry<AnimType, Animation> entry : imports.animations.entrySet())
-                    animations.putIfAbsent(entry.getKey(), entry.getValue());
+                //preserve declaration order
+                imports.animations.putAll(animations);
+                animations = imports.animations;
             }
             if(obj.has(Keys.ELEMENTS_OVERRIDES)) {
 
