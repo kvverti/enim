@@ -4,10 +4,10 @@ define right_arm
 init
 {
 rotate right_arm -80 +5 -0
-rotate left_arm -80 +5 -0
+rotate left_arm -80 -5 -0
 }
 over 8
 {
 rotate sine +0.5 right_arm +60 -0 -10
-rotate sine +0.5 left_arm +60 -0 -10
+rotate sine +0.5 left_arm +60 -0 +10
 }

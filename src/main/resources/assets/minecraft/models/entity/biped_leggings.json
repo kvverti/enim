@@ -21,23 +21,14 @@
             "scale": 1.125
         },
         {
-            "name": "left_leg_scaling",
-            "from": [0,0,0],
-            "to": [0,0,0],
-            "uv": [0,0],
-            "origin": [10,6,8],
-            "rotation": [180,0,0],
-            "scale": -1
-        },
-        {
             "name": "left_leg",
-            "parent": "left_leg_scaling",
             "from": [8,0,6],
             "to": [12,12,10],
             "uv": [0,16],
             "origin": [10,6,8],
             "pivot": [10,12,8],
-            "scale": 1.125
+            "scale": 1.125,
+            "mirrored": true
         }
     ]
 }

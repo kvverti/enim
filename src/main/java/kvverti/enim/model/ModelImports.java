@@ -59,13 +59,19 @@ class ModelImports {
 
                         boolean isAnimation = str.startsWith(Keys.ANIMS_TAG + ":");
                         if(isAnimation) str = str.substring((Keys.ANIMS_TAG + ":").length());
-                        if(str.equals(Keys.WILDCARD))
-                            if(isAnimation) res.animations.putAll(context.deserialize(animations, animationsType));
-                            else res.elements.addAll(context.deserialize(elements, elementsType));
-                        else    if(isAnimation) res.animations.put(
-                                context.deserialize(new JsonPrimitive(str), AnimType.class),
-                                context.deserialize(animations.get(str), Animation.class));
-                            else res.elements.add(context.deserialize(getElement(str, elements), ModelElement.class));
+                        if(str.equals(Keys.WILDCARD)) {
+                            if(isAnimation)
+                                res.animations.putAll(context.deserialize(animations, animationsType));
+                            else
+                                res.elements.addAll(context.deserialize(elements, elementsType));
+                        } else {
+                            if(isAnimation)
+                                res.animations.put(
+                                    context.deserialize(new JsonPrimitive(str), AnimType.class),
+                                    context.deserialize(getAnimation(str, animations), Animation.class));
+                            else
+                                res.elements.add(context.deserialize(getElement(str, elements), ModelElement.class));
+                        }
                     }
                 } catch(IOException e) { throw new JsonIOException("IO-error parsing imports", e); }
             }
@@ -74,10 +80,20 @@ class ModelImports {
 
         private JsonElement getElement(String name, JsonArray elements) {
 
-            for(JsonElement elem : elements)
-                if(elem.getAsJsonObject().get(Keys.ELEM_NAME).getAsString().equals(name))
+            for(JsonElement elem : elements) {
+                JsonElement n = elem.getAsJsonObject().get(Keys.ELEM_NAME);
+                if(n != null && n.getAsString().equals(name))
                     return elem;
+            }
             throw new JsonParseException("Parsing imports - element not found: " + name);
+        }
+        
+        private JsonElement getAnimation(String name, JsonObject animations) {
+            
+            JsonElement res = animations.get(name);
+            if(res == null || res.isJsonNull())
+                throw new JsonParseException("Parsing imports - animation not found: " + name);
+            return res;
         }
 
         private void validate(boolean condition, Object message) throws JsonParseException {

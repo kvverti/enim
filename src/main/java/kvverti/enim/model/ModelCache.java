@@ -43,7 +43,7 @@ public final class ModelCache {
         try(Reader rd = Util.getReaderFor(location)) {
             return EntityModel.GSON.fromJson(rd, EntityModel.class);
         } catch(IOException|JsonParseException e) {
-            Logger.error(e, "Exception parsing entity model");
+            Logger.error(e, "Exception parsing entity model " + location);
             return EntityModel.MISSING_MODEL;
         }
     }
@@ -78,7 +78,7 @@ public final class ModelCache {
                 ArmorModel.JsonRepr tmp = EntityModel.GSON.fromJson(rd, ArmorModel.JsonRepr.class);
                 repr.combineWith(tmp);
             } catch(IOException|JsonParseException e) {
-                Logger.error(e, "Exception parsing armor models");
+                Logger.error(e, "Exception parsing armor models " + location);
             }
         }
         //combine with parent
@@ -104,7 +104,7 @@ public final class ModelCache {
             IResource scriptFile = Entities.resourceManager().getResource(location);
             return parser.parse(scriptFile);
         } catch(IOException|AbieParseException e) {
-            Logger.error(e, "Exception parsing animation script");
+            Logger.error(e, "Exception parsing animation script " + location);
             return EntityModel.MISSING_ABIESCRIPT;
         }
     }
