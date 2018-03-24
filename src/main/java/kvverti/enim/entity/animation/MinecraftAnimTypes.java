@@ -7,6 +7,7 @@ import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.item.ItemBow;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityEnderChest;
@@ -53,6 +54,9 @@ public final class MinecraftAnimTypes {
 
     /** AnimType for when a chest closes. */
     public static final AnimType CLOSE;
+    
+    /** AnimType for when an entity holds a bow. */
+    public static final AnimType BOWHOLD;
 
     static {
 
@@ -106,6 +110,9 @@ public final class MinecraftAnimTypes {
         CLOSE = new AnimType(false).setRegistryName("minecraft:close");
         CLOSE.addAnimPredicate(TileEntityChest.class, (e, i) -> e.lidAngle - e.prevLidAngle < 0.0f);
         CLOSE.addAnimPredicate(TileEntityEnderChest.class, (e, i) -> e.lidAngle - e.prevLidAngle < 0.0f);
+        BOWHOLD = new AnimType(true).setRegistryName("minecraft:bowhold");
+        BOWHOLD.addAnimPredicate(EntityLivingBase.class,
+            (e, i) -> e.getHeldItemMainhand().getItem() instanceof ItemBow);
     }
 
     private MinecraftAnimTypes() { }

@@ -62,7 +62,19 @@ public final class Enim {
 
         Logger.info("Registering Minecraft AnimTypes...");
         Logger.info("Warnings follow, please ignore");
-        event.getRegistry().registerAll(IDLE, MOVE, AIR, SWIM, TRACK, JUMP, ATTACK, DAMAGE, EAT, OPEN, CLOSE);
+        event.getRegistry().registerAll(
+            IDLE,
+            MOVE,
+            AIR,
+            SWIM,
+            TRACK,
+            JUMP,
+            ATTACK,
+            DAMAGE,
+            EAT,
+            OPEN,
+            CLOSE,
+            BOWHOLD);
     }
 
     @SubscribeEvent
