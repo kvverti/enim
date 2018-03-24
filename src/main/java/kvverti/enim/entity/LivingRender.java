@@ -99,8 +99,12 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
                     }
                 }
             }
+            info.color = oldColor;
         }
         //render held/worn items
+        GlStateManager.pushMatrix();
+        float scale = getCurrentEntityState().scale();
+        GlStateManager.scale(scale, scale, scale);
         boolean leftHanded = entity.getPrimaryHand() == EnumHandSide.LEFT;
         ItemStack right, left, head;
         right = leftHanded ? entity.getHeldItemOffhand() : entity.getHeldItemMainhand();
@@ -113,6 +117,7 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
             || ((ItemArmor) head.getItem()).getEquipmentSlot() != EntityEquipmentSlot.HEAD
             || armor == null)
             renderItem(entity, info, head, TransformType.HEAD, properties.helmet());
+        GlStateManager.popMatrix();
         super.postRender(entity, info);
     }
 
@@ -150,7 +155,7 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
             parent.transformWithoutRendering(info);
         }
         //apply specified transformations
-        float scale = 0.0625f * info.scale;
+        final float scale = 0.0625f;
         Vec3f coords = origin.coords();
         GlStateManager.translate((coords.x - 8.0f) * scale, -coords.y * scale, (8.0f - coords.z) * scale);
         Vec3f rot = origin.rotation();
