@@ -18,6 +18,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
 import kvverti.enim.entity.Entities;
 import kvverti.enim.entity.EntityInfo;
+import kvverti.enim.entity.GEntity;
 
 /** Holds animation types for vanilla minecraft. */
 public final class MinecraftAnimTypes {
@@ -112,7 +113,7 @@ public final class MinecraftAnimTypes {
         CLOSE.addAnimPredicate(TileEntityEnderChest.class, (e, i) -> e.lidAngle - e.prevLidAngle < 0.0f);
         BOWHOLD = new AnimType(true).setRegistryName("minecraft:bowhold");
         BOWHOLD.addAnimPredicate(EntityLivingBase.class,
-            (e, i) -> e.getHeldItemMainhand().getItem() instanceof ItemBow);
+            (e, i) -> TRACK.shouldAnimate(new GEntity(e), i) && e.getHeldItemMainhand().getItem() instanceof ItemBow);
     }
 
     private MinecraftAnimTypes() { }
