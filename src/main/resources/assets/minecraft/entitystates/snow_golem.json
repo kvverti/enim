@@ -1,0 +1,5 @@
+{
+    "states": {
+        "normal": { "model": "snow_golem", "texture": "entity/snowman", "size": [64,64], "scale": 0.935 }
+    }
+}

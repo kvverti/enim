@@ -143,7 +143,10 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
             (color & 0xff) / 255.0f);
     }
 
-    private void renderItem(T entity, EntityInfo info, ItemStack stack, TransformType type, ModelProperties.OriginPoint origin) {
+    /**
+     * Renders the given item as part of the model for the given entity.
+     */
+    protected void renderItem(T entity, EntityInfo info, ItemStack stack, TransformType type, ModelProperties.OriginPoint origin) {
 
         if(origin == null || stack.isEmpty())
             return;

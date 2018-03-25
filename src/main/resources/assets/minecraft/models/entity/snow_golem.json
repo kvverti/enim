@@ -1,0 +1,58 @@
+{
+    "properties": {
+        "nameplate": 38,
+        "shadowsize": 9,
+        "helmet": {
+            "element": "head",
+            "position": [8,27,8],
+            "rotation": [0,0,180],
+            "scale": 0.667
+        }
+    },
+    "elements": [
+        {
+            "name": "bottom",
+            "from": [2,0,2],
+            "to": [14,12,14],
+            "uv": [0,36],
+            "origin": [8,6,8]
+        },
+        {
+            "name": "middle",
+            "parent": "bottom",
+            "from": [3,12,3],
+            "to": [13,22,13],
+            "uv": [0,16],
+            "origin": [8,17,8]
+        },
+        {
+            "name": "head",
+            "parent": "middle",
+            "from": [4,22,4],
+            "to": [12,30,12],
+            "uv": [0,0],
+            "origin": [8,22,8],
+            "head": true
+        },
+        {
+            "name": "right_arm",
+            "parent": "middle",
+            "from": [-8,18,7],
+            "to": [4,20,9],
+            "uv": [32,0],
+            "origin": [4,19,8],
+            "rotation": [0,0,60],
+            "scale": [1,0.6,0.6]
+        },
+        {
+            "name": "left_arm",
+            "parent": "middle",
+            "from": [12,18,7],
+            "to": [24,20,9],
+            "uv": [32,0],
+            "origin": [12,19,8],
+            "rotation": [0,0,-60],
+            "scale": [1,0.6,0.6]
+        }
+    ]
+}
