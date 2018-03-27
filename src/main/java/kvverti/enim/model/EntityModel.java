@@ -280,7 +280,7 @@ public class EntityModel {
             if(block == null)
                 throw new JsonParseException("Block " + blockId + " does not exist");
             IBlockState res = block.getDefaultState();
-            if(obj.has(Keys.ELEM_BLOCKSTATE_STATE) {
+            if(obj.has(Keys.ELEM_BLOCKSTATE_STATE)) {
                 Map<String, String> blockStateMap =
                     context.deserialize(obj.get(Keys.ELEM_BLOCKSTATE_STATE), blockStateMapType);
                 for(IProperty<?> property : res.getPropertyKeys()) {
