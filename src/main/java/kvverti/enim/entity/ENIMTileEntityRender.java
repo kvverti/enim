@@ -44,6 +44,7 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
     @Override
     public final void render(T tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 
+        Entities.bindTexture(null); //unset texture
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x + 0.5f, (float) y, (float) z + 0.5f);
         GlStateManager.rotate(180.0f, 1.0f, 0.0f, 0.0f);
@@ -158,5 +159,11 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
     public final void setMissingno() {
 
         stateManager.setAllInvalid();
+    }
+    
+    @Override
+    protected void bindTexture(ResourceLocation texture) {
+        
+        Entities.bindTexture(texture);
     }
 }

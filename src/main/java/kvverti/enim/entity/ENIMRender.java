@@ -90,6 +90,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
     @Override
     public final void doRender(T entity, double x, double y, double z, float yaw, float partialTicks) {
 
+        Entities.bindTexture(null); //unset texture
         final float VIEW_LOCK = 60.0f;
         GlStateManager.pushMatrix();
         GlStateManager.disableCull();
@@ -324,5 +325,11 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
     public final void setMissingno() {
 
         stateManager.setAllInvalid();
+    }
+    
+    @Override
+    public void bindTexture(ResourceLocation texture) {
+        
+        Entities.bindTexture(texture);
     }
 }

@@ -1,5 +1,10 @@
 package kvverti.enim.model;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
 
@@ -13,6 +18,9 @@ public final class ModelElement {
 
     @SerializedName(Keys.ELEM_NAME)
     private String name = "element" + nameIdx++;
+    
+    @SerializedName(Keys.ELEM_TYPE)
+    private ElementType type = ElementType.MODEL_BOX;
 
     @SerializedName(Keys.ELEM_TEXCOORDS)
     private final int[] uv = { 0, 0 };
@@ -22,6 +30,12 @@ public final class ModelElement {
 
     @SerializedName(Keys.ELEM_TO)
     private Vec3f to = Vec3f.ORIGIN;
+    
+    @SerializedName(Keys.ELEM_ITEM)
+    private Item item = Items.AIR;
+    
+    @SerializedName(Keys.ELEM_BLOCKSTATE)
+    private IBlockState blockstate = Blocks.AIR.getDefaultState();
 
     @SerializedName(Keys.ELEM_ROTPOINT)
     private Vec3f origin = Vec3f.ORIGIN;
@@ -55,6 +69,15 @@ public final class ModelElement {
 
     /** The name of this element. */
     public String name() { return name; }
+    
+    /** The type of this element */
+    public ElementType type() { return type; }
+    
+    /** The item this element represents. */
+    public Item item() { return item; }
+    
+    /** The block state this element represents. */
+    public IBlockState blockstate() { return blockstate; }
 
     /** The parent element to this element, or null if there is no parent. */
     public String parent() { return parent; }
@@ -132,7 +155,8 @@ public final class ModelElement {
     public void verify() {
 
         verifyName(name);
-        verifyCoords(uv);
+        if(type == ElementType.MODEL_BOX)
+            verifyCoords(uv);
     }
 
     private void verifyName(String name) {
@@ -144,6 +168,8 @@ public final class ModelElement {
 
     private void verifyCoords(int[] coords) {
 
+        if(coords == null)
+            throw new JsonParseException("UV tag is required");
         if(coords.length != 2) throw new JsonParseException("UV length must be 2");
         for(int n : coords)
             if(n < 0) throw new JsonParseException("Value must be non-negative: " + n);

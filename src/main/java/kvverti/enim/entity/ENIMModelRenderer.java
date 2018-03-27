@@ -3,12 +3,20 @@ package kvverti.enim.entity;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.ResourceLocation;
 
 import kvverti.enim.Vec3f;
 import kvverti.enim.Util;
+import kvverti.enim.model.ElementType;
 import kvverti.enim.model.ModelElement;
 import kvverti.enim.model.ModelProperties;
 
@@ -27,6 +35,9 @@ public class ENIMModelRenderer extends ModelRenderer {
     private final float pivotDeltaX;
     private final float pivotDeltaY;
     private final float pivotDeltaZ;
+    private final ElementType type;
+    private final ItemStack item;
+    private final IBakedModel itemModel;
     private boolean compiled = false;
     public float shiftDistanceX;
     public float shiftDistanceY;
@@ -56,6 +67,9 @@ public class ENIMModelRenderer extends ModelRenderer {
         pivotDeltaY = 0.0f;
         pivotDeltaZ = 0.0f;
         addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
+        type = ElementType.MODEL_BOX;
+        item = null;
+        itemModel = null;
     }
 
     public ENIMModelRenderer(ModelBase model, ModelElement features) {
@@ -63,7 +77,6 @@ public class ENIMModelRenderer extends ModelRenderer {
         super(model, features.name());
         defaultRotations = features.rotation();
         defaultScale = features.scale();
-        translucent = features.isTranslucent();
         head = features.isHead();
         tintIndex = features.tintIndex();
         Vec3f origin = features.origin(), pivot = features.pivot(), from = features.from(), to = features.to();
@@ -80,6 +93,27 @@ public class ENIMModelRenderer extends ModelRenderer {
         pivotDeltaX = pivot.x - origin.x;
         pivotDeltaY = origin.y - pivot.y;
         pivotDeltaZ = origin.z - pivot.z;
+        type = features.type();
+        switch(type) {
+            case ITEM:
+                item = new ItemStack(features.item());
+                itemModel = null;
+                translucent = true;
+                break;
+            case BLOCK:
+                item = new ItemStack(features.blockstate().getBlock());
+                itemModel = Minecraft.getMinecraft()
+                    .getBlockRendererDispatcher()
+                    .getModelForState(features.blockstate());
+                translucent = features.blockstate()
+                    .getBlock()
+                    .getBlockLayer() == BlockRenderLayer.TRANSLUCENT;
+                break;
+            default:
+                item = null;
+                itemModel = null;
+                translucent = features.isTranslucent();
+        }
     }
 
     public void transformWithoutRendering(EntityInfo info) {
@@ -99,7 +133,23 @@ public class ENIMModelRenderer extends ModelRenderer {
             Vec3f color = info.color.apply(tintIndex);
             if(translucent || info.alpha < 1.0f) makeLucent();
             GlStateManager.color(color.x, color.y, color.z, info.alpha);
-            GlStateManager.callList(displayList());
+            if(type == ElementType.MODEL_BOX)
+                GlStateManager.callList(displayList());
+            else {
+                ResourceLocation tex = Entities.getCurrentTexture();
+                Entities.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                if(type == ElementType.ITEM) {
+                    Minecraft.getMinecraft()
+                        .getRenderItem()
+                        .renderItem(item, TransformType.FIXED);
+                } else {
+                    //TODO: some blocks (multipart models?) don't render
+                    Minecraft.getMinecraft()
+                        .getRenderItem()
+                        .renderItem(item, itemModel);
+                }
+                Entities.bindTexture(tex);
+            }
             if(translucent || info.alpha < 1.0f) endLucent();
             //render children
             fixTransformsForChildren();

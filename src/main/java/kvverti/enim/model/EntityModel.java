@@ -9,13 +9,20 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.NoSuchElementException;
 
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.SimpleResource;
 import net.minecraft.client.resources.data.MetadataSerializer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.ResourceLocation;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableList;
@@ -30,7 +37,9 @@ import kvverti.enim.entity.animation.AnimType;
 import kvverti.enim.model.multipart.Condition;
 import kvverti.enim.model.multipart.Rule;
 
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.joining;
 
 /**
  * This class represents the contents of an entity model file, located in the {@value Keys#MODELS_DIR} directory. Properties
@@ -57,6 +66,9 @@ public class EntityModel {
         .registerTypeAdapter(Condition.class, new Condition.Deserializer())
         .registerTypeAdapter(Rule.class, new Rule.Deserializer())
         .registerTypeAdapter(ScaleProperty.class, new ScaleProperty.Deserializer())
+        .registerTypeAdapter(Item.class, new ItemDeserializer())
+        .registerTypeAdapter(IBlockState.class, new BlockStateDeserializer())
+        .registerTypeAdapter(ElementType.class, new ElementType.Deserializer())
         .create();
 
     /**
@@ -233,6 +245,60 @@ public class EntityModel {
 
             if(name != null && !name.isEmpty() && !names.contains(name))
                 throw new JsonParseException(String.format("Element %s does not exist", name));
+        }
+    }
+    
+    /** Deserializer for items */
+    private static class ItemDeserializer implements JsonDeserializer<Item> {
+        
+        @Override
+        public Item deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
+            
+            String itemStr = json.getAsString();
+            if(!Keys.RESOURCE_LOCATION_REGEX.matcher(itemStr).matches())
+                throw new JsonParseException("Invalid item " + itemStr);
+            ResourceLocation itemId = new ResourceLocation(itemStr);
+            Item res = ForgeRegistries.ITEMS.getValue(itemId);
+            if(res == null)
+                throw new JsonParseException("Item " + itemId + " does not exist");
+            return res;
+        }
+    }
+    
+    /** Deserializer for blocks */
+    private static class BlockStateDeserializer implements JsonDeserializer<IBlockState> {
+        
+        private static final Type blockStateMapType = new TypeToken<Map<String, String>>(){}.getType();
+     
+        @Override
+        public IBlockState deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
+            
+            JsonObject obj = json.getAsJsonObject();
+            ResourceLocation blockId =
+                new ResourceLocation(obj.get(Keys.ELEM_BLOCKSTATE_BLOCK).getAsString());
+            Block block = ForgeRegistries.BLOCKS.getValue(blockId);
+            if(block == null)
+                throw new JsonParseException("Block " + blockId + " does not exist");
+            IBlockState res = block.getDefaultState();
+            if(obj.has(Keys.ELEM_BLOCKSTATE_STATE) {
+                Map<String, String> blockStateMap =
+                    context.deserialize(obj.get(Keys.ELEM_BLOCKSTATE_STATE), blockStateMapType);
+                for(IProperty<?> property : res.getPropertyKeys()) {
+                    String tmp = blockStateMap.get(property.getName());
+                    if(tmp != null)
+                        res = placeProperty(property, tmp, res);
+                }
+            }
+            return res;
+        }
+        
+        private <T extends Comparable<T>>
+            IBlockState placeProperty(IProperty<T> property, String strValue, IBlockState in) {
+            
+            Optional<T> value = property.parseValue(strValue);
+            if(!value.isPresent())
+                throw new JsonParseException("Invalid value " + strValue + " for property " + property.getName());
+            return in.withProperty(property, value.get());
         }
     }
 }
