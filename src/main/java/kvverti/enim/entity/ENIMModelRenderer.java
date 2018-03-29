@@ -2,16 +2,22 @@ package kvverti.enim.entity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 import kvverti.enim.Vec3f;
@@ -38,6 +44,7 @@ public class ENIMModelRenderer extends ModelRenderer {
     private final ElementType type;
     private final ItemStack item;
     private final IBakedModel itemModel;
+    private final IBlockState blockstate;
     private boolean compiled = false;
     public float shiftDistanceX;
     public float shiftDistanceY;
@@ -70,6 +77,7 @@ public class ENIMModelRenderer extends ModelRenderer {
         type = ElementType.MODEL_BOX;
         item = null;
         itemModel = null;
+        blockstate = null;
     }
 
     public ENIMModelRenderer(ModelBase model, ModelElement features) {
@@ -97,7 +105,8 @@ public class ENIMModelRenderer extends ModelRenderer {
         switch(type) {
             case ITEM:
                 item = new ItemStack(features.item());
-                itemModel = null;
+                itemModel = renderItem.getItemModelWithOverrides(item, null, null);
+                blockstate = null;
                 translucent = true;
                 break;
             case BLOCK:
@@ -105,6 +114,7 @@ public class ENIMModelRenderer extends ModelRenderer {
                 itemModel = Minecraft.getMinecraft()
                     .getBlockRendererDispatcher()
                     .getModelForState(features.blockstate());
+                blockstate = features.blockstate();
                 translucent = features.blockstate()
                     .getBlock()
                     .getBlockLayer() == BlockRenderLayer.TRANSLUCENT;
@@ -112,6 +122,7 @@ public class ENIMModelRenderer extends ModelRenderer {
             default:
                 item = null;
                 itemModel = null;
+                blockstate = null;
                 translucent = features.isTranslucent();
         }
     }
@@ -138,16 +149,7 @@ public class ENIMModelRenderer extends ModelRenderer {
             else {
                 ResourceLocation tex = Entities.getCurrentTexture();
                 Entities.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                if(type == ElementType.ITEM) {
-                    Minecraft.getMinecraft()
-                        .getRenderItem()
-                        .renderItem(item, TransformType.FIXED);
-                } else {
-                    //TODO: some blocks (multipart models?) don't render
-                    Minecraft.getMinecraft()
-                        .getRenderItem()
-                        .renderItem(item, itemModel);
-                }
+                renderItemModel();
                 Entities.bindTexture(tex);
             }
             if(translucent || info.alpha < 1.0f) endLucent();
@@ -242,5 +244,43 @@ public class ENIMModelRenderer extends ModelRenderer {
     private int displayList() {
 
         return Util.getIntField(this, displayList);
+    }
+    
+    private static final RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+    
+    private static final Method renderQuads = Util.findMethod(RenderItem.class,
+        void.class,
+        "renderQuads",
+        "func_191970_a",
+        BufferBuilder.class,
+        List.class,
+        int.class,
+        ItemStack.class);
+    
+    /** Modified from RenderItem#renderModel */
+    private void renderItemModel() {
+        
+        GlStateManager.pushMatrix();
+        GlStateManager.rotate(-180.0f, 0.0f, 0.0f, 1.0f);
+        GlStateManager.translate(-0.5f, -0.5f, -0.5f);
+        Tessellator tez = Tessellator.getInstance();
+        BufferBuilder buffer = tez.getBuffer();
+        buffer.begin(7, DefaultVertexFormats.ITEM);
+        for(EnumFacing side : EnumFacing.values()) {
+            Util.invokeUnchecked(renderItem,
+                renderQuads,
+                buffer,
+                itemModel.getQuads(blockstate, side, 0L),
+                -1,
+                item);
+        }
+        Util.invokeUnchecked(renderItem,
+            renderQuads,
+            buffer,
+            itemModel.getQuads(blockstate, null, 0L),
+            -1,
+            item);
+        tez.draw();
+        GlStateManager.popMatrix();
     }
 }
