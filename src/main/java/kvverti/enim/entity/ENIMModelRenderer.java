@@ -3,21 +3,16 @@ package kvverti.enim.entity;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 
 import kvverti.enim.Vec3f;
 import kvverti.enim.Util;
@@ -41,7 +36,7 @@ public class ENIMModelRenderer extends ModelRenderer {
     private final float pivotDeltaY;
     private final float pivotDeltaZ;
     private final ElementType type;
-    private final Object itemOrBlockstate;
+    private final ItemStack item;
     private final IBakedModel itemModel;
     private boolean compiled = false;
     public float shiftDistanceX;
@@ -73,7 +68,7 @@ public class ENIMModelRenderer extends ModelRenderer {
         pivotDeltaZ = 0.0f;
         addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
         type = ElementType.MODEL_BOX;
-        itemOrBlockstate = null;
+        item = null;
         itemModel = null;
     }
 
@@ -101,14 +96,12 @@ public class ENIMModelRenderer extends ModelRenderer {
         type = features.type();
         switch(type) {
             case ITEM:
-                itemOrBlockstate = new ItemStack(features.item());
-                itemModel = Minecraft.getMinecraft()
-                    .getRenderItem()
-                    .getItemModelWithOverrides((ItemStack) itemOrBlockstate, null, null);
+                item = new ItemStack(features.item());
+                itemModel = null;
                 translucent = true;
                 break;
             case BLOCK:
-                itemOrBlockstate = features.blockstate();
+                item = new ItemStack(features.blockstate().getBlock());
                 itemModel = Minecraft.getMinecraft()
                     .getBlockRendererDispatcher()
                     .getModelForState(features.blockstate());
@@ -117,7 +110,7 @@ public class ENIMModelRenderer extends ModelRenderer {
                     .getBlockLayer() == BlockRenderLayer.TRANSLUCENT;
                 break;
             default:
-                itemOrBlockstate = null;
+                item = null;
                 itemModel = null;
                 translucent = features.isTranslucent();
         }
@@ -148,36 +141,12 @@ public class ENIMModelRenderer extends ModelRenderer {
                 if(type == ElementType.ITEM) {
                     Minecraft.getMinecraft()
                         .getRenderItem()
-                        .renderItem((ItemStack) itemOrBlockstate, itemModel);
+                        .renderItem(item, TransformType.FIXED);
                 } else {
-                    GlStateManager.pushMatrix();
-                    GlStateManager.disableLighting();
-                    Tessellator tez = Tessellator.getInstance();
-                    BufferBuilder buffer = tez.getBuffer();
-                    //adding 1 makes the bottom face render with better lighting
-                    //because the lighting is now taken from the block above.
-                    //If we are in a one-block space...eh
-                    BlockPos pos = new BlockPos(info.pos.x, info.pos.y + 1, info.pos.z);
-                    buffer.begin(7, DefaultVertexFormats.BLOCK);
-                    //so block gets the right overall lighting
-                    GlStateManager.translate(-pos.getX() - 0.5f,
-                        -pos.getY() - 0.5f,
-                        -pos.getZ() - 0.5f);
-                    //so block gets the right face lighting
-                    //GlStateManager.rotate(-180.0f, 1.0f, 0.0f, 0.0f);
+                    //TODO: some blocks (multipart models?) don't render
                     Minecraft.getMinecraft()
-                        .getBlockRendererDispatcher()
-                        .getBlockModelRenderer()
-                        .renderModel(Entities.theWorld(),
-                            itemModel,
-                            (IBlockState) itemOrBlockstate,
-                            pos,
-                            buffer,
-                            false,
-                            0);
-                    tez.draw();
-                    GlStateManager.enableLighting();
-                    GlStateManager.popMatrix();
+                        .getRenderItem()
+                        .renderItem(item, itemModel);
                 }
                 Entities.bindTexture(tex);
             }

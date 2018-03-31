@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 
 import com.google.common.collect.ImmutableList;
 
@@ -54,8 +53,6 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
         ImmutableList<EntityState> entityStates = stateManager.getStateLayers(renderState);
         currentState = entityStates.get(0);
         EntityInfo info = new EntityInfo();
-        BlockPos pos = tileEntity.getPos();
-        info.pos = Vec3f.of(pos.getX(), pos.getY(), pos.getZ());
         info.partialTicks = partialTicks;
         info.color = i -> i < 0 ? getBaseColor(tileEntity, info) : getBaseColor(tileEntity, info).scale(getColorOverlay(tileEntity, info, i));
         GEntity e = new GEntity(tileEntity);

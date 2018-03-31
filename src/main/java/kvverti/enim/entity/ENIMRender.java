@@ -105,8 +105,6 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
         ImmutableList<EntityState> entityStates = stateManager.getStateLayers(renderState);
         currentState = entityStates.get(0);
         EntityInfo info = new EntityInfo();
-        //perhaps use eye pos instead?
-        info.pos = Vec3f.of((float) entity.posX, (float) entity.posY, (float) entity.posZ);
         info.speedSq = Entities.speedSq(entity);
         info.partialTicks = partialTicks;
         info.entityYaw = yaw;

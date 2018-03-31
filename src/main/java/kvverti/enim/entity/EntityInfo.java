@@ -6,7 +6,6 @@ import kvverti.enim.Vec3f;
 
 public final class EntityInfo {
 
-    public Vec3f pos;
     public float speedSq;
     public float partialTicks;
     public float entityYaw;
