@@ -39,8 +39,8 @@ public final class Keys {
     public static final String ELEM_MIRRORED = "mirrored";
     public static final String ELEM_TYPE = "type";
     public static final String ELEM_ITEM = "item";
-    public static final String ELEM_BLOCKSTATE = "blockstate";
-    public static final String ELEM_BLOCKSTATE_BLOCK = "block";
+    public static final String ELEM_BLOCKSTATE = "block";
+    public static final String ELEM_BLOCKSTATE_BLOCK = "id";
     public static final String ELEM_BLOCKSTATE_STATE = "state";
 
     public static final String ANIMS_TAG = "animations";
