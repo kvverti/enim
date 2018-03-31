@@ -261,6 +261,7 @@ public class ENIMModelRenderer extends ModelRenderer {
     private void renderItemModel() {
         
         GlStateManager.pushMatrix();
+        GlStateManager.enableCull();
         GlStateManager.rotate(-180.0f, 0.0f, 0.0f, 1.0f);
         GlStateManager.translate(-0.5f, -0.5f, -0.5f);
         Tessellator tez = Tessellator.getInstance();
@@ -281,6 +282,7 @@ public class ENIMModelRenderer extends ModelRenderer {
             -1,
             item);
         tez.draw();
+        GlStateManager.disableCull();
         GlStateManager.popMatrix();
     }
 }
