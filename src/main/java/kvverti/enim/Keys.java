@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 public final class Keys {
 
     public static final int INTERPOLATION_TICKS = 3;
+    
+    public static final String PARENT_TAG = "parents";
 
     public static final String PROPERTIES_TAG = "properties";
 //    public static final String PROP_BOUNDING_BOX = "bounds";

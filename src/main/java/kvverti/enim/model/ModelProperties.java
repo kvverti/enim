@@ -11,19 +11,19 @@ public class ModelProperties {
     public static final ModelProperties DEFAULT = new ModelProperties();
 
     @SerializedName(Keys.PROP_NAMETAG_ORIGIN)
-    private final float nameplateBase;
+    private float nameplateBase;
 
     @SerializedName(Keys.PROP_SHADOW_SIZE)
-    private final float shadowSize;
+    private float shadowSize;
 
     @SerializedName(Keys.PROP_HELD_ITEM_ORIGIN_LEFT)
-    private final OriginPoint heldItemLeft;
+    private OriginPoint heldItemLeft;
 
     @SerializedName(Keys.PROP_HELD_ITEM_ORIGIN_RIGHT)
-    private final OriginPoint heldItemRight;
+    private OriginPoint heldItemRight;
 
     @SerializedName(Keys.PROP_HELMET_ORIGIN)
-    private final OriginPoint helmet;
+    private OriginPoint helmet;
 
     /** For Json deserialization */
     private ModelProperties() {
@@ -64,6 +64,21 @@ public class ModelProperties {
      * Returns null if this model has no helmet.
      */
     public OriginPoint helmet() { return helmet; }
+    
+    /** Replace this object's properties with other's properties, if present. */
+    void combineWith(ModelProperties other) {
+        
+        if(other.nameplateBase != 0.0f)
+            nameplateBase = other.nameplateBase;
+        if(other.shadowSize != 0.0f)
+            shadowSize = other.shadowSize;
+        if(other.heldItemLeft != null)
+            heldItemLeft = other.heldItemLeft;
+        if(other.heldItemRight != null)
+            heldItemRight = other.heldItemRight;
+        if(other.helmet != null)
+            helmet = other.helmet;
+    }
 
     @Override
     public String toString() {

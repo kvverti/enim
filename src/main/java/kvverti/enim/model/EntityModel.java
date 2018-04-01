@@ -1,7 +1,10 @@
 package kvverti.enim.model;
 
 import java.io.InputStream;
+import java.io.IOException;
+import java.io.Reader;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
@@ -30,6 +33,7 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 import kvverti.enim.Keys;
+import kvverti.enim.Util;
 import kvverti.enim.Vec3f;
 import kvverti.enim.abiescript.AbieScript;
 import kvverti.enim.abiescript.AnimationParser;
@@ -177,6 +181,7 @@ public class EntityModel {
         private static final Type elementsType = new TypeToken<Set<ModelElement>>(){}.getType();
         private static final Type animsType = new TypeToken<Map<AnimType, Animation>>(){}.getType();
         private static final Type overridesType = new TypeToken<Map<String, ModelElement.Override>>(){}.getType();
+        private static final Type parentType = new TypeToken<List<String>>(){}.getType();
 
         @Override
         public EntityModel deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
@@ -194,6 +199,27 @@ public class EntityModel {
                 : new LinkedHashMap<>();
 
             //other json objects that do not have an in-code representation
+            if(obj.has(Keys.PARENT_TAG)) {
+                List<String> parentModelNames = context.deserialize(obj.get(Keys.PARENT_TAG), parentType);
+                //preserve declaration order of animations
+                Map<AnimType, Animation> animTmp = new LinkedHashMap<>();
+                for(String parentModelName : parentModelNames) {
+                    ResourceLocation parentModelLoc =
+                        Util.getResourceLocation(parentModelName, Keys.MODELS_DIR, Keys.JSON);
+                    try(Reader rd = Util.getReaderFor(parentModelLoc)) {
+                        EntityModel parent = GSON.fromJson(rd, EntityModel.class);
+                        elements.addAll(parent.elements);
+                        animTmp.putAll(parent.animations);
+                        ModelProperties tmp = parent.properties;
+                        tmp.combineWith(properties);
+                        properties = tmp;
+                    } catch(IOException e) {
+                        throw new JsonParseException(e);
+                    }
+                }
+                animTmp.putAll(animations);
+                animations = animTmp;
+            }
             if(obj.has(Keys.IMPORTS_TAG)) {
 
                 ModelImports imports = context.deserialize(obj.get(Keys.IMPORTS_TAG), ModelImports.class);
