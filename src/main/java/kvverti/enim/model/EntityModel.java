@@ -208,6 +208,7 @@ public class EntityModel {
                         Util.getResourceLocation(parentModelName, Keys.MODELS_DIR, Keys.JSON);
                     try(Reader rd = Util.getReaderFor(parentModelLoc)) {
                         EntityModel parent = GSON.fromJson(rd, EntityModel.class);
+                        elements.removeAll(parent.elements); //remove duplicates
                         elements.addAll(parent.elements);
                         animTmp.putAll(parent.animations);
                         ModelProperties tmp = parent.properties;
@@ -227,6 +228,7 @@ public class EntityModel {
                 //preserve declaration order
                 imports.animations.putAll(animations);
                 animations = imports.animations;
+                kvverti.enim.Logger.warn("Note: this file uses model imports, which are deprecated");
             }
             if(obj.has(Keys.ELEMENTS_OVERRIDES)) {
 
