@@ -29,14 +29,8 @@ public final class ModelCache {
     /** Stores entity JSON models */
     private static final Map<ResourceLocation, EntityModel> entityModels = new HashMap<>(75);
     
-    /** Stores entity JSON model representations */
-    private static final Map<ResourceLocation, EntityModel.JsonRepr> entityModelJsons = new HashMap<>(75);
-    
     /** Stores entity armor models */
     private static final Map<ResourceLocation, ArmorModel> armorModels = new HashMap<>(5);
-    
-    /** Stores entity armor model representations */
-    private static final Map<ResourceLocation, ArmorModel.JsonRepr> armorModelJsons = new HashMap<>(5);
     
     /** Stores AbieScript animations */
     private static final Map<ResourceLocation, AbieScript> animationScripts = new HashMap<>(50);
@@ -60,8 +54,6 @@ public final class ModelCache {
     private static EntityModel.JsonRepr parseEntityModelJson(ResourceLocation location,
         Set<ResourceLocation> seen) throws IOException {
         
-        if(entityModelJsons.containsKey(location))
-            return entityModelJsons.get(location);
         if(!seen.add(location))
             throw new JsonParseException("Circular model reference");
         EntityModel.JsonRepr resRepr = new EntityModel.JsonRepr();
@@ -77,7 +69,6 @@ public final class ModelCache {
             resRepr.combineWith(parentRepr);
         }
         resRepr.combineWith(lastRepr);
-        entityModelJsons.put(location, resRepr);
         return resRepr;
     }
     
@@ -97,8 +88,6 @@ public final class ModelCache {
     private static ArmorModel.JsonRepr parseArmorModelJson(ResourceLocation location,
         Set<ResourceLocation> seen) throws IOException {
         
-        if(armorModelJsons.containsKey(location))
-            return armorModelJsons.get(location);
         if(!seen.add(location))
             throw new JsonParseException("Circular armor model reference");
         //attempt to open file
@@ -121,14 +110,12 @@ public final class ModelCache {
         }
         //combine with parent
         String parentName = repr.getParentName();
-        if(parentName != null) {
-            ResourceLocation parent = Util.getResourceLocation(parentName, Keys.ARMOR_DIR, Keys.JSON);
-            ArmorModel.JsonRepr parentRepr = parseArmorModelJson(parent, seen);
-            parentRepr.combineWith(repr);
-            repr = parentRepr;
-        }
-        armorModelJsons.put(location, repr);
-        return repr;
+        if(parentName == null)
+            return repr;
+        ResourceLocation parent = Util.getResourceLocation(parentName, Keys.ARMOR_DIR, Keys.JSON);
+        ArmorModel.JsonRepr parentRepr = parseArmorModelJson(parent, seen);
+        parentRepr.combineWith(repr);
+        return parentRepr;
     }
     
     public static AbieScript getAbieScript(ResourceLocation location) {
@@ -151,17 +138,12 @@ public final class ModelCache {
     
     public static void clearCache() {
         
-        Logger.info("Model cache loaded %d entity models in %d files, "
-            + "%d armor models in %d files, and %d animation scripts",
+        Logger.info("Model cache loaded %d entity models, %d armor models, and %d animation scripts",
             entityModels.size(),
-            entityModelJsons.size(),
             armorModels.size(),
-            armorModelJsons.size(),
             animationScripts.size());
         entityModels.clear();
-        entityModelJsons.clear();
         armorModels.clear();
-        armorModelJsons.clear();
         animationScripts.clear();
     }
 }
