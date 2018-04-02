@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
@@ -25,7 +27,7 @@ import kvverti.enim.entity.Entities;
 public final class ModelCache {
     
     /** Stores entity JSON models */
-    private static final Map<ResourceLocation, EntityModel> entityModels = new HashMap<>(50);
+    private static final Map<ResourceLocation, EntityModel> entityModels = new HashMap<>(75);
     
     /** Stores entity armor models */
     private static final Map<ResourceLocation, ArmorModel> armorModels = new HashMap<>(5);
@@ -40,12 +42,34 @@ public final class ModelCache {
     
     private static EntityModel parseEntityModel(ResourceLocation location) {
         
-        try(Reader rd = Util.getReaderFor(location)) {
-            return EntityModel.GSON.fromJson(rd, EntityModel.class);
-        } catch(IOException|JsonParseException e) {
+        EntityModel.JsonRepr repr;
+        try { repr = parseEntityModelJson(location, new HashSet<>()); }
+        catch(IOException|JsonParseException e) {
             Logger.error(e, "Exception parsing entity model " + location);
             return EntityModel.MISSING_MODEL;
         }
+        return new EntityModel(repr);
+    }
+    
+    private static EntityModel.JsonRepr parseEntityModelJson(ResourceLocation location,
+        Set<ResourceLocation> seen) throws IOException {
+        
+        if(!seen.add(location))
+            throw new JsonParseException("Circular model reference");
+        EntityModel.JsonRepr resRepr = new EntityModel.JsonRepr();
+        EntityModel.JsonRepr lastRepr;
+        try(Reader rd = Util.getReaderFor(location)) {
+            lastRepr = EntityModel.GSON.fromJson(rd, EntityModel.JsonRepr.class);
+            lastRepr.init();
+        }
+        for(String name : lastRepr.parents) {
+            ResourceLocation loc = Util.getResourceLocation(name, Keys.MODELS_DIR, Keys.JSON);
+            EntityModel.JsonRepr parentRepr = parseEntityModelJson(loc, seen);
+            parentRepr.init();
+            resRepr.combineWith(parentRepr);
+        }
+        resRepr.combineWith(lastRepr);
+        return resRepr;
     }
     
     public static ArmorModel getArmorModel(ResourceLocation location) {
@@ -56,13 +80,16 @@ public final class ModelCache {
     private static ArmorModel parseArmorModel(ResourceLocation location) {
         
         ArmorModel.JsonRepr repr;
-        try { repr = parseArmorModelJson(location); }
+        try { repr = parseArmorModelJson(location, new HashSet<>()); }
         catch(IOException e) { return EntityModel.MISSING_ARMOR; }
         return new ArmorModel(repr);
     }
     
-    private static ArmorModel.JsonRepr parseArmorModelJson(ResourceLocation location) throws IOException {
+    private static ArmorModel.JsonRepr parseArmorModelJson(ResourceLocation location,
+        Set<ResourceLocation> seen) throws IOException {
         
+        if(!seen.add(location))
+            throw new JsonParseException("Circular armor model reference");
         //attempt to open file
         //if file cannot be opened, fail the entire parse
         List<IResource> resources;
@@ -86,7 +113,7 @@ public final class ModelCache {
         if(parentName == null)
             return repr;
         ResourceLocation parent = Util.getResourceLocation(parentName, Keys.ARMOR_DIR, Keys.JSON);
-        ArmorModel.JsonRepr parentRepr = parseArmorModelJson(parent);
+        ArmorModel.JsonRepr parentRepr = parseArmorModelJson(parent, seen);
         parentRepr.combineWith(repr);
         return parentRepr;
     }

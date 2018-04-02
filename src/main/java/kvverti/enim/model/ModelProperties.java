@@ -8,8 +8,6 @@ import kvverti.enim.Vec3f;
 /** Class corresponding to the {@value Keys#PROPERTIES_TAG} tag of an entity model */
 public class ModelProperties {
 
-    public static final ModelProperties DEFAULT = new ModelProperties();
-
     @SerializedName(Keys.PROP_NAMETAG_ORIGIN)
     private float nameplateBase;
 
@@ -26,7 +24,7 @@ public class ModelProperties {
     private OriginPoint helmet;
 
     /** For Json deserialization */
-    private ModelProperties() {
+    ModelProperties() {
 
         nameplateBase = 0.0f;
         shadowSize = 0.0f;

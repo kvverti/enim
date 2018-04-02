@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
@@ -30,6 +31,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.*;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import kvverti.enim.Keys;
@@ -66,7 +68,6 @@ public class EntityModel {
         .registerTypeAdapter(EntityState.class, new EntityState.Deserializer())
         .registerTypeAdapter(new TypeToken<ImmutableList<EntityState>>(){}.getType(), new EntityState.ListDeserializer())
         .registerTypeAdapter(EntityStateMap.class, new EntityStateMap.Deserializer())
-        .registerTypeAdapter(EntityModel.class, new EntityModel.Deserializer())
         .registerTypeAdapter(Condition.class, new Condition.Deserializer())
         .registerTypeAdapter(Rule.class, new Rule.Deserializer())
         .registerTypeAdapter(ScaleProperty.class, new ScaleProperty.Deserializer())
@@ -78,9 +79,9 @@ public class EntityModel {
     /**
      * The invalid ("missingno") entity model.
      */
-    public static final EntityModel MISSING_MODEL = GSON.fromJson(
+    public static final EntityModel MISSING_MODEL = new EntityModel(GSON.fromJson(
         "{\"properties\":{\"nameplate\":18},\"elements\":[{\"name\":\"missingno\",\"from\":[0,0,0],\"to\":[16,16,16],\"uv\":[0,0]}]}",
-        EntityModel.class);
+        EntityModel.JsonRepr.class));
 
     /**
      * The invalid ("missingno") entity state.
@@ -115,16 +116,21 @@ public class EntityModel {
     private final ImmutableMap<String, ModelElement> elementMap;
     private final ImmutableMap<AnimType, Animation> animations;
 
-    /** For Json deserialization */
-    private EntityModel(ModelProperties properties, Set<ModelElement> elements, Map<AnimType, Animation> animations) {
+    /** Create an EntityModel from its JSON representation */
+    EntityModel(JsonRepr repr) {
 
-        this.properties = properties;
-        this.elements = ImmutableSet.copyOf(elements);
-        this.animations = ImmutableMap.copyOf(animations);
+        this.properties = repr.properties;
+        this.elements = ImmutableSet.copyOf(repr.elements);
+        this.animations = ImmutableMap.copyOf(repr.animations);
         ImmutableMap.Builder<String, ModelElement> b = new ImmutableMap.Builder<>();
         for(ModelElement m : elements)
             b.put(m.name(), m);
+        if(!repr.overrides.isEmpty()) {
+            for(ModelElement element : elements)
+                element.applyOverride(repr.overrides.get(element.name()));
+        }
         elementMap = b.build();
+        validate();
     }
 
     /**
@@ -175,104 +181,80 @@ public class EntityModel {
             Keys.ANIMS_TAG, animations);
     }
 
-    /** Deserializer for the {@link EntityModel} class. */
-    public static class Deserializer implements JsonDeserializer<EntityModel> {
+    private void validate() {
 
-        private static final Type elementsType = new TypeToken<Set<ModelElement>>(){}.getType();
-        private static final Type animsType = new TypeToken<Map<AnimType, Animation>>(){}.getType();
-        private static final Type overridesType = new TypeToken<Map<String, ModelElement.Override>>(){}.getType();
-        private static final Type parentType = new TypeToken<List<String>>(){}.getType();
+        Set<String> elementNames = elements.stream().map(ModelElement::name).collect(toSet());
+        //make sure element parents reference valid elements, and validate elements
+        for(ModelElement elem : elements) {
 
-        @Override
-        public EntityModel deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
+            elem.verify();
+            ensureContains(elem.parent(), elementNames);
+        }
+        //make sure properties reference valid elements
+        ensureValidOrigin(properties.helmet(), elementNames);
+        ensureValidOrigin(properties.leftHand(), elementNames);
+        ensureValidOrigin(properties.rightHand(), elementNames);
+        //make sure animations defines reference valid elements
+        for(Animation anim : animations.values()) {
 
-            JsonObject obj = json.getAsJsonObject();
-            //essential fields of the EntityModel class
-            ModelProperties properties = obj.has(Keys.PROPERTIES_TAG) ?
-                context.deserialize(obj.get(Keys.PROPERTIES_TAG), ModelProperties.class)
-                : ModelProperties.DEFAULT;
-            Set<ModelElement> elements = obj.has(Keys.ELEMENTS_TAG) ?
-                context.deserialize(obj.get(Keys.ELEMENTS_TAG), elementsType)
-                : new HashSet<>();
-            Map<AnimType, Animation> animations = obj.has(Keys.ANIMS_TAG) ?
-                context.deserialize(obj.get(Keys.ANIMS_TAG), animsType)
-                : new LinkedHashMap<>();
+            Set<String> elemNames = anim.defines().stream().map(anim::toElementName).collect(toSet());
+            for(String name : elemNames)
+                ensureContains(name, elementNames);
+        }
+    }
 
-            //other json objects that do not have an in-code representation
-            if(obj.has(Keys.PARENT_TAG)) {
-                List<String> parentModelNames = context.deserialize(obj.get(Keys.PARENT_TAG), parentType);
-                //preserve declaration order of animations
-                Map<AnimType, Animation> animTmp = new LinkedHashMap<>();
-                for(String parentModelName : parentModelNames) {
-                    ResourceLocation parentModelLoc =
-                        Util.getResourceLocation(parentModelName, Keys.MODELS_DIR, Keys.JSON);
-                    try(Reader rd = Util.getReaderFor(parentModelLoc)) {
-                        EntityModel parent = GSON.fromJson(rd, EntityModel.class);
-                        elements.removeAll(parent.elements); //remove duplicates
-                        elements.addAll(parent.elements);
-                        animTmp.putAll(parent.animations);
-                        ModelProperties tmp = parent.properties;
-                        tmp.combineWith(properties);
-                        properties = tmp;
-                    } catch(IOException e) {
-                        throw new JsonParseException(e);
-                    }
-                }
-                animTmp.putAll(animations);
-                animations = animTmp;
-            }
-            if(obj.has(Keys.IMPORTS_TAG)) {
+    private void ensureValidOrigin(ModelProperties.OriginPoint p, Set<String> names) {
 
-                ModelImports imports = context.deserialize(obj.get(Keys.IMPORTS_TAG), ModelImports.class);
+        if(p != null)
+            ensureContains(p.parent(), names);
+    }
+
+    private void ensureContains(String name, Set<String> names) {
+
+        if(name != null && !name.isEmpty() && !names.contains(name))
+            throw new JsonParseException(String.format("Element %s does not exist", name));
+    }
+    
+    /** Class for helping deserialization */
+    static class JsonRepr {
+        
+        @SerializedName(Keys.PARENT_TAG)
+        List<String> parents = new ArrayList<>();
+        
+        @SerializedName(Keys.PROPERTIES_TAG)
+        ModelProperties properties = new ModelProperties();
+        
+        @SerializedName(Keys.ELEMENTS_TAG)
+        Set<ModelElement> elements = new HashSet<>();
+        
+        @SerializedName(Keys.ANIMS_TAG)
+        Map<AnimType, Animation> animations = new LinkedHashMap<>();
+        
+        @SerializedName(Keys.IMPORTS_TAG)
+        ModelImports imports = null;
+        
+        @SerializedName(Keys.ELEMENTS_OVERRIDES)
+        Map<String, ModelElement.Override> overrides = new HashMap<>();
+        
+        /** So old imports system still works */
+        void init() {
+            
+            if(imports != null) {
                 elements.addAll(imports.elements);
                 //preserve declaration order
                 imports.animations.putAll(animations);
                 animations = imports.animations;
                 kvverti.enim.Logger.warn("Note: this file uses model imports, which are deprecated");
             }
-            if(obj.has(Keys.ELEMENTS_OVERRIDES)) {
-
-                Map<String, ModelElement.Override> overrides =
-                    context.deserialize(obj.get(Keys.ELEMENTS_OVERRIDES), overridesType);
-                for(ModelElement element : elements)
-                    element.applyOverride(overrides.get(element.name()));
-            }
-            validate(properties, elements, animations);
-            return new EntityModel(properties, elements, animations);
         }
-
-        private void validate(ModelProperties properties, Set<ModelElement> elements, Map<AnimType, Animation> animations) {
-
-            Set<String> elementNames = elements.stream().map(ModelElement::name).collect(toSet());
-            //make sure element parents reference valid elements, and validate elements
-            for(ModelElement elem : elements) {
-
-                elem.verify();
-                ensureContains(elem.parent(), elementNames);
-            }
-            //make sure properties reference valid elements
-            ensureValidOrigin(properties.helmet(), elementNames);
-            ensureValidOrigin(properties.leftHand(), elementNames);
-            ensureValidOrigin(properties.rightHand(), elementNames);
-            //make sure animations defines reference valid elements
-            for(Animation anim : animations.values()) {
-
-                Set<String> elemNames = anim.defines().stream().map(anim::toElementName).collect(toSet());
-                for(String name : elemNames)
-                    ensureContains(name, elementNames);
-            }
-        }
-
-        private void ensureValidOrigin(ModelProperties.OriginPoint p, Set<String> names) {
-
-            if(p != null)
-                ensureContains(p.parent(), names);
-        }
-
-        private void ensureContains(String name, Set<String> names) {
-
-            if(name != null && !name.isEmpty() && !names.contains(name))
-                throw new JsonParseException(String.format("Element %s does not exist", name));
+        
+        void combineWith(JsonRepr other) {
+            
+            other.elements.addAll(elements);
+            elements = other.elements;
+            animations.putAll(other.animations);
+            properties.combineWith(other.properties);
+            overrides.putAll(other.overrides);
         }
     }
     
