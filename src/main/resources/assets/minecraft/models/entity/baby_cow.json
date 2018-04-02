@@ -1,10 +1,7 @@
 {
+    "parents": ["cow"],
     "properties": {
-        "nameplate": 32,
-        "shadowsize": 11.5
-    },
-    "imports": {
-        "cow": ["*","animations:*"]
+        "nameplate": 32
     },
     "elements": [
         {

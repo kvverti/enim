@@ -1,0 +1,12 @@
+{
+    "animations": {
+        "open": {
+            "script": "chest_open",
+            "with": { "lid": "lid" }
+        },
+        "close": {
+            "script": "chest_close_begin",
+            "with": { "lid": "lid" }
+        }
+    }
+}

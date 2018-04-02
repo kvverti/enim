@@ -1,0 +1,25 @@
+{
+    "animations": {
+        "idle": {
+            "script": "undead_arms",
+            "with": {
+                "left": "left_arm",
+                "right": "right_arm"
+            }
+        },
+        "tracking": {
+            "script": "undead_track",
+            "with": {
+                "left_arm": "left_arm",
+                "right_arm": "right_arm"
+            }
+        },
+        "attack": {
+            "script": "undead_attack",
+            "with": {
+                "left_arm": "left_arm",
+                "right_arm": "right_arm"
+            }
+        }
+    }
+}

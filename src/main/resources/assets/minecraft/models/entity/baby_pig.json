@@ -1,10 +1,7 @@
 {
+    "parents": ["pig"],
     "properties": {
-        "nameplate": 24,
-        "shadowsize": 11
-    },
-    "imports": {
-        "pig": ["*","animations:*"]
+        "nameplate": 24
     },
     "overrides": {
         "head": { "scale": 2 }

@@ -1,41 +1,6 @@
 {
-    "properties": {
-        "shadowsize": 8,
-        "nameplate": 36,
-        "righthand": {
-            "element": "right_arm",
-            "position": [2,12,10],
-            "rotation": [90,180,0]
-        },
-        "lefthand": {
-            "element": "left_arm",
-            "position": [14,12,10],
-            "rotation": [90,180,0]
-        },
-        "helmet": {
-            "element": "head",
-            "position": [8,28,8],
-            "rotation": [0,0,180],
-            "scale": 0.625
-        }
-    },
+    "parents": ["biped_base"],
     "elements": [
-        {
-            "name": "body",
-            "from": [4,12,6],
-            "to": [12,24,10],
-            "uv": [16,16],
-            "origin": [8,18,8]
-        },
-        {
-            "name": "head",
-            "parent": "body",
-            "from": [4,24,4],
-            "to": [12,32,12],
-            "uv": [0,0],
-            "origin": [8,24,8],
-            "head": true
-        },
         {
             "name": "hat",
             "parent": "head",
@@ -44,71 +9,6 @@
             "uv": [32,0],
             "origin": [8,28,8],
             "scale": 1.125
-        },
-        {
-            "name": "right_arm",
-            "parent": "body",
-            "from": [0,12,6],
-            "to": [4,24,10],
-            "uv": [40,16],
-            "origin": [2,22,8]
-        },
-        {
-            "name": "left_arm",
-            "parent": "body",
-            "from": [12,12,6],
-            "to": [16,24,10],
-            "uv": [40,16],
-            "origin": [14,22,8],
-            "mirrored": true
-        },
-        {
-            "name": "right_leg",
-            "parent": "body",
-            "from": [4,0,6],
-            "to": [8,12,10],
-            "uv": [0,16],
-            "origin": [6,12,8]
-        },
-        {
-            "name": "left_leg",
-            "parent": "body",
-            "from": [8,0,6],
-            "to": [12,12,10],
-            "uv": [0,16],
-            "origin": [10,12,8],
-            "mirrored": true
         }
-    ],
-    "animations": {
-        "idle": {
-            "script": "undead_arms",
-            "with": {
-                "left": "left_arm",
-                "right": "right_arm"
-            }
-        },
-        "moving": {
-            "scaling": 5,
-            "script": "biped_swing",
-            "with": {
-                "left": "left_leg",
-                "right": "right_leg"
-            }
-        },
-        "tracking": {
-            "script": "undead_track",
-            "with": {
-                "left_arm": "left_arm",
-                "right_arm": "right_arm"
-            }
-        },
-        "attack": {
-            "script": "undead_attack",
-            "with": {
-                "left_arm": "left_arm",
-                "right_arm": "right_arm"
-            }
-        }
-    }
+    ]
 }

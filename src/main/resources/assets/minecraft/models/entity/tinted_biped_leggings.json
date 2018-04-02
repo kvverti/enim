@@ -1,7 +1,5 @@
 {
-    "imports": {
-        "biped": ["animations:moving"]
-    },
+    "parents": ["biped_legs_anim"],
     "elements": [
         {
             "name": "chestplate",

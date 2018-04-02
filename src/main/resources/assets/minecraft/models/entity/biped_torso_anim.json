@@ -1,0 +1,33 @@
+{
+    "animations": {
+        "idle": {
+            "script": "biped_arms",
+            "with": {
+                "left": "left_arm",
+                "right": "right_arm"
+            }
+        },
+        "moving": {
+            "scaling": 8,
+            "script": "biped_swing",
+            "with": {
+                "left": "right_arm",
+                "right": "left_arm"
+            }
+        },
+        "tracking": {
+            "script": "skeleton_track",
+            "with": {
+                "left": "left_arm",
+                "right": "right_arm"
+            }
+        },
+        "bowhold": {
+            "script": "biped_bowhold",
+            "with": {
+                "left": "left_arm",
+                "right": "right_arm"
+            }
+        }
+    }
+}

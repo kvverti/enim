@@ -1,10 +1,7 @@
 {
+    "parents": ["chicken"],
     "properties": {
-        "nameplate": 22,
-        "shadowsize": 4.8
-    },
-    "imports": {
-        "chicken": ["*","animations:*"]
+        "nameplate": 22
     },
     "overrides": {
         "head": { "scale": 2 }

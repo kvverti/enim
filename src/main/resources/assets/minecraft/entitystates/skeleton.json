@@ -1,5 +1,5 @@
 {
     "states": {
-        "normal": { "model": "skeleton", "texture": "entity/skeleton/skeleton", "armor": "skeleton" }
+        "normal": { "model": "skeleton", "texture": "entity/skeleton/skeleton", "armor": "biped" }
     }
 }

@@ -1,7 +1,5 @@
 {
-    "imports": {
-        "sheep_wool": ["*","animations:*"]
-    },
+    "parents": ["sheep_wool"],
     "overrides": {
         "head": { "scale": 2.4 }
     }

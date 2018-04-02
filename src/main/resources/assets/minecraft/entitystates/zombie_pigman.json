@@ -4,7 +4,7 @@
         "size": [64,64]
     },
     "states": {
-        "baby=false": { "model": "biped", "armor": "biped" },
-        "baby=true": { "model": "baby_biped", "scale": 0.5, "armor": "baby_biped" }
+        "baby=false": { "model": "biped_undead", "armor": "undead" },
+        "baby=true": { "model": "baby_undead", "scale": 0.5, "armor": "baby_undead" }
     }
 }

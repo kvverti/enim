@@ -1,7 +1,5 @@
 {
-    "imports": {
-        "skeleton": ["animations:*"]
-    },
+    "parents": ["skeleton_anim"],
     "elements": [
         {
             "name": "body",

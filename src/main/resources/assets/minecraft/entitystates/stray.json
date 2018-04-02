@@ -1,7 +1,7 @@
 {
 	"states": {
 		"normal": [
-            { "model": "skeleton", "texture": "entity/skeleton/stray", "armor": "skeleton" },
+            { "model": "skeleton", "texture": "entity/skeleton/stray", "armor": "biped" },
             { "model": "stray_overlay", "texture": "entity/skeleton/stray_overlay" }
         ]
 	}

@@ -1,8 +1,5 @@
 {
-    "imports": {
-        "large_chest": ["*"],
-        "chest_open": ["animations:*"]
-    },
+    "parents": ["chest_open_anim","large_chest_base"],
     "overrides": {
         "lid": { "rotation": [-90,0,0] }
     }

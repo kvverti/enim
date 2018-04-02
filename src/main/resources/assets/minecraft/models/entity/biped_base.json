@@ -1,16 +1,15 @@
 {
-    "parents": ["skeleton_anim"],
     "properties": {
         "shadowsize": 8,
         "nameplate": 36,
         "righthand": {
             "element": "right_arm",
-            "position": [3,12,10],
+            "position": [2,12,10],
             "rotation": [90,180,0]
         },
         "lefthand": {
             "element": "left_arm",
-            "position": [13,12,10],
+            "position": [14,12,10],
             "rotation": [90,180,0]
         },
         "helmet": {
@@ -40,33 +39,33 @@
         {
             "name": "right_arm",
             "parent": "body",
-            "from": [2,12,7],
-            "to": [4,24,9],
+            "from": [0,12,6],
+            "to": [4,24,10],
             "uv": [40,16],
-            "origin": [3,23,8]
+            "origin": [2,22,8]
         },
         {
             "name": "left_arm",
             "parent": "body",
-            "from": [12,12,7],
-            "to": [14,24,9],
+            "from": [12,12,6],
+            "to": [16,24,10],
             "uv": [40,16],
-            "origin": [13,23,8],
+            "origin": [14,22,8],
             "mirrored": true
         },
         {
             "name": "right_leg",
             "parent": "body",
-            "from": [5,0,7],
-            "to": [7,12,9],
+            "from": [4,0,6],
+            "to": [8,12,10],
             "uv": [0,16],
             "origin": [6,12,8]
         },
         {
             "name": "left_leg",
             "parent": "body",
-            "from": [9,0,7],
-            "to": [11,12,9],
+            "from": [8,0,6],
+            "to": [12,12,10],
             "uv": [0,16],
             "origin": [10,12,8],
             "mirrored": true

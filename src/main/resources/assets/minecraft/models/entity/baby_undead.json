@@ -1,0 +1,9 @@
+{
+    "parents": ["biped_base","biped_legs_anim","undead_torso_anim"],
+    "properties": {
+        "nameplate": 46
+    },
+    "overrides": {
+        "head": { "scale": 1.5 }
+    }
+}

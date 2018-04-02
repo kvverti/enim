@@ -1,0 +1,12 @@
+{
+    "animations": {
+        "moving": {
+            "scaling": 5,
+            "script": "biped_swing",
+            "with": {
+                "left": "left_leg",
+                "right": "right_leg"
+            }
+        }
+    }
+}

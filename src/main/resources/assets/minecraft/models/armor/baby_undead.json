@@ -1,7 +1,7 @@
 {
     "defaults": {
         "head": { "model": "baby_biped_helmet", "scale": 0.5 },
-        "chest": { "model": "biped_chestplate", "scale": 0.5 },
+        "chest": { "model": "undead_chestplate", "scale": 0.5 },
         "legs": { "model": "biped_leggings", "scale": 0.5 },
         "feet": { "model": "biped_boots", "scale": 0.5 }
     },
@@ -12,8 +12,8 @@
                 { "model": "baby_biped_helmet", "texture": "models/armor/leather_layer_1_overlay", "scale": 0.5 }
             ],
             "chest": [
-                { "model": "tinted_biped_chestplate", "texture": "models/armor/leather_layer_1", "scale": 0.5 },
-                { "model": "biped_chestplate", "texture": "models/armor/leather_layer_1_overlay", "scale": 0.5 }
+                { "model": "tinted_undead_chestplate", "texture": "models/armor/leather_layer_1", "scale": 0.5 },
+                { "model": "undead_chestplate", "texture": "models/armor/leather_layer_1_overlay", "scale": 0.5 }
             ],
             "legs": [
                 { "model": "tinted_biped_leggings", "texture": "models/armor/leather_layer_2", "scale": 0.5 },

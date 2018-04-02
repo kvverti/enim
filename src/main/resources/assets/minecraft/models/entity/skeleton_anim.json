@@ -1,0 +1,15 @@
+{
+    "parents": ["biped_torso_anim"],
+    "animations": {
+        "moving": {
+            "scaling": 8,
+            "script": "quadruped_swing",
+            "with": {
+                "front_left": "left_arm",
+                "front_right": "right_arm",
+                "rear_left": "left_leg",
+                "rear_right": "right_leg"
+            }
+        }
+    }
+}

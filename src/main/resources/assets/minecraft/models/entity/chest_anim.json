@@ -1,5 +1,4 @@
 {
-    "parents": ["chest_anim","large_chest_base"],
     "animations": {
         "close": {
             "script": "chest_close",

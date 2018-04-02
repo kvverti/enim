@@ -1,0 +1,34 @@
+{
+    "elements": [
+        {
+            "name": "chestplate",
+            "from": [4,12,6],
+            "to": [12,24,10],
+            "uv": [16,16],
+            "origin": [8,18,8],
+            "scale": [1.25,1.125,1.25],
+            "tintindex": 2
+        },
+        {
+            "name": "right_arm",
+            "from": [0,12,6],
+            "to": [4,24,10],
+            "uv": [40,16],
+            "origin": [2,18,8],
+            "pivot": [2,22,8],
+            "scale": [1.375,1.2,1.375],
+            "tintindex": 2
+        },
+        {
+            "name": "left_arm",
+            "from": [12,12,6],
+            "to": [16,24,10],
+            "uv": [40,16],
+            "origin": [14,18,8],
+            "pivot": [14,22,8],
+            "scale": [1.375,1.2,1.375],
+            "mirrored": true,
+            "tintindex": 2
+        }
+    ]
+}
