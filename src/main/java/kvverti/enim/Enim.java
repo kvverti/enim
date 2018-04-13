@@ -118,6 +118,7 @@ public final class Enim {
         registerEntityRender(EntityStray.class, "minecraft", "stray", BasicLivingRender::new);
         registerEntityRender(EntityWitherSkeleton.class, "minecraft", "wither_skeleton", BasicLivingRender::new);
         registerEntityRender(EntitySnowman.class, "minecraft", "snow_golem", SnowmanRender::new);
+        registerEntityRender(EntityMooshroom.class, "minecraft", "mooshroom", GrowableAnimalRender::new);
     }
 
     @EventHandler

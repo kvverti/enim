@@ -1,0 +1,9 @@
+{
+    "defaults": {
+        "texture": "entity/cow/mooshroom"
+    },
+    "states": {
+        "baby=false": { "model": "mooshroom" },
+        "baby=true": { "model": "baby_cow", "scale": 0.5 }
+    }
+}

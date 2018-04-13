@@ -1,0 +1,32 @@
+{
+    "parents": ["cow"],
+    "elements": [
+        {
+            "name": "body_mushroom_1",
+            "type": "block",
+            "block": {
+                "id": "red_mushroom"
+            },
+            "origin": [6,29.5,8]
+        },
+        {
+            "name": "body_mushroom_2",
+            "type": "block",
+            "block": {
+                "id": "red_mushroom"
+            },
+            "origin": [11,29.5,0],
+            "rotation": [0,47,0]
+        },
+        {
+            "name": "head_mushroom",
+            "parent": "head",
+            "type": "block",
+            "block": {
+                "id": "red_mushroom"
+            },
+            "origin": [8,31.5,19],
+            "rotation": [0,-15,0]
+        }
+    ]
+}
