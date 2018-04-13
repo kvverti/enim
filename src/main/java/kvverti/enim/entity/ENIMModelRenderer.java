@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
@@ -264,24 +265,30 @@ public class ENIMModelRenderer extends ModelRenderer {
         GlStateManager.enableCull();
         GlStateManager.rotate(-180.0f, 0.0f, 0.0f, 1.0f);
         GlStateManager.translate(-0.5f, -0.5f, -0.5f);
-        Tessellator tez = Tessellator.getInstance();
-        BufferBuilder buffer = tez.getBuffer();
-        buffer.begin(7, DefaultVertexFormats.ITEM);
-        for(EnumFacing side : EnumFacing.values()) {
+        if(itemModel.isBuiltInRenderer()) {
+            GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+            GlStateManager.enableRescaleNormal();
+            TileEntityItemStackRenderer.instance.renderByItem(item);
+        } else {
+            Tessellator tez = Tessellator.getInstance();
+            BufferBuilder buffer = tez.getBuffer();
+            buffer.begin(7, DefaultVertexFormats.ITEM);
+            for(EnumFacing side : EnumFacing.values()) {
+                Util.invokeUnchecked(renderItem,
+                    renderQuads,
+                    buffer,
+                    itemModel.getQuads(blockstate, side, 0L),
+                    -1,
+                    item);
+            }
             Util.invokeUnchecked(renderItem,
                 renderQuads,
                 buffer,
-                itemModel.getQuads(blockstate, side, 0L),
+                itemModel.getQuads(blockstate, null, 0L),
                 -1,
                 item);
+            tez.draw();
         }
-        Util.invokeUnchecked(renderItem,
-            renderQuads,
-            buffer,
-            itemModel.getQuads(blockstate, null, 0L),
-            -1,
-            item);
-        tez.draw();
         GlStateManager.disableCull();
         GlStateManager.popMatrix();
     }
