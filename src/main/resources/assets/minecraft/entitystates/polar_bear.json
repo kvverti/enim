@@ -1,0 +1,10 @@
+{
+    "defaults": {
+        "texture": "entity/bear/polarbear",
+        "size": [128,64]
+    },
+    "states": {
+        "baby=false": { "model": "polar_bear", "scale": 1.2 },
+        "baby=true": { "model": "polar_bear", "scale": 0.6 }
+    }
+}

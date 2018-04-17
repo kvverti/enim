@@ -1,0 +1,20 @@
+define body
+define left_leg
+define right_leg
+define head
+
+freq 5
+
+{
+rotate body -60 -0 -0
+rotate left_leg -20 -0 -0
+rotate right_leg -20 -0 -0
+rotate head +60 -0 -0
+}
+pause 1
+{
+rotate body +60 -0 -0
+rotate left_leg +20 -0 -0
+rotate right_leg +20 -0 -0
+rotate head -60 -0 -0
+}
