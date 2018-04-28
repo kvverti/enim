@@ -47,7 +47,7 @@ public final class Entities {
         return Minecraft.getMinecraft().getTextureManager();
     }
     
-    private static ResourceLocation prevTexture = Util.MISSING_LOCATION;
+    private static ResourceLocation prevTexture = null;
     
     /**
      * Binds a texture. This method keeps track of the current texture.
@@ -55,12 +55,10 @@ public final class Entities {
      */
     public static void bindTexture(ResourceLocation texture) {
         
-        if(texture == null)
-            prevTexture = Util.MISSING_LOCATION;
-        else if(!prevTexture.equals(texture)) {
+        if(texture != null && !texture.equals(prevTexture)) {
             textureManager().bindTexture(texture);
-            prevTexture = texture;
         }
+        prevTexture = texture;
     }
     
     public static ResourceLocation getCurrentTexture() {
