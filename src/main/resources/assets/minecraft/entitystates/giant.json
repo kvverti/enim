@@ -1,0 +1,5 @@
+{
+    "states": {
+        "normal": { "model": "biped_undead", "texture": "entity/zombie/zombie", "size": [64,64], "scale": 6, "armor": "undead" }
+    }
+}
