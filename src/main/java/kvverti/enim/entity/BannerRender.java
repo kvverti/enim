@@ -1,14 +1,8 @@
 package kvverti.enim.entity;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-import net.minecraft.client.renderer.tileentity.TileEntityBannerRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntityBanner;
-import net.minecraft.util.ResourceLocation;
 
-import kvverti.enim.Util;
 import kvverti.enim.entity.state.RenderState;
 import kvverti.enim.model.EntityState;
 

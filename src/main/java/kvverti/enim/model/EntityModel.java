@@ -57,7 +57,6 @@ public class EntityModel {
         .registerTypeAdapter(ArmorMaterial.class, new ArmorModel.MaterialDeserializer())
         .registerTypeAdapter(EntityEquipmentSlot.class, new ArmorModel.SlotDeserializer())
         .registerTypeAdapter(Vec3f.class, new Vec3f.Adapter().nullSafe())
-        .registerTypeAdapter(ModelImports.class, new ModelImports.Deserializer())
         .registerTypeAdapter(Animation.class, new Animation.Deserializer())
         .registerTypeAdapter(AnimType.class, new AnimType.Adapter().nullSafe())
         .registerTypeAdapter(EntityState.class, new EntityState.Deserializer())
@@ -225,23 +224,8 @@ public class EntityModel {
         @SerializedName(Keys.ANIMS_TAG)
         Map<AnimType, Animation> animations = new LinkedHashMap<>();
 
-        @SerializedName(Keys.IMPORTS_TAG)
-        ModelImports imports = null;
-
         @SerializedName(Keys.ELEMENTS_OVERRIDES)
         Map<String, ModelElement.Override> overrides = new HashMap<>();
-
-        /** So old imports system still works */
-        void init() {
-
-            if(imports != null) {
-                elements.addAll(imports.elements);
-                //preserve declaration order
-                imports.animations.putAll(animations);
-                animations = imports.animations;
-                kvverti.enim.Logger.warn("Note: this file uses model imports, which are deprecated");
-            }
-        }
 
         void combineWith(JsonRepr other) {
 

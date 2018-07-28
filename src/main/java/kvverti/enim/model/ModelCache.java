@@ -25,23 +25,23 @@ import kvverti.enim.entity.Entities;
  * Stores model system objects and their associated resource locations.
  */
 public final class ModelCache {
-    
+
     /** Stores entity JSON models */
     private static final Map<ResourceLocation, EntityModel> entityModels = new HashMap<>(75);
-    
+
     /** Stores entity armor models */
     private static final Map<ResourceLocation, ArmorModel> armorModels = new HashMap<>(5);
-    
+
     /** Stores AbieScript animations */
     private static final Map<ResourceLocation, AbieScript> animationScripts = new HashMap<>(50);
-    
+
     public static EntityModel getEntityModel(ResourceLocation location) {
-        
+
         return entityModels.computeIfAbsent(location, ModelCache::parseEntityModel);
     }
-    
+
     private static EntityModel parseEntityModel(ResourceLocation location) {
-        
+
         EntityModel.JsonRepr repr;
         try { repr = parseEntityModelJson(location, new HashSet<>()); }
         catch(IOException|JsonParseException e) {
@@ -50,44 +50,42 @@ public final class ModelCache {
         }
         return new EntityModel(repr);
     }
-    
+
     private static EntityModel.JsonRepr parseEntityModelJson(ResourceLocation location,
         Set<ResourceLocation> seen) throws IOException {
-        
+
         if(!seen.add(location))
             throw new JsonParseException("Circular model reference");
         EntityModel.JsonRepr resRepr = new EntityModel.JsonRepr();
         EntityModel.JsonRepr lastRepr;
         try(Reader rd = Util.getReaderFor(location)) {
             lastRepr = EntityModel.GSON.fromJson(rd, EntityModel.JsonRepr.class);
-            lastRepr.init();
         }
         for(String name : lastRepr.parents) {
             ResourceLocation loc = Util.getResourceLocation(name, Keys.MODELS_DIR, Keys.JSON);
             EntityModel.JsonRepr parentRepr = parseEntityModelJson(loc, seen);
-            parentRepr.init();
             resRepr.combineWith(parentRepr);
         }
         resRepr.combineWith(lastRepr);
         return resRepr;
     }
-    
+
     public static ArmorModel getArmorModel(ResourceLocation location) {
-        
+
         return armorModels.computeIfAbsent(location, ModelCache::parseArmorModel);
     }
-    
+
     private static ArmorModel parseArmorModel(ResourceLocation location) {
-        
+
         ArmorModel.JsonRepr repr;
         try { repr = parseArmorModelJson(location, new HashSet<>()); }
         catch(IOException e) { return EntityModel.MISSING_ARMOR; }
         return new ArmorModel(repr);
     }
-    
+
     private static ArmorModel.JsonRepr parseArmorModelJson(ResourceLocation location,
         Set<ResourceLocation> seen) throws IOException {
-        
+
         if(!seen.add(location))
             throw new JsonParseException("Circular armor model reference");
         //attempt to open file
@@ -117,14 +115,14 @@ public final class ModelCache {
         parentRepr.combineWith(repr);
         return parentRepr;
     }
-    
+
     public static AbieScript getAbieScript(ResourceLocation location) {
-        
+
         return animationScripts.computeIfAbsent(location, ModelCache::parseAbieScript);
     }
-    
+
     private static AbieScript parseAbieScript(ResourceLocation location) {
-        
+
         @SuppressWarnings("deprecation")
         AnimationParser parser = kvverti.enim.EnimRenderingRegistry.getGlobalParser();
         try {
@@ -135,9 +133,9 @@ public final class ModelCache {
             return EntityModel.MISSING_ABIESCRIPT;
         }
     }
-    
+
     public static void clearCache() {
-        
+
         Logger.info("Model cache loaded %d entity models, %d armor models, and %d animation scripts",
             entityModels.size(),
             armorModels.size(),
