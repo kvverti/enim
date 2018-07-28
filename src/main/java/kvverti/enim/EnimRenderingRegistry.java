@@ -3,11 +3,9 @@ package kvverti.enim;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -28,11 +26,8 @@ import kvverti.enim.abiescript.AbieParseException;
 import kvverti.enim.abiescript.AnimationParser;
 import kvverti.enim.entity.ReloadableRender;
 import kvverti.enim.entity.Entities;
-import kvverti.enim.entity.EntityInfo;
 import kvverti.enim.entity.color.CustomDyeColor;
-import kvverti.enim.model.Animation;
 import kvverti.enim.model.EntityStateMap;
-import kvverti.enim.model.EntityModel;
 import kvverti.enim.model.ModelCache;
 
 import static com.google.common.base.Preconditions.checkNotNull;

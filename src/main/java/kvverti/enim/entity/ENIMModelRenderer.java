@@ -25,7 +25,6 @@ import kvverti.enim.Vec3f;
 import kvverti.enim.Util;
 import kvverti.enim.model.ElementType;
 import kvverti.enim.model.ModelElement;
-import kvverti.enim.model.ModelProperties;
 
 import static kvverti.enim.entity.Entities.*;
 
@@ -246,9 +245,9 @@ public class ENIMModelRenderer extends ModelRenderer {
 
         return Util.getIntField(this, displayList);
     }
-    
+
     private static final RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-    
+
     private static final Method renderQuads = Util.findMethod(RenderItem.class,
         void.class,
         "renderQuads",
@@ -257,10 +256,10 @@ public class ENIMModelRenderer extends ModelRenderer {
         List.class,
         int.class,
         ItemStack.class);
-    
+
     /** Modified from RenderItem#renderModel */
     private void renderItemModel() {
-        
+
         GlStateManager.pushMatrix();
         GlStateManager.enableCull();
         GlStateManager.rotate(-180.0f, 0.0f, 0.0f, 1.0f);

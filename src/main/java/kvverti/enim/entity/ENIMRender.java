@@ -1,9 +1,7 @@
 package kvverti.enim.entity;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
@@ -20,7 +18,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.ResourceLocation;
 
@@ -30,7 +27,6 @@ import kvverti.enim.entity.state.RenderState;
 import kvverti.enim.entity.state.StateManager;
 import kvverti.enim.model.EntityState;
 import kvverti.enim.model.EntityStateMap;
-import kvverti.enim.Keys;
 import kvverti.enim.Util;
 import kvverti.enim.Vec3f;
 
@@ -187,12 +183,12 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
      * Method called immediately before the main model is rendered.
      */
     protected void preRender(T entity, EntityInfo info) { }
-    
+
     /**
      * Method called immediately before a layer is rendered.
      */
     protected void preRenderLayer(T entity, EntityInfo info, EntityState layer) { }
-    
+
     /**
      * Method called immediately after a layer is rendered.
      */
@@ -326,10 +322,10 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
 
         stateManager.setAllInvalid();
     }
-    
+
     @Override
     public void bindTexture(ResourceLocation texture) {
-        
+
         Entities.bindTexture(texture);
     }
 }

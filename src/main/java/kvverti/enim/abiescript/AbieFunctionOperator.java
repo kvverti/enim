@@ -1,7 +1,5 @@
 package kvverti.enim.abiescript;
 
-import java.util.function.DoubleUnaryOperator;
-
 /**
  * A stack-based operator used in AbieScript custom functions.
  * On second thought I should have called it AbieFunctionOperatorThing.

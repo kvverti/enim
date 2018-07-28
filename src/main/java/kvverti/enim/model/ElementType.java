@@ -10,11 +10,11 @@ import com.google.gson.JsonParseException;
 
 /** The types an element can take */
 public enum ElementType {
-    
+
     MODEL_BOX,
     ITEM,
     BLOCK;
-    
+
     static class Deserializer implements JsonDeserializer<ElementType> {
 
         private static final ImmutableMap<String, ElementType> name2type = ImmutableMap.<String, ElementType>builder()
@@ -23,9 +23,9 @@ public enum ElementType {
             .put("block", BLOCK)
             .build();
         
-        @java.lang.Override
+        @Override
         public ElementType deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-            
+
             String n = json.getAsString();
             ElementType res = name2type.get(n);
             if(res == null)

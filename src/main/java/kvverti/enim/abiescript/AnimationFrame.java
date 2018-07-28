@@ -1,7 +1,5 @@
 package kvverti.enim.abiescript;
 
-import kvverti.enim.Util;
-
 final class AnimationFrame {
 
     private final StateFrameModifier modifier;

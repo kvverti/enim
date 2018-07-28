@@ -16,7 +16,6 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
-import kvverti.enim.entity.Entities;
 import kvverti.enim.entity.EntityInfo;
 import kvverti.enim.entity.GEntity;
 
@@ -55,7 +54,7 @@ public final class MinecraftAnimTypes {
 
     /** AnimType for when a chest closes. */
     public static final AnimType CLOSE;
-    
+
     /** AnimType for when an entity holds a bow. */
     public static final AnimType BOWHOLD;
 

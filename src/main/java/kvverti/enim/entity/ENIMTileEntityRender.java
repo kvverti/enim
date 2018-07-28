@@ -1,7 +1,5 @@
 package kvverti.enim.entity;
 
-import java.util.List;
-
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,7 +13,6 @@ import kvverti.enim.entity.state.RenderState;
 import kvverti.enim.entity.state.StateManager;
 import kvverti.enim.model.EntityState;
 import kvverti.enim.model.EntityStateMap;
-import kvverti.enim.Keys;
 import kvverti.enim.Vec3f;
 
 /** Base class for ENIM reloadable tile entity renders. */
@@ -113,12 +110,12 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
      * Method called immediately before the main model is rendered.
      */
     protected void preRender(T tile, EntityInfo info) { }
-    
+
     /**
      * Method called immediately before a layer is rendered.
      */
     protected void preRenderLayer(T tile, EntityInfo info, EntityState layer) { }
-    
+
     /**
      * Method called immediately after a layer is rendered.
      */
@@ -160,10 +157,10 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
 
         stateManager.setAllInvalid();
     }
-    
+
     @Override
     protected void bindTexture(ResourceLocation texture) {
-        
+
         Entities.bindTexture(texture);
     }
 }

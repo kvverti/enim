@@ -2,7 +2,6 @@ package kvverti.enim.entity.state;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -35,11 +34,10 @@ public class StateManager {
     private final Map<IBlockState, RenderState> renderStates;
     private RenderState defaultState;
 
-    @SuppressWarnings("unchecked")
     public StateManager(IProperty<?>... properties) {
 
         this.stateDelegate = new BlockStateContainer(Blocks.AIR, properties);
-        this.properties = (Collection) stateDelegate.getProperties();
+        this.properties = stateDelegate.getProperties();
         this.renderStates = stateDelegate.getValidStates().stream()
             .collect(toMap(Function.identity(), BlockForwardingRenderState::new));
         this.defaultState = renderStates.get(stateDelegate.getBaseState());
@@ -91,17 +89,11 @@ public class StateManager {
         if(!stateMap.keySet().containsAll(states.keySet()))
             throw new IllegalArgumentException("Invalid states " + states.keySet() + "for properties " + properties);
         stateMap.replaceAll((k, v) -> states.get(k));
-        // modelMap.forEach((str, models) -> {
-
-            // ImmutableList<EntityState> states = stateMap.get(str);
-            // for(int i = 0; i < states.size(); 
-            // model.reload(state.model(), state.size()[0], state.size()[1]);
-        // });
         Iterator<ENIMModel> old = new ArrayList<>(model2model.values()).iterator();
         model2model.clear();
         for(ImmutableList<EntityState> entry : stateMap.values()) {
             for(EntityState state : entry) {
-                
+
                 ENIMModel model = old.hasNext() ? old.next() : new ENIMModel();
                 int[] s = state.size();
                 model.reload(state.model(), s[0], s[1]);
@@ -109,17 +101,17 @@ public class StateManager {
             }
         }
     }
-    
+
     public ImmutableList<EntityState> getStateLayers(RenderState state) {
-        
+
         String key = state.toString();
         if(stateMap.containsKey(key))
             return stateMap.get(key);
         throw new IllegalArgumentException("Invalid states " + key + " for properties " + properties);
     }
-    
+
     public ENIMModel getModel(EntityState state) {
-        
+
         ENIMModel res = model2model.get(state.model());
         if(res == null) {
             res = new ENIMModel();
@@ -145,17 +137,15 @@ public class StateManager {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public Collection<IProperty<?>> getPropertyNames() {
 
-            return (Collection) delegate.getPropertyKeys();
+            return delegate.getPropertyKeys();
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public ImmutableMap<IProperty<?>, Comparable<?>> getProperties() {
 
-            return (ImmutableMap) delegate.getProperties();
+            return delegate.getProperties();
         }
 
         @Override

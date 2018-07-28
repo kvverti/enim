@@ -1,7 +1,6 @@
 package kvverti.enim.entity.animation;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 
 import kvverti.enim.entity.EntityInfo;
 

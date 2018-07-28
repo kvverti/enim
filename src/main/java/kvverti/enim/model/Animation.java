@@ -4,19 +4,14 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 import kvverti.enim.Keys;
-import kvverti.enim.Logger;
 import kvverti.enim.Util;
 import kvverti.enim.abiescript.AbieScript;
-import kvverti.enim.abiescript.AnimationParser;
-import kvverti.enim.abiescript.AbieParseException;
-import kvverti.enim.entity.Entities;
 
 public class Animation {
 
@@ -71,8 +66,6 @@ public class Animation {
     public static class Deserializer implements JsonDeserializer<Animation> {
 
         private static final java.lang.reflect.Type definesType = new TypeToken<Map<String, String>>(){}.getType();
-        @SuppressWarnings("deprecation")
-        private static final AnimationParser parser = kvverti.enim.EnimRenderingRegistry.getGlobalParser();
         private static final Animation NOOP =
             new Animation(EntityModel.MISSING_ABIESCRIPT, Collections.emptyMap(), 0.0f, 0.0f);
 

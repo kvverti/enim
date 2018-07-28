@@ -1,15 +1,8 @@
 package kvverti.enim.model;
 
 import java.lang.reflect.Type;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
-import javax.imageio.ImageIO;
 
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 
 import com.google.common.collect.ImmutableList;
@@ -18,7 +11,6 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import kvverti.enim.Keys;
-import kvverti.enim.Logger;
 import kvverti.enim.Util;
 import kvverti.enim.entity.Entities;
 
@@ -73,7 +65,7 @@ public class EntityState {
      * The rotation about the vertical axis this state should render at.
      */
     public float y() { return y; }
-    
+
     /**
      * The armor models for this state. Armor models are rendered when the entity is wearing the corresponding
      * armor piece. Returns null if this state does not render armor.
@@ -106,9 +98,9 @@ public class EntityState {
         if(Float.isNaN(y))
             y = defaults.y;
     }
-    
+
     EntityState replaceTexture(ResourceLocation texture) {
-        
+
         EntityState res = new EntityState(model);
         res.texture = texture;
         res.overlay = overlay;
@@ -131,10 +123,10 @@ public class EntityState {
             Keys.STATE_SCALE, scale,
             Keys.STATE_ROTATION, y);
     }
-    
+
     /** Deserializer for lists of EntityStates. */
     public static class ListDeserializer implements JsonDeserializer<ImmutableList<EntityState>> {
-        
+
         private static final Type stateListType = new TypeToken<List<EntityState>>(){}.getType();
 
         @Override
@@ -156,7 +148,7 @@ public class EntityState {
 
         @Override
         public EntityState deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
-            
+
             JsonObject jsonObj = json.getAsJsonObject();
             String modelStr = jsonObj.get(Keys.STATE_MODEL_NAME).getAsString();
             EntityModel model;
@@ -197,7 +189,6 @@ public class EntityState {
                 res.y = jsonObj.get(Keys.STATE_ROTATION).getAsFloat();
             if(jsonObj.has(Keys.STATE_SCALE))
                 res.scale = jsonObj.get(Keys.STATE_SCALE).getAsFloat();
-            yuck:
             if(jsonObj.has(Keys.STATE_ARMOR)) {
                 ResourceLocation armorFile =
                     Util.getResourceLocation(jsonObj.get(Keys.STATE_ARMOR).getAsString(), Keys.ARMOR_DIR, Keys.JSON);

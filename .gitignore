@@ -4,3 +4,6 @@ psds/
 testDir/
 src-*/
 *.txt
+.settings/
+.classpath
+.project

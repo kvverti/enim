@@ -9,9 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-import kvverti.enim.Util;
-
-/** 
+/**
  * Utility class for working with {@link Entity}s and {@link TileEntity}s. Also contains convenience methods for common objects
  * found in the {@link Minecraft} class.
  */
@@ -46,23 +44,23 @@ public final class Entities {
 
         return Minecraft.getMinecraft().getTextureManager();
     }
-    
+
     private static ResourceLocation prevTexture = null;
-    
+
     /**
      * Binds a texture. This method keeps track of the current texture.
      * Passing null drops the tracked texture without binding.
      */
     public static void bindTexture(ResourceLocation texture) {
-        
+
         if(texture != null && !texture.equals(prevTexture)) {
             textureManager().bindTexture(texture);
         }
         prevTexture = texture;
     }
-    
+
     public static ResourceLocation getCurrentTexture() {
-        
+
         return prevTexture;
     }
 

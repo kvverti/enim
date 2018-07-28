@@ -1,8 +1,6 @@
 package kvverti.enim.model;
 
 import java.io.InputStream;
-import java.io.IOException;
-import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.ArrayList;
@@ -35,7 +33,6 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import kvverti.enim.Keys;
-import kvverti.enim.Util;
 import kvverti.enim.Vec3f;
 import kvverti.enim.abiescript.AbieScript;
 import kvverti.enim.abiescript.AnimationParser;
@@ -43,9 +40,7 @@ import kvverti.enim.entity.animation.AnimType;
 import kvverti.enim.model.multipart.Condition;
 import kvverti.enim.model.multipart.Rule;
 
-import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
-import static java.util.stream.Collectors.joining;
 
 /**
  * This class represents the contents of an entity model file, located in the {@value Keys#MODELS_DIR} directory. Properties
@@ -89,12 +84,12 @@ public class EntityModel {
     public static final EntityState MISSING_STATE = GSON.fromJson(
         "{\"model\":\"builtin/missingno\",\"texture\":\"builtin/missingno\",\"size\":[64,32],\"y\":0,\"scale\":1}",
         EntityState.class);
-        
+
     /**
      * The invalid ("missingno") armor model.
      */
     public static final ArmorModel MISSING_ARMOR = new ArmorModel();
-    
+
     /**
      * The invalid ("missingno") AbieScript animation.
      */
@@ -214,31 +209,31 @@ public class EntityModel {
         if(name != null && !name.isEmpty() && !names.contains(name))
             throw new JsonParseException(String.format("Element %s does not exist", name));
     }
-    
+
     /** Class for helping deserialization */
     static class JsonRepr {
-        
+
         @SerializedName(Keys.PARENT_TAG)
         List<String> parents = new ArrayList<>();
-        
+
         @SerializedName(Keys.PROPERTIES_TAG)
         ModelProperties properties = new ModelProperties();
-        
+
         @SerializedName(Keys.ELEMENTS_TAG)
         Set<ModelElement> elements = new HashSet<>();
-        
+
         @SerializedName(Keys.ANIMS_TAG)
         Map<AnimType, Animation> animations = new LinkedHashMap<>();
-        
+
         @SerializedName(Keys.IMPORTS_TAG)
         ModelImports imports = null;
-        
+
         @SerializedName(Keys.ELEMENTS_OVERRIDES)
         Map<String, ModelElement.Override> overrides = new HashMap<>();
-        
+
         /** So old imports system still works */
         void init() {
-            
+
             if(imports != null) {
                 elements.addAll(imports.elements);
                 //preserve declaration order
@@ -247,9 +242,9 @@ public class EntityModel {
                 kvverti.enim.Logger.warn("Note: this file uses model imports, which are deprecated");
             }
         }
-        
+
         void combineWith(JsonRepr other) {
-            
+
             other.elements.addAll(elements);
             elements = other.elements;
             animations.putAll(other.animations);
@@ -257,13 +252,13 @@ public class EntityModel {
             overrides.putAll(other.overrides);
         }
     }
-    
+
     /** Deserializer for items */
     private static class ItemDeserializer implements JsonDeserializer<Item> {
-        
+
         @Override
         public Item deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-            
+
             String itemStr = json.getAsString();
             if(!Keys.RESOURCE_LOCATION_REGEX.matcher(itemStr).matches())
                 throw new JsonParseException("Invalid item " + itemStr);
@@ -274,15 +269,15 @@ public class EntityModel {
             return res;
         }
     }
-    
+
     /** Deserializer for blocks */
     private static class BlockStateDeserializer implements JsonDeserializer<IBlockState> {
-        
+
         private static final Type blockStateMapType = new TypeToken<Map<String, String>>(){}.getType();
-     
+
         @Override
         public IBlockState deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-            
+
             JsonObject obj = json.getAsJsonObject();
             ResourceLocation blockId =
                 new ResourceLocation(obj.get(Keys.ELEM_BLOCKSTATE_BLOCK).getAsString());
@@ -301,10 +296,10 @@ public class EntityModel {
             }
             return res;
         }
-        
+
         private <T extends Comparable<T>>
             IBlockState placeProperty(IProperty<T> property, String strValue, IBlockState in) {
-            
+
             Optional<T> value = property.parseValue(strValue);
             if(!value.isPresent())
                 throw new JsonParseException("Invalid value " + strValue + " for property " + property.getName());

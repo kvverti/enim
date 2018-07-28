@@ -1,6 +1,5 @@
 package kvverti.enim.entity.animation;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import net.minecraft.client.multiplayer.WorldClient;
@@ -9,7 +8,6 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.CacheBuilder;
 
-import kvverti.enim.Util;
 import kvverti.enim.entity.Entities;
 import kvverti.enim.entity.GEntity;
 

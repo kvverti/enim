@@ -1,7 +1,5 @@
 package kvverti.enim.model.multipart;
 
-import java.lang.reflect.Type;
-
 import com.google.gson.*;
 
 import kvverti.enim.entity.state.RenderState;

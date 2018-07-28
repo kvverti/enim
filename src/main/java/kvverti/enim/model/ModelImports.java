@@ -5,7 +5,6 @@ import java.io.Reader;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.lang.reflect.Type;
 
@@ -87,9 +86,9 @@ class ModelImports {
             }
             throw new JsonParseException("Parsing imports - element not found: " + name);
         }
-        
+
         private JsonElement getAnimation(String name, JsonObject animations) {
-            
+
             JsonElement res = animations.get(name);
             if(res == null || res.isJsonNull())
                 throw new JsonParseException("Parsing imports - animation not found: " + name);

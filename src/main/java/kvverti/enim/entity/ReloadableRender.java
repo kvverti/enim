@@ -1,7 +1,5 @@
 package kvverti.enim.entity;
 
-import net.minecraft.util.ResourceLocation;
-
 import com.google.common.collect.ImmutableList;
 
 import kvverti.enim.entity.state.RenderState;

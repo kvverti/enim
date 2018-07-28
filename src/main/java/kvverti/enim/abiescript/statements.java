@@ -1,13 +1,8 @@
 package kvverti.enim.abiescript;
 
 import java.util.Map;
-import java.util.HashMap;
 import java.util.function.DoubleUnaryOperator;
 
-import com.google.common.collect.ImmutableMap;
-
-import kvverti.enim.Keys;
-import kvverti.enim.Util;
 import kvverti.enim.Vec3f;
 
 final class StateDefine extends Statement {

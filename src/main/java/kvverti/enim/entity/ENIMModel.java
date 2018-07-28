@@ -5,22 +5,17 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.function.ToIntBiFunction;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.tileentity.TileEntity;
 
 import kvverti.enim.abiescript.AbieScript;
 import kvverti.enim.entity.animation.AnimType;
 import kvverti.enim.entity.animation.EntityFrameTimers;
-import kvverti.enim.entity.animation.MinecraftAnimTypes;
 import kvverti.enim.model.EntityModel;
 import kvverti.enim.model.Animation;
 import kvverti.enim.model.ModelElement;
 import kvverti.enim.Vec3f;
-import kvverti.enim.Keys;
 
 import static kvverti.enim.entity.Entities.*;
 
@@ -76,7 +71,6 @@ public class ENIMModel extends ModelBase {
 
         int frame = (EntityFrameTimers.timeValue(type, entity, anim.tuning())
             & Integer.MAX_VALUE) % anim.frameCount();
-        //kvverti.enim.Logger.info("Frame: %d", frame);
         setAnglesHelper(anim, frame, info);
     }
 
