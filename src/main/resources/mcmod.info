@@ -2,7 +2,7 @@
     "modid": "enim",
     "name": "ENIM",
     "url": "https://github.com/kvverti/enim",
-    "description": "The ENIM model system aims to provide customizable entity models that can be animated with custom animations under a variety of circumstances. Entities, tile entities, and armor can be modelled under the ENIM model system.",
+    "description": "The ENIM model system allows resource packs to customize entity models and their animations under a variety of circumstances. Entities, tile entities, and armor can be modeled under the ENIM model system.",
     "version": "${version}",
     "mcversion": "1.12",
     "authorList": ["kwerti"]
