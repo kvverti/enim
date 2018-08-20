@@ -1,0 +1,8 @@
+{
+    "parents": ["cat_sitting"],
+    "overrides": {
+        "head": {
+            "scale": 1.5
+        }
+    }
+}

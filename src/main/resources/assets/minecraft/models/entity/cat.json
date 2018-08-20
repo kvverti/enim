@@ -1,0 +1,113 @@
+{
+    "properties": {
+        "nameplate": 16,
+        "shadowsize": 6
+    },
+    "elements": [
+        {
+            "name": "body",
+            "from": [6,10,-1],
+            "to": [10,26,5],
+            "uv": [20,0],
+            "origin": [8,10,-1],
+            "rotation": [90,0,0]
+        },
+        {
+            "name": "head",
+            "from": [5.5,7,15],
+            "to": [10.5,11,20],
+            "uv": [0,0],
+            "origin": [8,9,15],
+            "head": true
+        },
+        {
+            "name": "nose",
+            "parent": "head",
+            "from": [6.5,7,19],
+            "to": [9.5,9,21],
+            "uv": [0,24]
+        },
+        {
+            "name": "right_ear",
+            "parent": "head",
+            "from": [6,11,15],
+            "to": [7,12,17],
+            "uv": [0,10]
+        },
+        {
+            "name": "left_ear",
+            "parent": "head",
+            "from": [9,11,15],
+            "to": [10,12,17],
+            "uv": [0,10],
+            "mirrored": true
+        },
+        {
+            "name": "right_foreleg",
+            "from": [5.8,0.2,11],
+            "to": [7.8,10.2,13],
+            "uv": [40,0],
+            "origin": [6.8,10.2,12]
+        },
+        {
+            "name": "left_foreleg",
+            "from": [8.2,0.2,11],
+            "to": [10.2,10.2,13],
+            "uv": [40,0],
+            "origin": [9.2,10.2,12]
+        },
+        {
+            "name": "right_hindleg",
+            "from": [5.8,0,0],
+            "to": [7.8,6,2],
+            "uv": [8,13],
+            "origin": [6.8,6,1]
+        },
+        {
+            "name": "left_hindleg",
+            "from": [8.2,0,0],
+            "to": [10.2,6,2],
+            "uv": [8,13],
+            "origin": [9.2,6,1]
+        },
+        {
+            "name": "tail1",
+            "from": [7.5,1.5,-1],
+            "to": [8.5,9.5,0],
+            "uv": [0,15],
+            "origin": [8,9,-0.5],
+            "rotation": [50,0,0]
+        },
+        {
+            "name": "tail2",
+            "parent": "tail1",
+            "from": [7.5,-5.8,-0.7],
+            "to": [8.5,2.2,0.3],
+            "uv": [4,15],
+            "origin": [8,2,-0.5],
+            "rotation": [47,0,0]
+        }
+    ],
+    "animations": {
+        "moving": {
+            "scaling": 10,
+            "script": "cat_swing",
+            "with": {
+                "front_left": "left_foreleg",
+                "front_right": "right_foreleg",
+                "rear_left": "left_hindleg",
+                "rear_right": "right_hindleg",
+                "tail": "tail2"
+            }
+        },
+        "tracking": {
+            "script": "cat_track",
+            "with": {
+                "body": "body",
+                "head": "head",
+                "tail1": "tail1",
+                "tail2": "tail2"
+            }
+        }
+    }
+}

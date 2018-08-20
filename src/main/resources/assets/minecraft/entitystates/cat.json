@@ -1,0 +1,20 @@
+{
+    "states": {
+        "baby=false,sitting=false,type=ocelot": { "model": "cat", "texture": "entity/cat/ocelot" },
+        "baby=false,sitting=true,type=ocelot": { "model": "cat_sitting", "texture": "entity/cat/ocelot" },
+        "baby=true,sitting=false,type=ocelot": { "model": "baby_cat", "texture": "entity/cat/ocelot", "scale": 0.5 },
+        "baby=true,sitting=true,type=ocelot": { "model": "baby_cat_sitting", "texture": "entity/cat/ocelot", "scale": 0.5 },
+        "baby=false,sitting=false,type=black": { "model": "cat", "texture": "entity/cat/black", "scale": 0.8 },
+        "baby=false,sitting=true,type=black": { "model": "cat_sitting", "texture": "entity/cat/black", "scale": 0.8 },
+        "baby=true,sitting=false,type=black": { "model": "baby_cat", "texture": "entity/cat/black", "scale": 0.4 },
+        "baby=true,sitting=true,type=black": { "model": "baby_cat_sitting", "texture": "entity/cat/black", "scale": 0.4 },
+        "baby=false,sitting=false,type=red": { "model": "cat", "texture": "entity/cat/red", "scale": 0.8 },
+        "baby=false,sitting=true,type=red": { "model": "cat_sitting", "texture": "entity/cat/red", "scale": 0.8 },
+        "baby=true,sitting=false,type=red": { "model": "baby_cat", "texture": "entity/cat/red", "scale": 0.4 },
+        "baby=true,sitting=true,type=red": { "model": "baby_cat_sitting", "texture": "entity/cat/red", "scale": 0.4 },
+        "baby=false,sitting=false,type=siamese": { "model": "cat", "texture": "entity/cat/siamese", "scale": 0.8 },
+        "baby=false,sitting=true,type=siamese": { "model": "cat_sitting", "texture": "entity/cat/siamese", "scale": 0.8 },
+        "baby=true,sitting=false,type=siamese": { "model": "baby_cat", "texture": "entity/cat/siamese", "scale": 0.4 },
+        "baby=true,sitting=true,type=siamese": { "model": "baby_cat_sitting", "texture": "entity/cat/siamese", "scale": 0.4 }
+    }
+}

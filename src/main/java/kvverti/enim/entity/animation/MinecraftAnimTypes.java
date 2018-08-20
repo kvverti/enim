@@ -3,6 +3,7 @@ package kvverti.enim.entity.animation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityBat;
+import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.monster.EntitySlime;
@@ -76,6 +77,7 @@ public final class MinecraftAnimTypes {
             }
         }.create());
         TRACK.addAnimPredicate(EntityZombie.class, (e, i) -> e.isArmsRaised());
+        TRACK.addAnimPredicate(EntityOcelot.class, (e, i) -> e.isSneaking());
         JUMP = new AnimType(false).setRegistryName("minecraft:jump");
         JUMP.addAnimPredicate(EntitySlime.class, (e, i) -> e.motionY > 0.20f);
         JUMP.addAnimPredicate(EntityLivingBase.class, new EventBasedPredicate<EntityLivingBase, LivingJumpEvent>(false) {

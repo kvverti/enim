@@ -1,0 +1,16 @@
+define body
+define head
+define tail1
+define tail2
+
+init {
+    shift body -0 -0 +1
+    shift head -0 -2 -0
+    rotate tail1 +40 -0 -0
+    shift tail1 -0 -0 +0.6
+    rotate tail2 -47 -0 -0
+    shift tail2 -0 -0 -0.4
+}
+over 30 {
+    rotate cosine tail2 +30 -0 -0
+}

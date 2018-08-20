@@ -1,0 +1,8 @@
+{
+    "parents": ["cat"],
+    "overrides": {
+        "head": {
+            "scale": 1.5
+        }
+    }
+}
