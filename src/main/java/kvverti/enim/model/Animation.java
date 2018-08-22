@@ -17,8 +17,6 @@ public class Animation {
 
     private final AbieScript script;
     private final Map<String, String> defines;
-    @Deprecated
-    private final boolean scaleWithMovement;
     private final float scaling;
     private final float tuning;
 
@@ -26,7 +24,6 @@ public class Animation {
 
         this.script = script;
         this.defines = defines;
-        this.scaleWithMovement = false;
         this.scaling = scaling;
         this.tuning = tuning;
     }
@@ -42,9 +39,6 @@ public class Animation {
         return result;
     }
 
-    @Deprecated
-    public boolean shouldScaleWithMovement() { return scaleWithMovement; }
-
     /** Scaling controls the animation's amplitude. Returns 0 if no scaling */
     public float scaling() { return scaling; }
 
@@ -59,7 +53,7 @@ public class Animation {
     @Override
     public String toString() {
 
-        return "scaled: " + scaleWithMovement + ", elements: " + defines + ", script: [" + script + "]";
+        return "elements: " + defines + ", script: [" + script + "]";
     }
 
     /** The Json deserializer for instances of {@code Animation}. */
