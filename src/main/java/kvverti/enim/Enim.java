@@ -88,7 +88,6 @@ public final class Enim {
 
         Logger.setLog(e.getModLog());
         Logger.info("Registering Minecraft entity renders...");
-    //    registerEntityRender(EntityBoat.class, m -> new BoatRender(m, "minecraft", "boat"));
         registerEntityRender(EntityLeashKnot.class, "minecraft", "lead", BasicRender::new);
         registerEntityRender(EntityMinecartEmpty.class, "minecraft", "minecart", MinecartRender::new);
         registerEntityRender(EntitySlime.class, "minecraft", "slime", SlimeRender::new);

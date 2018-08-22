@@ -27,7 +27,6 @@ import static java.util.stream.Collectors.toMap;
 public class StateManager {
 
     private final Map<String, ImmutableList<EntityState>> stateMap = new HashMap<>();
-    //private final Map<String, List<ENIMModel>> modelMap = new HashMap<>();
     private final Map<EntityModel, ENIMModel> model2model = new HashMap<>();
     private final Collection<IProperty<?>> properties;
     private final BlockStateContainer stateDelegate;

@@ -193,13 +193,6 @@ public class AnimationParser {
                 //kvverti.enim.Logger.info(s);
                 StateFunction f = (StateFunction) s;
                 f.init(globalFunctions);
-                //debug
-                // java.util.function.DoubleUnaryOperator duo =
-                    // f.apply(1, 0);
-                // kvverti.enim.Logger.info("Begin: " + duo.applyAsDouble(0.0));
-                // kvverti.enim.Logger.info("Middle: " + duo.applyAsDouble(0.5));
-                // kvverti.enim.Logger.info("End: " + duo.applyAsDouble(1.0));
-                //end debug
                 res.put(source.getResourceDomain() + ":" + f.getName(), f);
                 itr.remove();
             } else break;
@@ -363,7 +356,7 @@ public class AnimationParser {
         int repeats,
         int freq) {
 
-        while(repeats-- > 0) 
+        while(repeats-- > 0)
             fillOver(frames, animFrame, prevFrame, 1, freq);
     }
 
