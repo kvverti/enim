@@ -63,12 +63,15 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
     public static final ResourceLocation SHADOW_TEXTURE = new ResourceLocation("minecraft:textures/misc/shadow.png");
 
     private final StateManager stateManager;
+    // cache one instance of the throwaway struct
+    private final EntityInfo theInfo;
     private EntityState currentState;
 
     protected ENIMRender(RenderManager manager, IProperty<?>... properties) {
 
         super(manager);
         this.stateManager = new StateManager(properties);
+        this.theInfo = new EntityInfo();
     }
 
     public abstract RenderState getStateFromEntity(T entity);
@@ -100,7 +103,7 @@ public abstract class ENIMRender<T extends Entity> extends Render<T> implements 
         RenderState renderState = getStateFromEntity(entity);
         ImmutableList<EntityState> entityStates = stateManager.getStateLayers(renderState);
         currentState = entityStates.get(0);
-        EntityInfo info = new EntityInfo();
+        EntityInfo info = theInfo;
         info.speedSq = Entities.speedSq(entity);
         info.partialTicks = partialTicks;
         info.entityYaw = yaw;

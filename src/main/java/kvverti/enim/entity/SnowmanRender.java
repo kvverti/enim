@@ -10,24 +10,26 @@ import net.minecraft.item.ItemStack;
 import kvverti.enim.model.EntityState;
 
 public class SnowmanRender extends BasicLivingRender<EntitySnowman> {
-    
+
+    private final ItemStack pumpkinHead = new ItemStack(Blocks.PUMPKIN);
+
     public SnowmanRender(RenderManager manager) {
-        
+
         super(manager);
     }
-    
+
     @Override
     protected void postRender(EntitySnowman entity, EntityInfo info) {
-        
+
         if(entity.isPumpkinEquipped()) {
-            
+
             EntityState state = getCurrentEntityState();
             float scale = state.scale();
             GlStateManager.pushMatrix();
             GlStateManager.scale(scale, scale, scale);
             renderItem(entity,
                 info,
-                new ItemStack(Blocks.PUMPKIN),
+                pumpkinHead,
                 TransformType.HEAD,
                 state.model().properties().helmet());
             GlStateManager.popMatrix();

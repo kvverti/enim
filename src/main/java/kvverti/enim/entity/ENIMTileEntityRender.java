@@ -19,11 +19,13 @@ import kvverti.enim.Vec3f;
 public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEntitySpecialRenderer<T> implements ReloadableRender {
 
     private final StateManager stateManager;
+    private final EntityInfo theInfo;
     private EntityState currentState;
 
     protected ENIMTileEntityRender(IProperty<?>... properties) {
 
         this.stateManager = new StateManager(properties);
+        this.theInfo = new EntityInfo();
     }
 
     public abstract RenderState getStateFromTile(T tile);
@@ -49,7 +51,7 @@ public abstract class ENIMTileEntityRender<T extends TileEntity> extends TileEnt
         RenderState renderState = getStateFromTile(tileEntity);
         ImmutableList<EntityState> entityStates = stateManager.getStateLayers(renderState);
         currentState = entityStates.get(0);
-        EntityInfo info = new EntityInfo();
+        EntityInfo info = theInfo;
         info.partialTicks = partialTicks;
         info.color = i -> i < 0 ? getBaseColor(tileEntity, info) : getBaseColor(tileEntity, info).scale(getColorOverlay(tileEntity, info, i));
         GEntity e = new GEntity(tileEntity);

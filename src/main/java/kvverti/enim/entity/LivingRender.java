@@ -40,12 +40,15 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
         return !entity.isInvisible() || !entity.isInvisibleToPlayer(Entities.thePlayer());
     }
 
+    // Red mob damage tint
+    private static final Vec3f DAMAGE_TINT = Vec3f.of(1.0f, 0.5f, 0.5f);
+
     @Override
     public Vec3f getBaseColor(T entity, EntityInfo info) {
 
         //tint red when damaged
         if(entity.hurtTime > 0 || entity.deathTime > 0)
-            return Vec3f.of(1.0f, 0.5f, 0.5f);
+            return DAMAGE_TINT;
         return Vec3f.IDENTITY;
     }
 
@@ -88,10 +91,10 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
             IntFunction<Vec3f> oldColor = info.color;
             for(EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
                 if(slot.getSlotType() == EntityEquipmentSlot.Type.ARMOR) {
-                    
+
                     ArmorMaterial material = getMaterial(entity, slot);
                     if(material != null) {
-                        
+
                         ImmutableList<EntityState> layers = armor.getArmorLayers(material, slot);
                         info.color = i -> i == 2 ? getArmorColor(entity, slot) : oldColor.apply(i);
                         for(EntityState armorState : layers)
@@ -132,9 +135,9 @@ public abstract class LivingRender<T extends EntityLivingBase> extends ENIMRende
         }
         return null;
     }
-    
+
     private Vec3f getArmorColor(T entity, EntityEquipmentSlot slot) {
-        
+
         ItemStack item = entity.getItemStackFromSlot(slot);
         int color = ((ItemArmor) item.getItem()).getColor(item);
         return Vec3f.of(
