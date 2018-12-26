@@ -1,11 +1,13 @@
 package kvverti.enim.entity.animation;
 
+import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.item.ItemBow;
@@ -115,6 +117,7 @@ public final class MinecraftAnimTypes {
         BOWHOLD = new AnimType(true).setRegistryName("minecraft:bowhold");
         BOWHOLD.addAnimPredicate(EntityLivingBase.class,
             (e, i) -> TRACK.shouldAnimate(new GEntity(e), i) && e.getHeldItemMainhand().getItem() instanceof ItemBow);
+        BOWHOLD.addAnimPredicate(AbstractSkeleton.class, (e, i) -> e.isSwingingArms());
     }
 
     private MinecraftAnimTypes() { }
