@@ -1,5 +1,6 @@
 package kvverti.enim.entity;
 
+import java.nio.FloatBuffer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -9,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
@@ -20,6 +22,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 import kvverti.enim.Vec3f;
 import kvverti.enim.Util;
@@ -33,7 +38,6 @@ public class ENIMModelRenderer extends ModelRenderer {
     private static final Method compileDisplayList;
     private static final Field displayList;
 
-    private final Vec3f defaultRotations;
     private final Vec3f defaultScale;
     private final boolean translucent;
     private final boolean head;
@@ -41,6 +45,7 @@ public class ENIMModelRenderer extends ModelRenderer {
     private final float pivotDeltaX;
     private final float pivotDeltaY;
     private final float pivotDeltaZ;
+    private final FloatBuffer initialAffineTransform = GLAllocation.createDirectFloatBuffer(16);
     private final ElementType type;
     private final ItemStack item;
     private final IBakedModel itemModel;
@@ -49,6 +54,7 @@ public class ENIMModelRenderer extends ModelRenderer {
     public float shiftDistanceX;
     public float shiftDistanceY;
     public float shiftDistanceZ;
+    // public final FloatBuffer affineTransform = FloatBuffer.allocate(16);
 
     static {
 
@@ -65,7 +71,6 @@ public class ENIMModelRenderer extends ModelRenderer {
     ENIMModelRenderer(ModelBase model) {
 
         super(model, "#missingno");
-        defaultRotations = Vec3f.ORIGIN;
         defaultScale = Vec3f.IDENTITY;
         translucent = false;
         head = false;
@@ -73,6 +78,11 @@ public class ENIMModelRenderer extends ModelRenderer {
         pivotDeltaX = 0.0f;
         pivotDeltaY = 0.0f;
         pivotDeltaZ = 0.0f;
+        // set to the identity matrix
+        initialAffineTransform.put(0, 1.0f);
+        initialAffineTransform.put(5, 1.0f);
+        initialAffineTransform.put(10, 1.0f);
+        initialAffineTransform.put(15, 1.0f);
         addBox(-8.0f, -16.0f, -8.0f, 16, 16, 16);
         type = ElementType.MODEL_BOX;
         item = null;
@@ -83,7 +93,6 @@ public class ENIMModelRenderer extends ModelRenderer {
     public ENIMModelRenderer(ModelBase model, ModelElement features) {
 
         super(model, features.name());
-        defaultRotations = features.rotation();
         defaultScale = features.scale();
         head = features.isHead();
         tintIndex = features.tintIndex();
@@ -101,6 +110,26 @@ public class ENIMModelRenderer extends ModelRenderer {
         pivotDeltaX = pivot.x - origin.x;
         pivotDeltaY = origin.y - pivot.y;
         pivotDeltaZ = origin.z - pivot.z;
+        // set up initial (fixed) affine transformation
+        final float scale = 0.0625f;
+        Matrix4f matrix = new Matrix4f();
+        Vector3f vec = new Vector3f();
+        vec.set(offsetX, offsetY, offsetZ);
+        matrix.translate(vec);
+        vec.set(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+        matrix.translate(vec);
+        vec.set(pivotDeltaX * scale, pivotDeltaY * scale, pivotDeltaZ * scale);
+        matrix.translate(vec);
+        vec.set(0.0f, 0.0f, 1.0f);
+        Vec3f defaultRotations = features.rotation();
+        matrix.rotate(-toRadians(defaultRotations.z), vec);
+        vec.set(0.0f, 1.0f, 0.0f);
+        matrix.rotate(-toRadians(defaultRotations.y), vec);
+        vec.set(1.0f, 0.0f, 0.0f);
+        matrix.rotate(+toRadians(defaultRotations.x), vec);
+        matrix.store(initialAffineTransform);
+        initialAffineTransform.rewind();
+        // set up type specific render info
         type = features.type();
         switch(type) {
             case ITEM:
@@ -164,12 +193,7 @@ public class ENIMModelRenderer extends ModelRenderer {
 
         final float scale = 0.0625f;
         //transform element into position
-        GlStateManager.translate(offsetX, offsetY, offsetZ);
-        GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-        GlStateManager.translate(pivotDeltaX * scale, pivotDeltaY * scale, pivotDeltaZ * scale);
-        GlStateManager.rotate(-defaultRotations.z, 0.0f, 0.0f, 1.0f);
-        GlStateManager.rotate(-defaultRotations.y, 0.0f, 1.0f, 0.0f);
-        GlStateManager.rotate(+defaultRotations.x, 1.0f, 0.0f, 0.0f);
+        GlStateManager.multMatrix(initialAffineTransform);
         //apply special transformations
         if(head) {
 
@@ -206,20 +230,7 @@ public class ENIMModelRenderer extends ModelRenderer {
     @Deprecated
     public void renderWithRotation(float scale) {
 
-        if(!isHidden && showModel) {
-
-            if(!compiled) compileDisplayList();
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
-            GlStateManager.rotate(+defaultRotations.z, 0.0f, 0.0f, 1.0f);
-            GlStateManager.rotate(+defaultRotations.y, 0.0f, 1.0f, 0.0f);
-            GlStateManager.rotate(-defaultRotations.x, 1.0f, 0.0f, 0.0f);
-            GlStateManager.rotate(+toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
-            GlStateManager.rotate(+toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
-            GlStateManager.rotate(-toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
-            GlStateManager.callList(displayList());
-            GlStateManager.popMatrix();
-        }
+        throw new UnsupportedOperationException("ENIMModelRenderer");
     }
 
     private void makeLucent() {
