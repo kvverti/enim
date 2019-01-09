@@ -51,6 +51,10 @@ public class ENIMModelRenderer extends ModelRenderer {
     private final IBakedModel itemModel;
     private final IBlockState blockstate;
     private boolean compiled = false;
+    public float rotateAngle;
+    public float rotateAxisX;
+    public float rotateAxisY;
+    public float rotateAxisZ;
     public float shiftDistanceX;
     public float shiftDistanceY;
     public float shiftDistanceZ;
@@ -202,9 +206,7 @@ public class ENIMModelRenderer extends ModelRenderer {
         }
         //apply animations
         GlStateManager.translate(shiftDistanceX * scale, -shiftDistanceY * scale, -shiftDistanceZ * scale);
-        GlStateManager.rotate(-toDegrees(rotateAngleZ), 0.0f, 0.0f, 1.0f);
-        GlStateManager.rotate(-toDegrees(rotateAngleY), 0.0f, 1.0f, 0.0f);
-        GlStateManager.rotate(+toDegrees(rotateAngleX), 1.0f, 0.0f, 0.0f);
+        GlStateManager.rotate(toDegrees(rotateAngle), rotateAxisX, rotateAxisY, rotateAxisZ);
         GlStateManager.translate(-pivotDeltaX * scale, -pivotDeltaY * scale, -pivotDeltaZ * scale);
         GlStateManager.scale(defaultScale.x, defaultScale.y, defaultScale.z);
     }

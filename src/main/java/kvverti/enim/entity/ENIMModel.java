@@ -15,9 +15,6 @@ import kvverti.enim.entity.animation.EntityFrameTimers;
 import kvverti.enim.model.EntityModel;
 import kvverti.enim.model.Animation;
 import kvverti.enim.model.ModelElement;
-import kvverti.enim.Vec3f;
-
-import static kvverti.enim.entity.Entities.*;
 
 public class ENIMModel extends ModelBase {
 
@@ -56,14 +53,15 @@ public class ENIMModel extends ModelBase {
         float speedScale = anim.scaling() == 0.0f ? 1.0f : anim.scaling() * (float) Math.sqrt(info.speedSq);
         for(String define : anim.defines()) {
 
-            Vec3f[] forms = f.getTransforms(define);
             ENIMModelRenderer box = boxes.get(anim.toElementName(define));
-            box.rotateAngleX = toRadians(forms[0].x) * speedScale;
-            box.rotateAngleY = toRadians(forms[0].y) * speedScale;
-            box.rotateAngleZ = toRadians(forms[0].z) * speedScale;
-            box.shiftDistanceX = forms[1].x * speedScale;
-            box.shiftDistanceY = forms[1].y * speedScale;
-            box.shiftDistanceZ = forms[1].z * speedScale;
+            AbieScript.Frame.Transform t = f.getAffineTransform(define);
+            box.rotateAngle = t.rotationAngle * speedScale;
+            box.rotateAxisX = t.rotationAxis.x;
+            box.rotateAxisY = t.rotationAxis.y;
+            box.rotateAxisZ = t.rotationAxis.z;
+            box.shiftDistanceX = t.translation.x * speedScale;
+            box.shiftDistanceY = t.translation.y * speedScale;
+            box.shiftDistanceZ = t.translation.z * speedScale;
         }
     }
 
@@ -86,10 +84,7 @@ public class ENIMModel extends ModelBase {
     private void resetAngles() {
 
         boxes.values().forEach(box -> {
-
-            box.rotateAngleX = 0.0f;
-            box.rotateAngleY = 0.0f;
-            box.rotateAngleZ = 0.0f;
+            box.rotateAngle = 0.0f;
             box.shiftDistanceX = 0.0f;
             box.shiftDistanceY = 0.0f;
             box.shiftDistanceZ = 0.0f;
